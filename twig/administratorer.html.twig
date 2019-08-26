@@ -1,0 +1,76 @@
+<style>
+    .mt-1 {
+        margin-top: 0.25em;
+    }
+    .mb-0 {
+        margin-bottom: 0;
+    }
+</style>
+<h2>Administratorer</h2>
+
+{% include "wp_modul.flashBag.html.twig" %}
+
+<div class="container-fluid">
+    {% for omrade in omrader %}
+        <h2 class="mb-0" style="text-transform: uppercase">
+            {{ omrade.getNavn() }}
+        </h2>
+        <div class="row">
+            <div class="col-xs-12 col-md-4">
+                <h4>Administratorer</h4>
+                <ol class="list-group">
+                    {% for admin in omrade.getAdministratorer().getAll() %}
+                        <li class="list-group-item">
+                            <div class="float-right pull-right">
+                                <a href="?page={{ GET('page') }}&removeAdmin={{ admin.getId() }}&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}">
+                                    <span class="dashicons dashicons-trash"></span>
+                                </a>
+                            </div>
+                            <b>{{ admin.getUser().getNavn() }}</b>
+                            {{ admin.getUser().getPhone() }}
+                        </li>
+                    {% else %}
+                        <li class="list-group-item">
+                            Ingen administratorer er lagt til enda.
+                        </li>
+                    {% endfor %}
+                    <p class="mt-1">
+                        <a href="?page={{ GET('page') }}&action=add&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}">
+                            Legg til administrator
+                        </a>
+                    </p>
+                </ol>
+            </div>
+
+            <div class="col-xs-12 col-md-4">
+                <h4>Arrangementer</h4>
+
+                <ol class="list-group">
+                    {% for arrangement in omrade.getArrangementer( season ).getAll() %}
+                        <li class="list-group-item">
+                            <div class="float-right pull-right">
+                                <a href="#">
+                                    <span class="dashicons dashicons-external"></span>
+                                </a>
+                            </div>
+                            <b>{{ arrangement.getNavn() }}</b>
+                        </li>
+                    {% else %}
+                        <li class="list-group-item">
+                            Ingen arrangement er lagt til enda.
+                        </li>
+                    {% endfor %}
+                    <p class="mt-1">
+                        <a href="?page={{ GET('page') }}&action=addArrangement&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}">
+                            Legg til arrangement
+                        </a>
+                    </p>
+                </ol>
+            </div>
+        </div>
+    {% else %}
+        <div class="alert alert-danger">
+            En system-feil har oppstått. Fant ingen områder du er administrator for
+        </div>
+    {% endfor %}
+</div>

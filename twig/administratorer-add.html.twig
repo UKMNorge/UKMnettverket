@@ -1,0 +1,89 @@
+<h2>Legg til administrator for
+    {{ fylke.getNavn() }}</h2>
+
+<div style="width: 98%">
+    <div class="card text-danger" id="fatalErrorContainer" style="display: none;"></div>
+    <form
+        action="?page={{ GET('page') }}{{ doAdd is not defined ? '&action=add&omrade='~ GET('omrade') ~'&type='~ GET('type') }}" id="formContainer" method="POST">
+
+        {# SKJEMA FOR BRUKER-OPPRETTING / OPPDATERING #}
+        {% if doAdd is defined %}
+
+            {% if user.ID == 'new' %}
+                <p class="lead">
+                    Vi har ingen registrerte brukere med den e-postadressen. 
+                    Fyll ut skjemaet, så oppretter vi bruker for deg.
+                </p>
+            {% endif %}
+
+            <input type="hidden" name="user_id" value="{{ user.getId() }}"/>
+            <input type="hidden" name="omrade_id" value="{{ GET('omrade') }}"/>
+            <input type="hidden" name="omrade_type" value="{{ GET('type') }}"/>
+
+            <div class="form-group">
+                <label for="first_name">Fornavn</label>
+                <input class="form-control" id="first_name" type="text" name="first_name" required value="{{ user.getFirstName() }}" autofocus/>
+            </div>
+
+            <div class="form-group">
+                <label for="last_name">Etternavn</label>
+                <input class="form-control" id="last_name" type="text" name="last_name" required value="{{ user.getLastName() }}"/>
+            </div>
+
+
+            <div class="form-group">
+                <label for="phone">Mobil</label>
+                <input class="form-control" id="phone" type="tel" name="phone" maxlength="8" required value="{{ user.getPhone() }}"/>
+            </div>
+
+            <div class="form-group" style="margin-bottom: -.2em;">
+                <label for="username">Brukernavn</label>
+                <input class="form-control" id="username" type="text" name="username" value="{{ user.getUsername() }}" readonly/>
+            </div>
+            {% if user.ID == 'new' %}
+                <div id="username_status" style="margin-bottom: 1em;">
+                    <div id="username_loading" style="display: none;">
+                        <img src="/wp-admin/images/wpspin_light.gif"/>
+                        Sjekker om brukernavnet er ledig...
+                    </div>
+                    <div id="username_exists" class="text-danger" style="display:none;">
+                        Dette brukernavnet er opptatt. Skriv inn nytt brukernavn.
+                        <br />
+                        <b>OBS: du kan kun bruke A-Z, a-z, 0-9, - og _</b>
+                    </div>
+                    <div id="username_available" class="text-success" style="display:none;">
+                        Brukernavnet er ledig.
+                    </div> 
+                    <script>
+                        $(document).on('keyup', '#username', () => {
+                            UKMsys_tools.administratorer.isUsernameAvailable($('#username').val());
+                        });
+                        $(document).ready(() => {
+                            $('#username').keyup();
+                        });
+                    </script>
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="email">E-postadresse</label>
+                <input class="form-control" id="email" type="email" name="email" value="{{ user.getEmail() }}" readonly/>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-sm btn-success" type="submit" id="doAddUserAsAdmin">Legg til bruker som administrator</button>
+            </div>
+
+            {# SØK ETTER E-POSTADRESSE #}
+        {% else %}
+            <div class="form-group">
+                <label for="email">E-postadresse</label>
+                <input class="form-control" id="email" name="email" placeholder="E-postadresse" required type="email" autofocus/>
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-sm btn-primary" id="doSearchForUser" type="submit">Søk etter bruker</button>
+            </div>
+        {% endif %}
+    </form>
+</div>
