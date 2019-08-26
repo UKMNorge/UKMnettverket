@@ -142,7 +142,7 @@ class UKMnettverket extends Modul
 
         wp_enqueue_script(
             'UKMnettverket',
-            plugin_dir_url(__FILE__) . 'js/UKMsys_tools.js'
+            plugin_dir_url(__FILE__) . 'js/UKMnettverket.js'
         );
     }
 
@@ -156,15 +156,15 @@ class UKMnettverket extends Modul
     {
         wp_enqueue_script(
             'UKMnettverket_admins',
-            plugin_dir_url(__FILE__) . 'js/nettverket/administratorer.js'
+            plugin_dir_url(__FILE__) . 'js/administratorer.js'
         );
     }
 
     public static function renderFylke() {
-        self::renderAdministratorer('fylke');
+        self::renderAdmin('fylke');
     }
 
-    public static function renderAdmin()
+    /*public static function renderAdmin()
     {
 
         if (isset($_GET['action'])) {
@@ -175,7 +175,7 @@ class UKMnettverket extends Modul
 
         static::setAction('nettverk/' . $_GET['action']);
         static::renderAdmin();
-    }
+    }*/
 }
 
 UKMnettverket::init(__DIR__);

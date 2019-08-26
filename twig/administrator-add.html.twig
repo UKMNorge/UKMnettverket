@@ -4,7 +4,7 @@
 <div style="width: 98%">
     <div class="card text-danger" id="fatalErrorContainer" style="display: none;"></div>
     <form
-        action="?page={{ GET('page') }}{{ doAdd is not defined ? '&action=add&omrade='~ GET('omrade') ~'&type='~ GET('type') }}" id="formContainer" method="POST">
+        action="?page={{ GET('page') }}{{ doAdd is not defined ? '&action=administrator-add&omrade='~ GET('omrade') ~'&type='~ GET('type') }}" id="formContainer" method="POST">
 
         {# SKJEMA FOR BRUKER-OPPRETTING / OPPDATERING #}
         {% if doAdd is defined %}
@@ -56,7 +56,7 @@
                     </div> 
                     <script>
                         $(document).on('keyup', '#username', () => {
-                            UKMsys_tools.administratorer.isUsernameAvailable($('#username').val());
+                            UKMnettverket.administratorer.isUsernameAvailable($('#username').val());
                         });
                         $(document).ready(() => {
                             $('#username').keyup();

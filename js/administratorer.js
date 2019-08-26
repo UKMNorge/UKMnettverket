@@ -1,7 +1,6 @@
-UKMsys_tools.administratorer = function ($) {
-    var UsernameSearch = UKMsys_tools.Request(
+UKMnettverket.administratorer = function ($) {
+    var UsernameSearch = UKMnettverket.Request(
         {
-            module: 'nettverket',
             controller: 'usernameAvailable',
             containers: {
                 loading: '#username_loading',

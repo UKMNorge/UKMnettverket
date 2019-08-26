@@ -1,6 +1,6 @@
-var UKMsys_tools = {};
+var UKMnettverket = {};
 
-UKMsys_tools.GUI = function ($) {
+UKMnettverket.GUI = function ($) {
 
     return function (options) {
         /*
@@ -21,7 +21,7 @@ UKMsys_tools.GUI = function ($) {
 
                 $(options.containers.main).slideUp();
                 $(options.containers.fatalError)
-                    .html('Beklager, en kritiskl feil har oppstått. ' +
+                    .html('Beklager, en kritisk feil har oppstått. ' +
                         'Kontakt <a href="mailto:support@ukm.no">support</a>' +
                         '<br />' +
                         'Server sa: ' + message
@@ -55,11 +55,11 @@ UKMsys_tools.GUI = function ($) {
 }(jQuery);
 
 
-UKMsys_tools.Request = function ($) {
+UKMnettverket.Request = function ($) {
     var count = 0;
 
     return function (options) {
-        var GUI = UKMsys_tools.GUI(options);
+        var GUI = UKMnettverket.GUI(options);
 
         var self = {
             handleResponse: (response) => {
@@ -89,7 +89,7 @@ UKMsys_tools.Request = function ($) {
                 count++;
                 GUI.showLoading();
 
-                data.action = 'UKMsystem_tools_ajax';
+                data.action = 'UKMnettverket_ajax';
                 data.module = options.module;
                 data.controller = options.controller;
                 data.count = count;

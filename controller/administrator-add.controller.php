@@ -8,7 +8,7 @@ require_once('UKM/Wordpress/WriteUser.class.php');
 
 switch( $_GET['type'] ) {
     case 'fylke':
-        UKMsystem_tools::addViewData('fylke', fylker::getById($_GET['omrade']));
+    UKMNettverket::addViewData('fylke', fylker::getById($_GET['omrade']));
     break;
 
     default:
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user = User::createEmpty();
     }
 
-    UKMsystem_tools::addViewData('doAdd', true);
+    UKMNettverket::addViewData('doAdd', true);
 
     // Bruker eksisterer ikke - fyll ut e-post og brukernavn
     if (!$user->isReal()) {
@@ -41,5 +41,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             )
         );
     }
-    UKMsystem_tools::addViewData('user', $user);
+    UKMNettverket::addViewData('user', $user);
 }
