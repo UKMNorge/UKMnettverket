@@ -8,7 +8,7 @@ require_once('UKM/Wordpress/WriteUser.class.php');
 
 switch( $_GET['type'] ) {
     case 'fylke':
-    UKMNettverket::addViewData('fylke', fylker::getById($_GET['omrade']));
+        UKMNettverket::addViewData('fylke', fylker::getById($_GET['omrade']));
     break;
 
     default:
