@@ -5,72 +5,36 @@
     .mb-0 {
         margin-bottom: 0;
     }
-</style>
-<h2>Administratorer</h2>
 
+    .dashicons {
+        width: 1em;
+        height: 1.2em;
+        font-size: 1.4em;
+        line-height: 1.3em;
+    }
+</style>
 {% include "wp_modul.flashBag.html.twig" %}
 
 <div class="container-fluid">
-    {% for omrade in omrader %}
-        <h2 class="mb-0" style="text-transform: uppercase">
-            {{ omrade.getNavn() }}
-        </h2>
-        <div class="row">
-            <div class="col-xs-12 col-md-4">
-                <h4>Administratorer</h4>
-                <ol class="list-group">
-                    {% for admin in omrade.getAdministratorer().getAll() %}
-                        <li class="list-group-item">
-                            <div class="float-right pull-right">
-                                <a href="?page={{ GET('page') }}&removeAdmin={{ admin.getId() }}&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}">
-                                    <span class="dashicons dashicons-trash"></span>
-                                </a>
-                            </div>
-                            <b>{{ admin.getUser().getNavn() }}</b>
-                            {{ admin.getUser().getPhone() }}
-                        </li>
-                    {% else %}
-                        <li class="list-group-item">
-                            Ingen administratorer er lagt til enda.
-                        </li>
-                    {% endfor %}
-                    <p class="mt-1">
-                        <a href="?page={{ GET('page') }}&action=administrator-add&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}">
-                            Legg til administrator
+    <h2>Velg område</h2>
+    <div class="row">
+        {% for omrade in omrader %}
+            <div class="col-xs-6 col-sm-3 col-lg-3">
+                <div class="card" style="text-align: center;">
+                    <a href="?page={{GET('page')}}&omrade={{omrade.getForeignId()}}&type={{omrade.getType()}}">
+                        <div style="font-size: 3em; text-align: center;">
+                            <span class="dashicons dashicons-location"></span>
+                        </div>
+                        <b style="text-transform: uppercase; font-size: 2em; font-weight: bold;">
+                            {{ omrade.getNavn() }}
+                        </b>
                         </a>
-                    </p>
-                </ol>
+                </div>
             </div>
-
-            <div class="col-xs-12 col-md-4">
-                <h4>Arrangementer</h4>
-
-                <ol class="list-group">
-                    {% for arrangement in omrade.getArrangementer( season ).getAll() %}
-                        <li class="list-group-item">
-                            <div class="float-right pull-right">
-                                <a href="#">
-                                    <span class="dashicons dashicons-external"></span>
-                                </a>
-                            </div>
-                            <b>{{ arrangement.getNavn() }}</b>
-                        </li>
-                    {% else %}
-                        <li class="list-group-item">
-                            Ingen arrangement er lagt til enda.
-                        </li>
-                    {% endfor %}
-                    <p class="mt-1">
-                        <a href="?page={{ GET('page') }}&action=arrangement-add&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}">
-                            Legg til arrangement
-                        </a>
-                    </p>
-                </ol>
+        {% else %}
+            <div class="col-xs-12 alert alert-danger">
+                En system-feil har oppstått. Fant ingen områder du er administrator for
             </div>
-        </div>
-    {% else %}
-        <div class="alert alert-danger">
-            En system-feil har oppstått. Fant ingen områder du er administrator for
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 </div>

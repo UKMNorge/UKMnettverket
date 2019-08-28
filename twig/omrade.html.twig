@@ -1,0 +1,87 @@
+<h2>{{ omrade.getNavn()}}</h2>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-md-4">
+            <h4>Administratorer</h4>
+            <ol class="list-group">
+                {% for admin in omrade.getAdministratorer().getAll() %}
+                    <li class="list-group-item">
+                        <div class="float-right pull-right">
+                            <a href="?page={{ GET('page') }}&removeAdmin={{ admin.getId() }}&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}">
+                                <span class="dashicons dashicons-trash"></span>
+                            </a>
+                        </div>
+                        <b>{{ admin.getUser().getNavn() }}</b>
+                        {{ admin.getUser().getPhone() }}
+                    </li>
+                {% else %}
+                    <li class="list-group-item">
+                        Ingen administratorer er lagt til enda.
+                    </li>
+                {% endfor %}
+                <p class="mt-1">
+                    <a href="?page={{ GET('page') }}&action=administrator-add&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}">
+                        Legg til administrator
+                    </a>
+                </p>
+            </ol>
+        </div>
+
+        <div class="col-xs-12 col-md-4">
+            <h4>Arrangementer</h4>
+
+            <ol class="list-group">
+                {% for arrangement in omrade.getArrangementer( season ).getAll() %}
+                    <li class="list-group-item">
+                        <div class="float-right pull-right">
+                            <a href="{{ arrangement.getLink() }}wp-admin/" target="_blank">
+                                <span class="dashicons dashicons-external"></span>
+                            </a>
+                        </div>
+                        <b>{{ arrangement.getNavn() }}</b>
+                        <br/>
+                        <small>
+                            <span class="dashicons dashicons-calendar-alt"></span>
+                            {{
+                                        arrangement.erRegistrert() ? 
+                                            arrangement.getStart()|dato('d.M.') :
+                                            'ikke registrert'
+                                    }}
+
+                            <span style="margin-left: 1em;"></span>
+                            <span class="dashicons dashicons-buddicons-buddypress-logo"></span>
+                            {{ arrangement.getInnslag().getAntall() }}
+                            påmeldte
+                        </small>
+                    </li>
+                {% else %}
+                    <li class="list-group-item">
+                        Ingen arrangement er lagt til enda.
+                    </li>
+                {% endfor %}
+                <p class="mt-1">
+                    <a href="?page={{ GET('page') }}&action=arrangement-add&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}">
+                        Legg til arrangement
+                    </a>
+                </p>
+            </ol>
+        </div>
+
+        <div class="col-xs-12 col-md-4">
+            <h4>{{ omrade.getFylke().erOslo() ? 'Bydeler' : 'Kommuner' }}</h4>
+
+            <ol class="list-group">
+                {% for kommune in omrade.getFylke().getKommuner().getAll() %}
+                    <li class="list-group-item">
+                        <div class="float-right pull-right">
+                            <a href="?page={{GET('page')}}">
+                                <span class="dashicons dashicons-admin-edit"></span>
+                            </a>
+                        </div>
+                        <b>{{ kommune.getNavn() }}</b>
+                    </li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,64 @@
+<div style="width: 98%">
+    <h2>
+        Nettsted for
+        {{ POST.navn }}
+    </h2>
+    {% include "wp_modul.flashBag.html.twig" %}
+
+    <p class="lead">
+        Alle mønstringer tilhørende fylket må ha et nettsted.
+    </p>
+    <p>
+        Adressen du velger bør være kort, men også logisk.
+                        Det er lettere å skrive et ord enn tilfeldige bokstaver.
+        <br/>
+        Du kan bruke adressen i markedsføring, som f.eks. på plakater,
+                        men deltakere kan også gå inn på UKM.no og trykke seg til ditt
+                        nettsted derfra
+    </p>
+
+    <div class="card text-danger" id="fatalErrorContainer" style="display: none;"></div>
+
+    <form action="?page={{ GET('page') }}&action={{ GET('action') }}&omrade={{ GET('omrade') }}&type={{ GET('type') }}" method="POST" id="formContainer">
+        {% for key, value in POST %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}"/>
+        {% endfor %}
+
+        <b>Nettsted-adresse for
+            {{ POST.navn }}</b>
+        <div class="input-group input-group">
+            <span class="input-group-addon">
+                UKM.no/
+            </span>
+            <input type="text" class="form-control" name="path" id="path" value="{{ path_forslag }}">
+        </div>
+
+        <div id="path_status" style="margin-bottom: 1em;">
+            <div id="path_loading" style="display: none;">
+                <img src="/wp-admin/images/wpspin_light.gif"/>
+                Sjekker om adressen er ledig...
+            </div>
+            <div id="path_exists" class="text-danger" style="display:none;">
+                Denne adressen er opptatt. Skriv inn ny adresse.
+                <br/>
+                <b>OBS: du kan kun bruke a-z, 0-9 og _</b>
+            </div>
+            <div id="path_available" class="text-success" style="display:none;">
+                Adressen er ledig.
+            </div>
+            <script>
+                $(document).on('keyup', '#path', () => {
+                    UKMnettverket.arrangement.isPathAvailable($('#path').val());
+                });
+                $(document).ready(() => {
+                    $('#path').keyup();
+                });
+            </script>
+        </div>
+
+
+        <div style="margin-top: 2em;">
+            <button class="btn btn-success" id="pathSubmit" type="submit">Lagre</button>
+        </div>
+    </form>
+</div>

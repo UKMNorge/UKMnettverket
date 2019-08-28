@@ -9,7 +9,7 @@
         margin-top: 2em;
     }
 
-    #formContainer .card .dashicons {
+    .optionCard .dashicons {
         font-size: 3em;
         text-align: center;
         float: right;
@@ -17,18 +17,18 @@
         margin-right: -.8em;
     }
 
-    #formContainer .card {
+    .optionCard {
         padding-right: 4.5em;
         cursor: pointer;
     }
 
-    #formContainer .card.selected {
+    .optionCard.selected {
         background: #428bca;
         color: #fff;
         border: 4px solid #0073aa;
     }
 
-    #formContainer .header {
+    .optionCard .header {
         font-weight: bold;
         font-size: 1.3em;
         margin-bottom: .2em;
@@ -36,7 +36,9 @@
 </style>
 
 <div style="width: 98%">
-    <form action="?page={{ GET('page') }}&action=administrator-doAdd&omrade='~ GET('omrade') ~'&type='~ GET('type') }}" id="formContainer" method="POST">
+    {% include "wp_modul.flashBag.html.twig" %}
+
+    <form action="?page={{ GET('page') }}&action=arrangement-add&omrade={{ GET('omrade') }}&type={{ GET('type') }}" id="formContainer" method="POST">
 
         <p class="lead">
             Arrangement du legger til blir tilknyttet
@@ -50,7 +52,7 @@
         <h4>Hvilken type arrangement vil du opprette?</h4>
         <div class="row">
             <div class="col-xs-6 col-sm-4 col-lg-3">
-                <div class="card selected">
+                <div class="optionCard card" data-group="type" data-value="monstring">
                     <div class="dashicons dashicons-buddicons-groups"></div>
                     <div class="header">Mønstring</div>
                     <p>
@@ -62,7 +64,7 @@
             </div>
 
             <div class="col-xs-6 col-sm-4 col-lg-3">
-                <div class="card">
+                <div class="optionCard card" data-group="type" data-value="arrangement">
                     <div class="dashicons dashicons-tickets"></div>
                     <div class="header">Arrangement</div>
                     <p>
@@ -77,7 +79,7 @@
         <h4>Hvordan skal påmeldingen skje?</h4>
         <div class="row">
             <div class="col-xs-6 col-sm-4 col-lg-3">
-                <div class="card">
+                <div class="optionCard card" data-group="pamelding" data-value="videresending">
                     <div class="dashicons dashicons-networking"></div>
                     <div class="header">Videresending</div>
                     <p>
@@ -89,7 +91,7 @@
             </div>
 
             <div class="col-xs-6 col-sm-4 col-lg-3">
-                <div class="card selected">
+                <div class="optionCard card" data-group="pamelding" data-value="apen">
                     <div class="dashicons dashicons-unlock"></div>
                     <div class="header">Åpen påmelding</div>
                     <p>
@@ -100,7 +102,7 @@
             </div>
 
             <div class="col-xs-6 col-sm-4 col-lg-3">
-                <div class="card">
+                <div class="optionCard card" data-group="pamelding" data-value="lukket">
                     <div class="dashicons dashicons-lock"></div>
                     <div class="header">Påmelding med krav</div>
                     <p>
@@ -113,25 +115,25 @@
             </div>
         </div>
 
-        <h4>Litt om arrangementet</h4>
-        <h4></h4>
-        <div class="row" style="margin-top:2em;">
-            <div class="col-xs-6 col-sm-4 col-lg-3">
-                <div class="form-group">
-                    <label>Tittel / navn</label>
-                    <input type="text" class="form-control" name="navn" placeholder="Trondheim, Bodø, Åsnes" />
-                </div>
+        <div id="omArrangementet" style="display:none;">
+            <div class="row" style="margin-top:2em;">
+                <div class="col-xs-12 col-sm-6">
+                    <div class="form-group">
+                        <label>Navn på arrangementet</label>
+                        <input type="text" class="form-control form-control-lg" name="navn" value="Trøndelag" placeholder="Trøndelag, Viken Øst, Nordland, Agder..." required />
+                    </div>
 
-                <div class="form-group">
-                    <label>Startdato</label>
-                    <input type="text" class="form-control" name="dato" placeholder="01.01.{{ "now"|date('Y') }}" />
+                    <div class="form-group">
+                        <label>Når starter arrangementet?</label>
+                        <input class="datepicker_{{ GET('type') }} form-control" type="text" name="start" value="{{ "now + 2 months"|dato('d.m.Y') }}" required >
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="row">
-            <div class="col-xs-12">
-                <button class="btn btn-success">Opprett arrangement</button>
+            <div class="row">
+                <div class="col-xs-12">
+                    <button class="btn btn-success" type="submit">Opprett</button>
+                </div>
             </div>
         </div>
     </form>

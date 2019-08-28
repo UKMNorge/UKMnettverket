@@ -92,6 +92,11 @@ class UKMnettverket extends Modul
             );
             add_action(
                 'admin_print_styles-' . $page,
+                ['UKMnettverket', 'arrangement_scripts_and_styles'],
+                11000
+            );
+            add_action(
+                'admin_print_styles-' . $page,
                 ['UKMnettverket', 'scripts_and_styles']
             );
         }
@@ -147,35 +152,34 @@ class UKMnettverket extends Modul
     }
 
     /**
-     * Scripts og stylesheets som skal være med i alle
-     * system tools-sider
+     * Scripts og stylesheets som skal være med for administrator-admin
      *
      * @return void
      */
     public static function administratorer_scripts_and_styles()
     {
         wp_enqueue_script(
-            'UKMnettverket_admins',
+            'UKMnettverket_administratorer',
             plugin_dir_url(__FILE__) . 'js/administratorer.js'
+        );
+    }
+
+    /**
+     * Scripts og stylesheets som skal være med for arrangement-admin
+     *
+     * @return void
+     */
+    public static function arrangement_scripts_and_styles()
+    {
+        wp_enqueue_script(
+            'UKMnettverket_arrangement',
+            plugin_dir_url(__FILE__) . 'js/arrangement.js'
         );
     }
 
     public static function renderFylke() {
         self::renderAdmin('fylke');
     }
-
-    /*public static function renderAdmin()
-    {
-
-        if (isset($_GET['action'])) {
-            $_GET['action'] = 'administratorer-' . basename($_GET['action']);
-        } else {
-            $_GET['action'] = 'administratorer';
-        }
-
-        static::setAction('nettverk/' . $_GET['action']);
-        static::renderAdmin();
-    }*/
 }
 
 UKMnettverket::init(__DIR__);
