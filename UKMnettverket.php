@@ -31,70 +31,64 @@ class UKMnettverket extends Modul
         add_action(
             'network_admin_menu',
             ['UKMnettverket', 'nettverkMeny'],
-            200
+            2000
         );
-        
+
         add_action(
             'user_admin_menu',
             ['UKMnettverket', 'meny'],
-            200
+            20000
         );
-
     }
 
-    public static function meny() {
+    public static function meny()
+    {
         require_once('UKM/Nettverk/Administrator.class.php');
-        $current_admin = new Administrator( get_current_user_id() );
-        
+        $current_admin = new Administrator(get_current_user_id());
+
         $scripts = [];
-        
+
         // Hvis vedkommende er admin for ett eller flere fylker
-        if( $current_admin->erAdmin('fylke') ) {
-            $meny = ($current_admin->getAntallOmrader('fylke') == 1 ) ? 
-                $current_admin->getOmrade('fylke')->getNavn() : 
-                'Dine fylker';
-            $scripts = [
-                add_menu_page(
-                    'GEO',
-                    $meny,
-                    'subscriber',
-                    'UKMnettverket_fylke',
-                    ['UKMnettverket', 'renderFylke'],
-                    'dashicons-location-alt', #//ico.ukm.no/system-16.png',
-                    22
-                )
-            ];
+        if ($current_admin->erAdmin('fylke')) {
+            $meny = ($current_admin->getAntallOmrader('fylke') == 1) ?
+                $current_admin->getOmrade('fylke')->getNavn() : 'Dine fylker';
+            $scripts[] = add_menu_page(
+                'GEO',
+                $meny,
+                'subscriber',
+                'UKMnettverket_fylke',
+                ['UKMnettverket', 'renderFylke'],
+                'dashicons-location-alt', #//ico.ukm.no/system-16.png',
+                22
+            );
         }
 
         // Hvis vedkommende er admin for en eller flere kommuner
-        if( $current_admin->erAdmin('kommune') ) {
-            $meny = ($current_admin->getAntallOmrader('kommune') == 1 ) ? 
-                $current_admin->getOmrade('kommune')->getNavn() : 
-                'Dine kommuner';
-            $scripts = [
-                add_menu_page(
-                    'GEO',
-                    $meny,
-                    'subscriber',
-                    'UKMnettverket_kommune',
-                    ['UKMnettverket', 'renderKommune'],
-                    'dashicons-location', #//ico.ukm.no/system-16.png',
-                    23
-                )
-            ];
+        if ($current_admin->erAdmin('fylke') || $current_admin->erAdmin('kommune')) {
+            if (isset($_GET['omrade']) && isset($_GET['type']) && $_GET['type'] == 'kommune' && $current_admin->getAntallOmrader('kommune') == 1) {
+                if( $current_admin->getOmrade('kommune')->getId() == 'kommune_'. $_GET['omrade'] ) {
+                    $meny = $current_admin->getOmrade('kommune')->getNavn();
+                } else {
+                    $meny = 'Dine kommuner';
+                }
+             } elseif( $current_admin->getAntallOmrader('kommune') == 1 ) {
+                $meny = $current_admin->getOmrade('kommune')->getNavn();
+             } else {
+                 $meny = 'Dine kommuner';
+             }
+            
+            $scripts[] = add_menu_page(
+                'GEO',
+                $meny,
+                'subscriber',
+                'UKMnettverket_kommune',
+                ['UKMnettverket', 'renderKommune'],
+                'dashicons-location', #//ico.ukm.no/system-16.png',
+                23
+            );
         }
 
-        foreach ($scripts as $page) {    
-            add_action(
-                'admin_print_styles-' . $page,
-                ['UKMnettverket', 'administratorer_scripts_and_styles'],
-                11000
-            );
-            add_action(
-                'admin_print_styles-' . $page,
-                ['UKMnettverket', 'arrangement_scripts_and_styles'],
-                11000
-            );
+        foreach ($scripts as $page) {
             add_action(
                 'admin_print_styles-' . $page,
                 ['UKMnettverket', 'scripts_and_styles']
@@ -110,20 +104,23 @@ class UKMnettverket extends Modul
         /**
          * Menyvalget NETTVERKET
          */
-        $meny = add_submenu_page(
+        $scripts[] = add_submenu_page(
             'index.php',
-            'Administratorer',
-            'Administratorer',
+            'Fylker',
+            'Fylker',
             'superadmin',
-            'UKMnettverket_admins',
+            'UKMnettverket_fylker',
             ['UKMnettverket', 'renderAdmin']
         );
-        add_action(
-            'admin_print_styles-' . $meny,
-            ['UKMnettverket', 'administratorer_scripts_and_styles'],
-            10000
+
+        $scripts[] = add_submenu_page(
+            'index.php',
+            'Kommuner',
+            'Kommuner',
+            'superadmin',
+            'UKMnettverket_kommune',
+            ['UKMnettverket', 'renderKommune']
         );
-        $scripts[] = $meny;
 
         foreach ($scripts as $page) {
             add_action(
@@ -141,6 +138,7 @@ class UKMnettverket extends Modul
      */
     public static function scripts_and_styles()
     {
+        echo 'helloo there?';
         wp_enqueue_style('UKMwp_dash_css');
         wp_enqueue_script('WPbootstrap3_js');
         wp_enqueue_style('WPbootstrap3_css');
@@ -149,36 +147,25 @@ class UKMnettverket extends Modul
             'UKMnettverket',
             plugin_dir_url(__FILE__) . 'js/UKMnettverket.js'
         );
-    }
-
-    /**
-     * Scripts og stylesheets som skal være med for administrator-admin
-     *
-     * @return void
-     */
-    public static function administratorer_scripts_and_styles()
-    {
+        wp_enqueue_script(
+            'UKMnettverket_arrangement',
+            plugin_dir_url(__FILE__) . 'js/arrangement.js'
+        );
         wp_enqueue_script(
             'UKMnettverket_administratorer',
             plugin_dir_url(__FILE__) . 'js/administratorer.js'
         );
     }
 
-    /**
-     * Scripts og stylesheets som skal være med for arrangement-admin
-     *
-     * @return void
-     */
-    public static function arrangement_scripts_and_styles()
+    public static function renderFylke()
     {
-        wp_enqueue_script(
-            'UKMnettverket_arrangement',
-            plugin_dir_url(__FILE__) . 'js/arrangement.js'
-        );
+        self::renderAdmin('fylke');
     }
 
-    public static function renderFylke() {
-        self::renderAdmin('fylke');
+
+    public static function renderKommune()
+    {
+        self::renderAdmin('kommune');
     }
 }
 

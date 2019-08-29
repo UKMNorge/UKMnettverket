@@ -10,6 +10,8 @@ switch( $_GET['type'] ) {
     case 'fylke':
         UKMNettverket::addViewData('fylke', fylker::getById($_GET['omrade']));
     break;
+    case 'kommune':
+    break;
 
     default:
         throw new Exception(

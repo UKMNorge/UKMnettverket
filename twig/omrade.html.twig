@@ -1,4 +1,13 @@
+<style>
+
+a.nocolor,
+a.nocolor:visited {
+    color: rgba(0,0,0,.85);
+}
+</style>
 <h2>{{ omrade.getNavn()}}</h2>
+{% include "wp_modul.flashBag.html.twig" %}
+
 <div class="container-fluid">
     <div class="row">
         <div class="col-xs-12 col-md-4">
@@ -13,7 +22,7 @@
                         </div>
                         <b>{{ admin.getUser().getNavn() }}</b>
                         {{ admin.getUser().getPhone() }}
-                    </li>
+                 5   </li>
                 {% else %}
                     <li class="list-group-item">
                         Ingen administratorer er lagt til enda.
@@ -41,17 +50,24 @@
                         <b>{{ arrangement.getNavn() }}</b>
                         <br/>
                         <small>
-                            <span class="dashicons dashicons-calendar-alt"></span>
-                            {{
-                                        arrangement.erRegistrert() ? 
-                                            arrangement.getStart()|dato('d.M.') :
-                                            'ikke registrert'
-                                    }}
+                            <div style="margin-top: .4em;">
+                                <span class="dashicons dashicons-calendar-alt"></span>
+                                {{
+                                            arrangement.erRegistrert() ? 
+                                                arrangement.getStart()|dato('d.M.') :
+                                                'ikke registrert'
+                                        }}
 
-                            <span style="margin-left: 1em;"></span>
-                            <span class="dashicons dashicons-buddicons-buddypress-logo"></span>
-                            {{ arrangement.getInnslag().getAntall() }}
-                            påmeldte
+                                <span style="margin-left: 1em;"></span>
+                                <span class="dashicons dashicons-buddicons-buddypress-logo"></span>
+                                {{ arrangement.getInnslag().getAntall() }}
+                                påmeldte
+                            </div>
+                            <div style="margin-top: .6em;">
+                                <a href="{{arrangement.getLink()}}" class="nocolor" target="_blank">
+                                    {{ arrangement.getLink()}}
+                                </a><a href="#"><span class="dashicons dashicons-edit" style="font-size: 1.5em; margin-top: 0.1em; margin-left: 0em; height: auto; width: auto"></span></a>
+                            </div>
                         </small>
                     </li>
                 {% else %}
@@ -67,21 +83,23 @@
             </ol>
         </div>
 
-        <div class="col-xs-12 col-md-4">
-            <h4>{{ omrade.getFylke().erOslo() ? 'Bydeler' : 'Kommuner' }}</h4>
+        {% if omrade.getType() == 'fylke' %}
+            <div class="col-xs-12 col-md-4">
+                <h4>{{ omrade.getFylke().erOslo() ? 'Bydeler' : 'Kommuner' }}</h4>
 
-            <ol class="list-group">
-                {% for kommune in omrade.getFylke().getKommuner().getAll() %}
-                    <li class="list-group-item">
-                        <div class="float-right pull-right">
-                            <a href="?page={{GET('page')}}">
-                                <span class="dashicons dashicons-admin-edit"></span>
-                            </a>
-                        </div>
-                        <b>{{ kommune.getNavn() }}</b>
-                    </li>
-                {% endfor %}
-            </ol>
-        </div>
+                <ol class="list-group">
+                    {% for kommune in omrade.getFylke().getKommuner().getAll() %}
+                        <li class="list-group-item">
+                            <div class="float-right pull-right">
+                                <a href="?page=UKMnettverket_kommune&omrade={{ kommune.getId() }}&type=kommune">
+                                    <span class="dashicons dashicons-edit"></span>
+                                </a>
+                            </div>
+                            <b>{{ kommune.getNavn() }}</b>
+                        </li>
+                    {% endfor %}
+                </ol>
+            </div>
+        {% endif %}
     </div>
 </div>

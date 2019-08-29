@@ -149,6 +149,29 @@ UKMnettverket.emitter = function( _navn ) {
 	return self;
 }
 
+UKMnettverket.radioButtons = function($) {
+    $(document).on('click', '.radioButtons > button', (e) => {
+        var radioButtons = $(e.target).parents('.radioButtons');
+        $(e.target).siblings().removeClass('btn-primary selected').addClass('btn-default');
+        $(e.target).addClass('btn-primary').removeClass('btn-default');
+        $('#radioButtonValue_'+ radioButtons.attr('data-name')).val(
+            $(e.target).val()
+        ).change();
+    });
+    
+    $(document).ready(()=>{
+        $('.radioButtons').each(
+            (index, item) => {
+                var name = $(item).attr('data-name');
+                $(item).parents('form').append(
+                    $('<input type="hidden" name="'+ name +'" id="radioButtonValue_'+ name +'" />')
+                );
+                $(item).find('.selected').click();
+            }
+        );
+    });
+}(jQuery);
+
 
 UKMnettverket.optionCard = function ($) {
     var groups = new Map();
@@ -230,12 +253,3 @@ UKMnettverket.optionCard = function ($) {
 
     return self;
 }(jQuery);
-
-$(document).ready(() => {
-    UKMnettverket.optionCard.init();
-
-    UKMnettverket.optionCard.on('pamelding', (valgt) => {
-        $('#omArrangementet').slideDown();
-    });
-    
-});

@@ -1,11 +1,11 @@
 <h2>
     Legg til nytt arrangement i
-    {{ fylke.getNavn() }}
+    {{ omrade.getNavn() }}
 </h2>
 
 <style>
     h4 {
-        margin-bottom: -.5em;
+        margin-bottom: -0.5em;
         margin-top: 2em;
     }
 
@@ -14,7 +14,7 @@
         text-align: center;
         float: right;
         color: #ccc;
-        margin-right: -.8em;
+        margin-right: -0.8em;
     }
 
     .optionCard {
@@ -31,9 +31,64 @@
     .optionCard .header {
         font-weight: bold;
         font-size: 1.3em;
-        margin-bottom: .2em;
+        margin-bottom: 0.2em;
+    }
+
+    input[type='checkbox'].form-control {
+        margin-top: -0.1em;
+        margin-right: 0.5em;
     }
 </style>
+
+<script>
+    $(document).ready(() => {
+        UKMnettverket.optionCard.init();
+
+        UKMnettverket.optionCard.on('pamelding', (valgt) => {
+            $('#omArrangementet').slideDown();
+        });
+
+        UKMnettverket.optionCard.on('type', (valgt) => {
+            if (valgt == 'monstring') {
+                $('#fellesmonstringWarning').slideDown();
+            } else {
+                $('#fellesmonstringWarning').slideUp();
+            }
+        })
+    });
+
+    $(document).on('change', '#radioButtonValue_sammen', (e) => {
+        if ($(e.target).val() == 'yes') {
+            $('#medArrangor').slideDown();
+        } else {
+            $('#medArrangor').slideUp();
+        }
+    });
+
+    $(document).on('click', 'input[name="kommuner[]"]', (e) => {
+        console.log( $(e) )
+
+        var selected = [];
+        $('input[name="kommuner[]"]').each( (index,item) => {
+            if( $(item).is(':checked') ) {
+                selected.push( $(item).attr('data-name') );
+            }
+        });
+        
+        if( selected.length == 1 ) {
+            var selected_text = selected[0];
+        }
+        else if( selected.length == 2 ) {
+            var selected_text = selected.join(' og ');
+        } else {
+            var last = selected.pop();
+            var selected_text = selected.join(', ') + ' og '+ last;
+        }
+        $('#arrangement_navn').val( selected_text );
+
+        console.log( selected );
+    });
+</script>
 
 <div style="width: 98%">
     {% include "wp_modul.flashBag.html.twig" %}
@@ -42,11 +97,20 @@
 
         <p class="lead">
             Arrangement du legger til blir tilknyttet
-            {% if GET('type') == 'fylke' %}fylket{% elseif GET('type') == 'kommune' %}kommunen/bydelen
-            {% endif %}.
-                        Typisk er dette fylkes-festivalen, eller en av flere fylkesfestivaler.
-            <br/>
-            Etter hvert vil det også bli mulig å legge til workshops og andre arrangementer her.
+            {% if omrade.getType() == 'fylke' %}
+                ditt fylke.
+                                                                                Typisk er dette fylkes-festivalen, eller en av flere fylkesfestivaler.
+            {% elseif omrade.getType() == 'kommune' %}
+                {% set kommune = omrade.getFylke().erOslo() ? 'bydel' : 'kommune' %}
+                {% set kommunen = omrade.getFylke().erOslo() ? 'bydelen' : 'kommunen' %}
+                din
+                {{kommune}}, og du kan lage så mange du vil.
+                <br/>
+                Skal du ha én mønstring i din
+                {{kommune}}
+                bør du kalle denne
+                {{ omrade.getNavn() }}.
+            {% endif %}
         </p>
 
         <h4>Hvilken type arrangement vil du opprette?</h4>
@@ -65,7 +129,7 @@
 
             <div class="col-xs-6 col-sm-4 col-lg-3">
                 <div class="optionCard card" data-group="type" data-value="arrangement">
-                    <div class="dashicons dashicons-tickets"></div>
+                    <div class="dashicons dashicons-tickets-alt"></div>
                     <div class="header">Arrangement</div>
                     <p>
                         <span class="label label-info">Kommer snart</span>
@@ -115,17 +179,57 @@
             </div>
         </div>
 
+        {% if omrade.getType() == 'kommune' %}
+            <h4>Arrangerer du sammen med andre
+                {{ omrade.getFylke().erOslo() ? 'bydeler' : 'kommuner'}}?</h4>
+            <div class="row" style="margin-top: 2em;">
+
+                <div class="col-xs-6 col-sm-4 col-lg-3">
+
+                    <div class="btn-group radioButtons" data-name="sammen">
+                        <button type="button" class="btn btn-default" value="yes">
+                            &nbsp; Ja &nbsp;</button>
+                        <button type="button" class="btn btn-default selected" value="no">
+                            &nbsp; Nei &nbsp;</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="medArrangor" style="display:none; margin-top: 1em;">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                        <label>Kryss av for de du arrangerer sammen med</label>
+                        <p id="fellesmonstringWarning">
+                            Vi vet at nærhet til UKM er en viktig årsak til 
+                            at ungdom velger å delta eller ikke.
+                            Dette er viktig å tenke gjennom før man oppretter en fellesmønstring.
+                        </p>
+                        <ol class="list-group">
+                            {% for kommune in omrade.getFylke().getKommuner().getAll() %}
+                                <li class="list-group-item">
+                                    <label class="{{ kommune.getId() == omrade.getKommune().getId() ? 'text-muted'}}">
+                                        <input class="form-control" type="checkbox" value="{{kommune.getId()}}" name="kommuner[]" data-name="{{kommune.getNavn()}}" {{ kommune.getId() == omrade.getKommune().getId() ? 'checked disabled'}}/>
+                                        {{ kommune.getNavn() }}
+                                    </label>
+                                </li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
         <div id="omArrangementet" style="display:none;">
             <div class="row" style="margin-top:2em;">
                 <div class="col-xs-12 col-sm-6">
                     <div class="form-group">
                         <label>Navn på arrangementet</label>
-                        <input type="text" class="form-control form-control-lg" name="navn" value="Trøndelag" placeholder="Trøndelag, Viken Øst, Nordland, Agder..." required />
+                        <input type="text" class="form-control form-control-lg" name="navn" id="arrangement_navn" value="{{ omrade.getNavn() }}" placeholder="Trøndelag, Viken Øst, Nordland, Agder..." required/>
                     </div>
 
                     <div class="form-group">
                         <label>Når starter arrangementet?</label>
-                        <input class="datepicker_{{ GET('type') }} form-control" type="text" name="start" value="{{ "now + 2 months"|dato('d.m.Y') }}" required >
+                        <input class="datepicker_{{ GET('type') }} form-control" type="text" name="start" value="{{ "now + 2 months"|dato('d.m.Y') }}" required>
                     </div>
                 </div>
             </div>
