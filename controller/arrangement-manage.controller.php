@@ -2,7 +2,7 @@
 
 use UKMNorge\Wordpress\Blog;
 
-require_once('UKM/Wordpress/Blog.class.php');
+require_once('UKM/Wordpress/Blog.php');
 
 // STEG 1 Vi mangler basis-verdier
 if( empty( $_POST['type'] ) || empty( $_POST['pamelding'] ) ) {

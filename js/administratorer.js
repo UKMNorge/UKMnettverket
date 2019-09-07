@@ -1,6 +1,7 @@
-UKMnettverket.administratorer = function ($) {
-    var UsernameSearch = UKMnettverket.Request(
+UKMresources.administratorer = function ($) {
+    var UsernameSearch = UKMresources.Request(
         {
+            action: 'UKMnettverket_ajax',
             controller: 'usernameAvailable',
             containers: {
                 loading: '#username_loading',

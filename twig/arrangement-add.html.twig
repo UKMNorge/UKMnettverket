@@ -42,13 +42,13 @@
 
 <script>
     $(document).ready(() => {
-        UKMnettverket.optionCard.init();
+        UKMresources.optionCard.init();
 
-        UKMnettverket.optionCard.on('pamelding', (valgt) => {
+        UKMresources.optionCard.on('pamelding', (valgt) => {
             $('#omArrangementet').slideDown();
         });
 
-        UKMnettverket.optionCard.on('type', (valgt) => {
+        UKMresources.optionCard.on('type', (valgt) => {
             if (valgt == 'monstring') {
                 $('#fellesmonstringWarning').slideDown();
             } else {

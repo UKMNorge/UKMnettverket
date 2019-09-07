@@ -144,10 +144,6 @@ class UKMnettverket extends Modul
         wp_enqueue_style('WPbootstrap3_css');
 
         wp_enqueue_script(
-            'UKMnettverket',
-            plugin_dir_url(__FILE__) . 'js/UKMnettverket.js'
-        );
-        wp_enqueue_script(
             'UKMnettverket_arrangement',
             plugin_dir_url(__FILE__) . 'js/arrangement.js'
         );

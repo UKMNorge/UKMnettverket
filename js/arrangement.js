@@ -1,6 +1,7 @@
-UKMnettverket.arrangement = function ($) {
-    var WebsitePathSearch = UKMnettverket.Request(
+UKMresources.arrangement = function ($) {
+    var WebsitePathSearch = UKMresources.Request(
         {
+            action: 'UKMnettverket_ajax',
             controller: 'pathAvailable',
             containers: {
                 loading: '#path_loading',

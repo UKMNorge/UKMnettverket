@@ -3,7 +3,7 @@
 use UKMNorge\Wordpress\Blog;
 header('Content-Type: application/json');
 
-require_once('UKM/Wordpress/Blog.class.php');
+require_once('UKM/Wordpress/Blog.php');
 
 $success = Blog::isAvailablePath( $_POST['path'] );
 
