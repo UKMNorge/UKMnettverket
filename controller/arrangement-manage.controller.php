@@ -51,6 +51,14 @@ else {
             $_POST['path']
         );
 
+        $arrangement->setStart(
+            write_monstring::inputToDateTime( 
+                $_POST['start'],
+                '18:00'
+            )
+        );
+        write_monstring::save( $arrangement );
+
         // Opprett blogg
         Blog::opprettForArrangement(
             $arrangement,
