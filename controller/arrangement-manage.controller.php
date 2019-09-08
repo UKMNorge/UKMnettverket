@@ -47,10 +47,6 @@ else {
             $_GET['omrade'],                             // Eier
             (int) get_site_option('season'),            // Sesong
             $_POST['navn'],                             // Navn
-            write_monstring::getStandardFrist(         // Påmeldingsfrist
-                (int) get_site_option('season'),
-                $_POST['type']
-            ),
             fylker::getById($_GET['omrade']),             // Geografisk tilhørighet (hm..)
             $_POST['path']
         );
