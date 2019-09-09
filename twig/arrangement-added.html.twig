@@ -1,0 +1,11 @@
+<h1>{{ arrangement.getNavn() }} er opprettet!</h1>
+
+    <p class="lead">Mye er på plass, men du må innom arrangørsystemet og sette opp resten. Vi anbefaler at du gjør dette allerede nå.</p>
+
+<p>
+    <a href="/{{ blog_path }}/wp-admin/admin.php?page=UKMmonstring" class="btn btn-primary">Gå til arrangørsystemet</a>
+</p>
+
+<p>
+    <a href="?page={{GET('page')}}&type={{GET('type')}}&omrade={{GET('omrade')}}">tilbake til {{ omrade.getNavn() }}</a>
+</p>

@@ -11,11 +11,11 @@ UKMresources.arrangement = function ($) {
                 main: '#formContainer'
             },
             handleSuccess: (response) => {
-                $('#pathSubmit').removeAttr('disabled');
+                $('#path').val( response.path );
+                $('#path').attr('readonly',true);
             },
             handleError: (response) => {
                 $('#path').removeAttr('readonly');
-                $('#pathSubmit').attr('disabled', true);
             },
         }
     );
@@ -23,7 +23,11 @@ UKMresources.arrangement = function ($) {
     var self = {
         isPathAvailable: (path) => {
             return WebsitePathSearch.do(
-                { path: path }
+                { 
+                    path: path,
+                    omrade_type: $('#omrade_type').val(),
+                    omrade_id: $('#omrade_id').val()
+                }
             );
         }
     }

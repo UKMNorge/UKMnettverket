@@ -41,40 +41,43 @@
     });
 
     $(document).on('click', 'input[name="kommuner[]"]', (e) => {
-        console.log( $(e) )
+        console.log($(e))
 
         var selected = [];
-        $('input[name="kommuner[]"]').each( (index,item) => {
-            if( $(item).is(':checked') ) {
-                selected.push( $(item).attr('data-name') );
+        $('input[name="kommuner[]"]').each((index, item) => {
+            if ($(item).is(':checked')) {
+                selected.push($(item).attr('data-name'));
             }
         });
-        
-        if( selected.length == 1 ) {
+
+        if (selected.length == 1) {
             var selected_text = selected[0];
-        }
-        else if( selected.length == 2 ) {
+        } else if (selected.length == 2) {
             var selected_text = selected.join(' og ');
         } else {
             var last = selected.pop();
-            var selected_text = selected.join(', ') + ' og '+ last;
+            var selected_text = selected.join(', ') + ' og ' + last;
         }
-        $('#arrangement_navn').val( selected_text );
+        $('#arrangement_navn').val(selected_text);
 
-        console.log( selected );
+        console.log(selected);
     });
 </script>
 
 <div style="width: 98%">
     {% include "wp_modul.flashBag.html.twig" %}
+    <div class="card text-danger" id="fatalErrorContainer" style="display: none;"></div>
 
     <form action="?page={{ GET('page') }}&action=arrangement-add&omrade={{ GET('omrade') }}&type={{ GET('type') }}" id="formContainer" method="POST">
+
+        <input type="hidden" name="omrade_navn" id="omrade_navn" value="{{omrade.getNavn()}}" />
+        <input type="hidden" name="omrade_type" id="omrade_type" value="{{GET('type')}}" />
+        <input type="hidden" name="omrade_id" id="omrade_id" value="{{GET('omrade')}}" />
 
         <p class="lead">
             Arrangement du legger til blir tilknyttet
             {% if omrade.getType() == 'fylke' %}
-                ditt fylke.
-                                                                                Typisk er dette fylkes-festivalen, eller en av flere fylkesfestivaler.
+                ditt fylke. Typisk er dette fylkes-festivalen, eller en av flere fylkesfestivaler.
             {% elseif omrade.getType() == 'kommune' %}
                 {% set kommune = omrade.getFylke().erOslo() ? 'bydel' : 'kommune' %}
                 {% set kommunen = omrade.getFylke().erOslo() ? 'bydelen' : 'kommunen' %}
@@ -95,9 +98,8 @@
                     <div class="dashicons dashicons-buddicons-groups"></div>
                     <div class="header">Mønstring</div>
                     <p>
-                        Den vanligste arrangementsformen.
-                        Åpner automatisk for innslag i kategorien scene, utstilling og film, 
-                        mens de øvrige deltakergrenene er valgfri.
+                        Den vanligste arrangementsformen. Åpner automatisk for innslag i kategorien scene, utstilling og film, 
+                                                mens de øvrige deltakergrenene er valgfri.
                     </p>
                 </div>
             </div>
@@ -109,7 +111,7 @@
                     <p>
                         <span class="label label-info">Kommer snart</span>
                         Hvis du skal ha foredrag, workshop, meet-up, eller noe annet,
-                        kan kan du her lage et arrangement som vises på lokalsiden.
+                                                kan kan du her lage et arrangement som vises på lokalsiden.
                     </p>
                 </div>
             </div>
@@ -123,8 +125,8 @@
                     <div class="header">Videresending</div>
                     <p>
                         Velger du denne er du avhengig av at andre
-                        arrangementer sender deltakere til deg, 
-                        da det ikke finnes påmeldingsskjema noe sted.
+                                                arrangementer sender deltakere til deg, 
+                                                da det ikke finnes påmeldingsskjema noe sted.
                     </p>
                 </div>
             </div>
@@ -135,7 +137,7 @@
                     <div class="header">Åpen påmelding</div>
                     <p>
                         Åpner påmeldingen for hvem som helst gjennom
-                        vanlig påmeldingsskjema.
+                                                vanlig påmeldingsskjema.
                     </p>
                 </div>
             </div>
@@ -148,7 +150,7 @@
                         <span class="label label-info">Kommer snart</span>
 
                         Her kan du sette noen krav deltakere må oppfylle før de kan melde seg på,
-                        for eksempel at de må være påmeldt fylkesfestivalen din.
+                                                for eksempel at de må være påmeldt fylkesfestivalen din.
                     </p>
                 </div>
             </div>
@@ -176,8 +178,8 @@
                         <label>Kryss av for de du arrangerer sammen med</label>
                         <p id="fellesmonstringWarning">
                             Vi vet at nærhet til UKM er en viktig årsak til 
-                            at ungdom velger å delta eller ikke.
-                            Dette er viktig å tenke gjennom før man oppretter en fellesmønstring.
+                                                        at ungdom velger å delta eller ikke.
+                                                        Dette er viktig å tenke gjennom før man oppretter en fellesmønstring.
                         </p>
                         <ol class="list-group">
                             {% for kommune in omrade.getFylke().getKommuner().getAll() %}
@@ -205,6 +207,72 @@
                     <div class="form-group">
                         <label>Når starter arrangementet?</label>
                         <input class="datepicker_{{ GET('type') }} form-control" type="text" name="start" value="{{ "now + 2 months"|dato('d.m.Y') }}" required>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <b>Nettsted-adresse for
+                        {{ POST.navn }}</b>
+                    <div class="input-group input-group">
+                        <span class="input-group-addon">
+                            UKM.no/
+                        </span>
+                        <input type="text" class="form-control" name="path" id="path" value="{{ path_forslag }}" readonly>
+                    </div>
+
+                    <div id="path_status" style="margin-bottom: 1em;">
+                        <div id="path_loading" style="display: none;">
+                            <img src="/wp-admin/images/wpspin_light.gif"/>
+                            Sjekker om adressen er ledig...
+                        </div>
+                        <div id="path_exists" class="text-danger" style="display:none;">
+                            Denne adressen er opptatt. Skriv inn ny adresse.
+                            <br/>
+                            <b>OBS: du kan kun bruke a-z, 0-9 og _</b>
+                        </div>
+                        <div id="path_available" class="text-success" style="display:none;">
+                            Adressen er ledig.
+                        </div>
+                        <script>
+                            $(document).on('keyup', '#arrangement_navn', ()=>{
+                                var value = $('#arrangement_navn').val();
+                                
+                                if( typeof value !== 'string' ) {
+                                    return ;
+                                }
+                                var omrade = $('#omrade_navn').val();
+                                omrade = omrade.toLowerCase();
+                                
+                                value = omrade +'-'+ value.toLowerCase();
+
+                                var replace = new Map();
+                                replace.set('æ','a');
+                                replace.set('ø','o');
+                                replace.set('å','a');
+                                replace.set('ü','u');
+                                replace.set('é','e');
+                                replace.set('è','e');
+
+                                for( var [key, val] of replace ) {
+                                    value = value.replace(new RegExp(key,'g'), val);
+                                }
+                                value = value.replace( new RegExp('[^a-zA-Z0-9-]', 'g'), '');
+  
+                                $('#path').val( value ).keyup();
+
+                            });
+                            $(document).on('keyup', '#path', () => {
+                                UKMresources.arrangement.isPathAvailable(
+                                    $('#path').val()
+                                );
+                            });
+                            $(document).ready(() => {
+                                $('#arrangement_navn').keyup();
+                            });
+                        </script>
                     </div>
                 </div>
             </div>
