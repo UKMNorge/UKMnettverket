@@ -44,17 +44,26 @@ elseif (isset($_POST['path']))
     require_once('UKM/write_kontakt.class.php');
 
 
+    if( $_GET['type'] == 'fylke' ) {
+        $geografi = fylker::getById($_GET['omrade']);
+    } elseif( $_GET['type'] == 'kommune') {
+        $geografi = [new kommune( $_GET['omrade'] )];
+    } else {
+        throw new Exception('Mangler info for å definere geografi');
+    }
+
+    UKMlogger::initWP( 0 );
+
     // Opprett arrangement
     $arrangement = write_monstring::create(
         $_GET['type'],                              // Type mønstring
         $_GET['omrade'],                             // Eier
         (int) get_site_option('season'),            // Sesong
         $_POST['navn'],                             // Navn
-        fylker::getById($_GET['omrade']),             // Geografisk tilhørighet (hm..)
+        $geografi,             // Geografisk tilhørighet (hm..)
         $_POST['path']
     );
 
-    UKMlogger::initWP( $arrangement->getId() );
 
     $arrangement->setStart(
         write_monstring::inputToDateTime( 
