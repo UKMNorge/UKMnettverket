@@ -138,11 +138,14 @@ class UKMnettverket extends Modul
      */
     public static function scripts_and_styles()
     {
-        echo 'helloo there?';
         wp_enqueue_style('UKMwp_dash_css');
         wp_enqueue_script('WPbootstrap3_js');
         wp_enqueue_style('WPbootstrap3_css');
 
+        wp_enqueue_style(
+            'UKMnettverket_arrangement_css',
+            plugin_dir_url(__FILE__) . 'UKMnettverket.css'
+        );
         wp_enqueue_script(
             'UKMnettverket_arrangement',
             plugin_dir_url(__FILE__) . 'js/arrangement.js'

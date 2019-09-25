@@ -5,6 +5,7 @@ use UKMNorge\Nettverk\Omrade;
 require_once('UKM/fylker.class.php');
 require_once('UKM/Nettverk/Omrade.class.php');
 
+UKMnettverket::addViewData('sesong', get_site_option('season'));
 
 UKMnettverket::addViewData(
     'omrade', 

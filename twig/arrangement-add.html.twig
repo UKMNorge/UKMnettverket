@@ -3,76 +3,73 @@
     {{ omrade.getNavn() }}
 </h2>
 
-<style>
-    h4 {
-        margin-bottom: -0.5em;
-        margin-top: 2em;
-    }
-
-    input[type='checkbox'].form-control {
-        margin-top: -0.1em;
-        margin-right: 0.5em;
-    }
-</style>
-
 <script>
+    var checkboxSelector = 'input[name="kommuner[]"]';
+
+    $(document).on('change', '#radioButtonValue_sammen', (e) => {
+        if ($(e.target).val() == 'yes') {
+            $('#medArrangor').slideDown();
+        } else {
+            $(checkboxSelector).not(':disabled').removeAttr('checked');
+            UKMresources.arrangement.setNameFromCheckbox(checkboxSelector, '#arrangement_navn');
+            $('#medArrangor').slideUp();
+        }
+    });
+
+    $(document).on('change', '#radioButtonValue_synlig', (e) => {
+        if( $(e.target).val() == 'true' ) {
+            $('#startDate').slideDown();
+        } else {
+            $('#startDate').slideUp();
+        }
+    });
+
+    $(document).on('click', checkboxSelector, (e) => {
+        UKMresources.arrangement.setNameFromCheckbox(checkboxSelector, '#arrangement_navn');
+    });
+
+    $(document).on('keyup', '#arrangement_navn', () => {
+        if ($('#omrade_type').val() == 'kommune') {
+            $('#path').val(UKMresources.arrangement.getPathFromForm(checkboxSelector));
+        } else {
+            $('#path').val(UKMresources.arrangement.getPathFromForm(false, '#arrangement_navn'));
+        }
+    });
+    $(document).on('keyup', '#path', () => {
+        UKMresources.arrangement.isPathAvailable($('#path').val());
+    });
+
     $(document).ready(() => {
         UKMresources.optionCard.init();
-
         UKMresources.optionCard.on('pamelding', (valgt) => {
+            if( valgt == 'videresending') {
+                $('#velgSynlig').slideDown();
+            } else {
+                $('#velgSynlig').slideUp();
+            }
             $('#omArrangementet').slideDown();
         });
-
         UKMresources.optionCard.on('type', (valgt) => {
             if (valgt == 'monstring') {
                 $('#fellesmonstringWarning').slideDown();
             } else {
                 $('#fellesmonstringWarning').slideUp();
             }
-        })
-    });
-
-    $(document).on('change', '#radioButtonValue_sammen', (e) => {
-        if ($(e.target).val() == 'yes') {
-            $('#medArrangor').slideDown();
-        } else {
-            $('#medArrangor').slideUp();
-        }
-    });
-
-    $(document).on('click', 'input[name="kommuner[]"]', (e) => {
-        console.log($(e))
-
-        var selected = [];
-        $('input[name="kommuner[]"]').each((index, item) => {
-            if ($(item).is(':checked')) {
-                selected.push($(item).attr('data-name'));
-            }
         });
-
-        if (selected.length == 1) {
-            var selected_text = selected[0];
-        } else if (selected.length == 2) {
-            var selected_text = selected.join(' og ');
-        } else {
-            var last = selected.pop();
-            var selected_text = selected.join(', ') + ' og ' + last;
-        }
-        $('#arrangement_navn').val(selected_text);
-
-        console.log(selected);
+        $('#arrangement_navn').keyup();
     });
 </script>
 
-<div style="width: 98%">
+<div style="width: 98%" id="arrangement-add">
     {% include "wp_modul.flashBag.html.twig" %}
     <div class="card text-danger" id="fatalErrorContainer" style="display: none;"></div>
 
     <form action="?page={{ GET('page') }}&action=arrangement-add&omrade={{ GET('omrade') }}&type={{ GET('type') }}" id="formContainer" method="POST">
 
-        <input type="hidden" name="omrade_navn" id="omrade_navn" value="{{omrade.getNavn()}}" />
-        <input type="hidden" name="omrade_type" id="omrade_type" value="{{GET('type')}}" />
-        <input type="hidden" name="omrade_id" id="omrade_id" value="{{GET('omrade')}}" />
+        <input type="hidden" name="omrade_navn" id="omrade_navn" value="{{omrade.getNavn()}}"/>
+        <input type="hidden" name="omrade_type" id="omrade_type" value="{{GET('type')}}"/>
+        <input type="hidden" name="omrade_id" id="omrade_id" value="{{GET('omrade')}}"/>
+        <input type="hidden" name="omrade_har_arrangement" id="omrade_har_arrangement" value="{{ omrade.getArrangementer(sesong).har() ? 'true' : 'false' }}"/>
 
         <p class="lead">
             Arrangement du legger til blir tilknyttet
@@ -99,7 +96,7 @@
                     <div class="header">Mønstring</div>
                     <p>
                         Den vanligste arrangementsformen. Åpner automatisk for innslag i kategorien scene, utstilling og film, 
-                                                mens de øvrige deltakergrenene er valgfri.
+                        mens de øvrige deltakergrenene er valgfri.
                     </p>
                 </div>
             </div>
@@ -111,7 +108,7 @@
                     <p>
                         <span class="label label-info">Kommer snart</span>
                         Hvis du skal ha foredrag, workshop, meet-up, eller noe annet,
-                                                kan kan du her lage et arrangement som vises på lokalsiden.
+                        kan kan du her lage et arrangement som vises på lokalsiden.
                     </p>
                 </div>
             </div>
@@ -125,8 +122,8 @@
                     <div class="header">Videresending</div>
                     <p>
                         Velger du denne er du avhengig av at andre
-                                                arrangementer sender deltakere til deg, 
-                                                da det ikke finnes påmeldingsskjema noe sted.
+                        arrangementer sender deltakere til deg, 
+                        da det ikke finnes påmeldingsskjema noe sted.
                     </p>
                 </div>
             </div>
@@ -136,8 +133,7 @@
                     <div class="dashicons dashicons-unlock"></div>
                     <div class="header">Åpen påmelding</div>
                     <p>
-                        Åpner påmeldingen for hvem som helst gjennom
-                                                vanlig påmeldingsskjema.
+                        Åpner påmeldingen for hvem som helst gjennom vanlig påmeldingsskjema.
                     </p>
                 </div>
             </div>
@@ -150,7 +146,7 @@
                         <span class="label label-info">Kommer snart</span>
 
                         Her kan du sette noen krav deltakere må oppfylle før de kan melde seg på,
-                                                for eksempel at de må være påmeldt fylkesfestivalen din.
+                        for eksempel at de må være påmeldt fylkesfestivalen din.
                     </p>
                 </div>
             </div>
@@ -178,8 +174,8 @@
                         <label>Kryss av for de du arrangerer sammen med</label>
                         <p id="fellesmonstringWarning">
                             Vi vet at nærhet til UKM er en viktig årsak til 
-                                                        at ungdom velger å delta eller ikke.
-                                                        Dette er viktig å tenke gjennom før man oppretter en fellesmønstring.
+                            at ungdom velger å delta eller ikke.
+                            Dette er viktig å tenke gjennom før man oppretter en fellesmønstring.
                         </p>
                         <ol class="list-group">
                             {% for kommune in omrade.getFylke().getKommuner().getAll() %}
@@ -197,6 +193,26 @@
         {% endif %}
 
         <div id="omArrangementet" style="display:none;">
+            <div id="velgSynlig" style="display:none;">
+                <h4>Skal arrangementet vises på UKM.no?</h4>
+                <div class="row" style="margin-top: 2em;">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="btn-group radioButtons" data-name="synlig">
+                            <button type="button" class="btn btn-default selected" value="true">
+                                &nbsp; Ja &nbsp;</button>
+                            <button type="button" class="btn btn-default" value="false">
+                                &nbsp; Nei &nbsp;</button>
+                        </div>
+                        <p class="text-muted">
+                            Som standard skal arrangementet vises.
+                            I enkelte tilfeller, hvor
+                            {{ omrade.getType() == 'kommune' ? (omrade.getFylke().erOslo() ? 'bydelen' : 'kommunen') : 'fylket' }}
+                            har mange arrangementer, er det praktisk å ha et skjult arrangement for å håndtere videresending.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <div class="row" style="margin-top:2em;">
                 <div class="col-xs-12 col-sm-6">
                     <div class="form-group">
@@ -204,7 +220,7 @@
                         <input type="text" class="form-control form-control-lg" name="navn" id="arrangement_navn" value="{{ omrade.getNavn() }}" placeholder="Trøndelag, Viken Øst, Nordland, Agder..." required/>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="startDate">
                         <label>Når starter arrangementet?</label>
                         <input class="datepicker_{{ GET('type') }} form-control" type="text" name="start" value="{{ "now + 2 months"|dato('d.m.Y') }}" required>
                     </div>
@@ -214,8 +230,7 @@
 
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
-                    <b>Nettsted-adresse for
-                        {{ POST.navn }}</b>
+                    <b>Nettsted-adresse for arrangementet</b>
                     <div class="input-group input-group">
                         <span class="input-group-addon">
                             UKM.no/
@@ -236,48 +251,11 @@
                         <div id="path_available" class="text-success" style="display:none;">
                             Adressen er ledig.
                         </div>
-                        <script>
-                            $(document).on('keyup', '#arrangement_navn', ()=>{
-                                var value = $('#arrangement_navn').val();
-                                
-                                if( typeof value !== 'string' ) {
-                                    return ;
-                                }
-                                var omrade = $('#omrade_navn').val();
-                                omrade = omrade.toLowerCase();
-                                
-                                value = omrade +'-'+ value.toLowerCase();
-
-                                var replace = new Map();
-                                replace.set('æ','a');
-                                replace.set('ø','o');
-                                replace.set('å','a');
-                                replace.set('ü','u');
-                                replace.set('é','e');
-                                replace.set('è','e');
-
-                                for( var [key, val] of replace ) {
-                                    value = value.replace(new RegExp(key,'g'), val);
-                                }
-                                value = value.replace( new RegExp('[^a-zA-Z0-9-]', 'g'), '');
-  
-                                $('#path').val( value ).keyup();
-
-                            });
-                            $(document).on('keyup', '#path', () => {
-                                UKMresources.arrangement.isPathAvailable(
-                                    $('#path').val()
-                                );
-                            });
-                            $(document).ready(() => {
-                                $('#arrangement_navn').keyup();
-                            });
-                        </script>
                     </div>
                 </div>
             </div>
 
-            <div class="row">
+            <div class="row" style="margin-top: 2em;">
                 <div class="col-xs-12">
                     <button class="btn btn-success" type="submit">Opprett</button>
                 </div>

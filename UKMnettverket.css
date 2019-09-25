@@ -1,0 +1,14 @@
+#arrangement-add h4 {
+    margin-bottom: -0.5em;
+    margin-top: 2em;
+}
+
+#arrangement-add input[type='checkbox'].form-control {
+    margin-top: -0.1em;
+    margin-right: 0.5em;
+}
+
+a.nocolor,
+a.nocolor:visited {
+    color: rgba(0, 0, 0, .85);
+}

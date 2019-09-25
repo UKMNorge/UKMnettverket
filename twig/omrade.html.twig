@@ -1,10 +1,3 @@
-<style>
-
-a.nocolor,
-a.nocolor:visited {
-    color: rgba(0,0,0,.85);
-}
-</style>
 <h2>{{ omrade.getNavn()}}</h2>
 {% include "wp_modul.flashBag.html.twig" %}
 
@@ -22,7 +15,7 @@ a.nocolor:visited {
                         </div>
                         <b>{{ admin.getUser().getNavn() }}</b>
                         {{ admin.getUser().getPhone() }}
-                 5   </li>
+                   </li>
                 {% else %}
                     <li class="list-group-item">
                         Ingen administratorer er lagt til enda.
@@ -38,7 +31,6 @@ a.nocolor:visited {
 
         <div class="col-xs-12 col-md-4">
             <h4>Arrangementer</h4>
-
             <ol class="list-group">
                 {% for arrangement in omrade.getArrangementer( season ).getAll() %}
                     <li class="list-group-item">
@@ -60,13 +52,19 @@ a.nocolor:visited {
 
                                 <span style="margin-left: 1em;"></span>
                                 <span class="dashicons dashicons-buddicons-buddypress-logo"></span>
-                                XX{#{ arrangement.getInnslag().getAntall() }#}
+                                ??{#{ arrangement.getInnslag().getAntall() }#}
                                 påmeldte
                             </div>
                             <div style="margin-top: .6em;">
-                                <a href="{{arrangement.getLink()}}" class="nocolor" target="_blank">
+                                {% if not arrangement.erSynlig() %}
+                                    <span class="dashicons dashicons-hidden"></span>
+                                    Skjult arrangement
+                                {% else %}
+                                    <a href="{{arrangement.getLink()}}" class="nocolor" target="_blank">
                                     {{ arrangement.getLink()}}
-                                </a><a href="#"><span class="dashicons dashicons-edit" style="font-size: 1.5em; margin-top: 0.1em; margin-left: 0em; height: auto; width: auto"></span></a>
+                                    </a>
+                                {% endif %}
+                                {#<a href="#"><span class="dashicons dashicons-edit" style="font-size: 1.5em; margin-top: 0.1em; margin-left: 0em; height: auto; width: auto"></span></a>#}
                             </div>
                         </small>
                     </li>
