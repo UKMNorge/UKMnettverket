@@ -102,7 +102,7 @@ elseif (isset($_POST['path'])) {
 
     // Legg til admins
     foreach ($omrade->getAdministratorer()->getAll() as $admin) {
-        Blog::leggTilBruker($blog_id, $admin->getId(), 'administrator');
+        Blog::leggTilBruker($blog_id, $admin->getId(), 'editor');
 
         $kontakt = write_kontakt::create(
             $admin->getUser()->getFirstName(),
