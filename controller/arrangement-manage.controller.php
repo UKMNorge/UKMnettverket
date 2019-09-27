@@ -75,12 +75,14 @@ elseif (isset($_POST['path'])) {
         $fellesmonstring = false;
     }
 
-    $arrangement->setStart(
-        write_monstring::inputToDateTime(
-            $_POST['start'],
-            '18:00'
-        )
-    );
+    if( isset($_POST['start'] ) ) {
+        $arrangement->setStart(
+            write_monstring::inputToDateTime(
+                $_POST['start'],
+                '18:00'
+            )
+        );
+    }
 
     $arrangement->setSynlig( $_POST['synlig'] == 'true' );
     write_monstring::save($arrangement);
