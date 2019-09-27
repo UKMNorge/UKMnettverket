@@ -5,12 +5,13 @@ use UKMNorge\Wordpress\WriteUser;
 use UKMNorge\Nettverk\Administrator;
 use UKMNorge\Nettverk\Omrade;
 use UKMNorge\Nettverk\WriteOmrade;
-
+use UKMNorge\Wordpress\Blog;
 
 require_once('UKM/fylker.class.php');
 require_once('UKM/Wordpress/User.class.php');
 require_once('UKM/Wordpress/WriteUser.class.php');
 require_once('UKM/Wordpress/User.class.php');
+require_once('UKM/Wordpress/Blog.php');
 require_once('UKM/Wordpress/WriteUser.class.php');
 require_once('UKM/Nettverk/Administrator.class.php');
 require_once('UKM/Nettverk/WriteOmrade.class.php');
@@ -69,6 +70,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         );
         $administrator = new Administrator( $user->getId() );
         WriteOmrade::leggTilAdmin( $omrade, $administrator );
+
+        // Abonner på blog 1 - alle må det.
+        Blog::leggTilBruker(1, $user->getId(), 'subscriber');
 
         UKMnettverket::getFlash()->add(
             'success',
