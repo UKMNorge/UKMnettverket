@@ -38,6 +38,12 @@ elseif (isset($_POST['path'])) {
         );
     }
 
+    if( $_GET['type'] == 'fylke' && $_POST['pamelding'] == 'apen' ) {
+        throw new Exception(
+            'BEKLAGER, vi støtter ikke påmelding for fylkesarrangementer enda, men det kommer snart!'
+        );
+    }
+
     // Vi har alt, opprett blogg
     require_once('UKM/write_monstring.class.php');
     require_once('UKM/write_kontakt.class.php');
@@ -82,6 +88,18 @@ elseif (isset($_POST['path'])) {
                 '18:00'
             )
         );
+    }
+
+    if( isset($_POST['pamelding'])) {
+        if( $_POST['pamelding'] == 'betinget' ) {
+            $arrangement->setPamelding('betinget');
+        }
+        else if( $_POST['pamelding'] == 'apen' ) {
+            $arrangement->setPamelding('apen');
+        }
+        else {
+            $arrangement->setPamelding('ingen');
+        }
     }
 
     $arrangement->setSynlig( $_POST['synlig'] == 'true' );
