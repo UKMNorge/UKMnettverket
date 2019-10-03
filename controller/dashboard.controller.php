@@ -3,8 +3,7 @@
 use UKMNorge\Nettverk\Administrator;
 use UKMNorge\Nettverk\Omrade;
 
-require_once('UKM/fylker.class.php');
-require_once('UKM/Nettverk/Administrator.class.php');
+require_once('UKM/Autoloader.php');
 
 $type = str_replace(
     'UKMnettverket_',
@@ -12,12 +11,11 @@ $type = str_replace(
     $_GET['page']
 );
 if (is_user_admin()) {
-    require_once('UKM/Nettverk/Administrator.class.php');
     $current_admin = new Administrator(get_current_user_id());
     $omrader = $current_admin->getOmrader($type);
 } else {
     $omrader = [];
-    foreach (fylker::getAll() as $fylke) {
+    foreach (Fylker::getAll() as $fylke) {
         $omrade = $fylke->getNettverkOmrade();
         $omrader[$omrade->getId()] = $omrade;
     }
@@ -33,7 +31,7 @@ if (isset($_GET['omrade']) && isset($_GET['type'])) {
     // Brukeren kan være indirekte admin for en kommune
     // ved å være admin for det overordnede fylket
     elseif( $_GET['type'] == 'kommune' ) {
-        $requested_kommune = new kommune( $_GET['omrade'] );
+        $requested_kommune = new Kommune( $_GET['omrade'] );
         if( is_user_admin() ) {
             $omrader = $current_admin->getOmrader();
             // Brukeren er admin for fylket

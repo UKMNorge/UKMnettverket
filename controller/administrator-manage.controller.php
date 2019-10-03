@@ -7,15 +7,7 @@ use UKMNorge\Nettverk\Omrade;
 use UKMNorge\Nettverk\WriteOmrade;
 use UKMNorge\Wordpress\Blog;
 
-require_once('UKM/fylker.class.php');
-require_once('UKM/Wordpress/User.class.php');
-require_once('UKM/Wordpress/WriteUser.class.php');
-require_once('UKM/Wordpress/User.class.php');
-require_once('UKM/Wordpress/Blog.php');
-require_once('UKM/Wordpress/WriteUser.class.php');
-require_once('UKM/Nettverk/Administrator.class.php');
-require_once('UKM/Nettverk/WriteOmrade.class.php');
-require_once('UKM/Nettverk/Omrade.class.php');
+require_once('UKM/Autoloader.php');
 
 /**
  *  FJERN ADMINISTRATOR

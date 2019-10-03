@@ -3,7 +3,7 @@
 use UKMNorge\Wordpress\User;
 header('Content-Type: application/json');
 
-require_once('UKM/Wordpress/User.class.php');
+require_once('UKM/Autoloader.php');
 
 $success = User::isAvailableUsername( $_POST['username'] );
 

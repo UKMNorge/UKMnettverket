@@ -3,7 +3,7 @@
 use UKMNorge\Nettverk\Omrade;
 use UKMNorge\Wordpress\Blog;
 
-require_once('UKM/Wordpress/Blog.php');
+require_once('UKM/Autoloader.php');
 require_once('UKM/logger.class.php');
 
 // STEG 1 Vi mangler basis-verdier
@@ -44,9 +44,9 @@ elseif (isset($_POST['path'])) {
 
 
     if ($_GET['type'] == 'fylke') {
-        $geografi = fylker::getById($_GET['omrade']);
+        $geografi = Fylker::getById($_GET['omrade']);
     } elseif ($_GET['type'] == 'kommune') {
-        $geografi = [new kommune($_GET['omrade'])];
+        $geografi = [new Kommune($_GET['omrade'])];
     } else {
         throw new Exception('Mangler info for å definere geografi');
     }

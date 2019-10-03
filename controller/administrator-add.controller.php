@@ -2,9 +2,7 @@
 
 use UKMNorge\Wordpress\User;
 
-require_once('UKM/fylker.class.php');
-require_once('UKM/Wordpress/User.class.php');
-require_once('UKM/Wordpress/WriteUser.class.php');
+require_once('UKM/Autoloader.php');
 
 switch( $_GET['type'] ) {
     case 'fylke':
