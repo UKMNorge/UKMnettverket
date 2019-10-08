@@ -1,10 +1,14 @@
 <?php
 
+use UKMNorge\Arrangement\Write;
+use UKMNorge\Geografi\Fylker;
+use UKMNorge\Geografi\Kommune;
+use UKMNorge\Log\Logger;
 use UKMNorge\Nettverk\Omrade;
 use UKMNorge\Wordpress\Blog;
+use UKMNorge\Arrangement\Kontaktperson\Write as WriteKontakt;
 
 require_once('UKM/Autoloader.php');
-require_once('UKM/logger.class.php');
 
 // STEG 1 Vi mangler basis-verdier
 if (empty($_POST['type']) || empty($_POST['pamelding'])) {
@@ -57,10 +61,10 @@ elseif (isset($_POST['path'])) {
         throw new Exception('Mangler info for å definere geografi');
     }
 
-    UKMlogger::initWP(0);
+    Logger::initWP(0);
 
     // Opprett arrangement
-    $arrangement = write_monstring::create(
+    $arrangement = Write::create(
         $_GET['type'],                              // Type mønstring
         $_GET['omrade'],                             // Eier
         (int) get_site_option('season'),            // Sesong
@@ -74,7 +78,7 @@ elseif (isset($_POST['path'])) {
     if (isset($_POST['kommuner']) && is_array($_POST['kommuner'])) {
         $fellesmonstring = true;
         foreach( $_POST['kommuner'] as $kommune_id ) {
-            $kommune = new kommune( $kommune_id );
+            $kommune = new Kommune( $kommune_id );
             $arrangement->getKommuner()->leggTil( $kommune );
         }
     } else {
@@ -83,7 +87,7 @@ elseif (isset($_POST['path'])) {
 
     if( isset($_POST['start'] ) ) {
         $arrangement->setStart(
-            write_monstring::inputToDateTime(
+            Write::inputToDateTime(
                 $_POST['start'],
                 '18:00'
             )
@@ -103,7 +107,7 @@ elseif (isset($_POST['path'])) {
     }
 
     $arrangement->setSynlig( $_POST['synlig'] == 'true' );
-    write_monstring::save($arrangement);
+    Write::save($arrangement);
 
     $omrade = new Omrade($_GET['type'], $_GET['omrade']);
 
@@ -124,17 +128,17 @@ elseif (isset($_POST['path'])) {
     foreach ($omrade->getAdministratorer()->getAll() as $admin) {
         Blog::leggTilBruker($blog_id, $admin->getId(), 'editor');
 
-        $kontakt = write_kontakt::create(
+        $kontakt = WriteKontakt::create(
             $admin->getUser()->getFirstName(),
             $admin->getUser()->getLastName(),
             $admin->getUser()->getPhone()
         );
         $kontakt->setEpost($admin->getUser()->getEmail());
-        write_kontakt::save($kontakt);
+        WriteKontakt::save($kontakt);
 
         $arrangement->getKontaktpersoner()->leggTil($kontakt);
     }
-    write_monstring::save($arrangement);
+    Write::save($arrangement);
 
     UKMnettverket::addViewData('arrangement', $arrangement);
     UKMnettverket::addViewData('blog_path', $_POST['path']);

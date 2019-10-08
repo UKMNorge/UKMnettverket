@@ -11,7 +11,6 @@ Author URI: http://mariusmandal.no
 use UKMNorge\Nettverk\Administrator;
 use UKMNorge\Wordpress\Modul;
 
-require_once('UKM/wp_modul.class.php');
 require_once('UKM/Autoloader.php');
 
 class UKMnettverket extends Modul

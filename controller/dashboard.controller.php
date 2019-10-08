@@ -1,5 +1,7 @@
 <?php
 
+use UKMNorge\Geografi\Fylker;
+use UKMNorge\Geografi\Kommune;
 use UKMNorge\Nettverk\Administrator;
 use UKMNorge\Nettverk\Omrade;
 

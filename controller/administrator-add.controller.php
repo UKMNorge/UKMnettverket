@@ -1,12 +1,14 @@
 <?php
 
+use Symfony\Component\Security\Acl\Exception\Exception;
+use UKMNorge\Geografi\Fylker;
 use UKMNorge\Wordpress\User;
 
 require_once('UKM/Autoloader.php');
 
 switch( $_GET['type'] ) {
     case 'fylke':
-        UKMNettverket::addViewData('fylke', fylker::getById($_GET['omrade']));
+        UKMNettverket::addViewData('fylke', Fylker::getById($_GET['omrade']));
     break;
     case 'kommune':
     break;
@@ -28,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user = User::createEmpty();
     }
 
-    UKMNettverket::addViewData('doAdd', true);
+    UKMnettverket::addViewData('doAdd', true);
 
     // Bruker eksisterer ikke - fyll ut e-post og brukernavn
     if (!$user->isReal()) {
@@ -41,5 +43,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             )
         );
     }
-    UKMNettverket::addViewData('user', $user);
+    UKMnettverket::addViewData('user', $user);
 }

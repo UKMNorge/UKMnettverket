@@ -1,5 +1,6 @@
 <?php
 
+use Exception;
 use UKMNorge\Wordpress\User;
 use UKMNorge\Wordpress\WriteUser;
 use UKMNorge\Nettverk\Administrator;
