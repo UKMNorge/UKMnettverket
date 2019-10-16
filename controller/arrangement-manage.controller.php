@@ -75,7 +75,7 @@ elseif (isset($_POST['path'])) {
 
 
     // Legg til alle kommuner i fellesmønstringen
-    if (isset($_POST['kommuner']) && is_array($_POST['kommuner'])) {
+    if (isset($_POST['kommuner']) && is_array($_POST['kommuner']) && sizeof( $_POST['kommuner'] ) > 0) {
         $fellesmonstring = true;
         foreach( $_POST['kommuner'] as $kommune_id ) {
             $kommune = new Kommune( $kommune_id );
@@ -112,9 +112,9 @@ elseif (isset($_POST['path'])) {
     $omrade = new Omrade($_GET['type'], $_GET['omrade']);
 
     // Hvis område ikke har en blogg, legg arrangementet hit
-    if (!$omrade->getArrangementer(get_site_option('season'))->har() && !$fellesmonstring) {
-        $current_blog = Blog::getIdByPath($_POST['path']);
-        Blog::oppdaterFraArrangement( $current_blog, $arrangement );
+    if( $omrade->getArrangementer(get_site_option('season'))->getAntall() == 1 && !$fellesmonstring) {
+        $blog_id = Blog::getIdByPath($_POST['path']);
+        Blog::oppdaterFraArrangement( $blog_id, $arrangement );
     }
     // Opprett blogg
     else {

@@ -1,6 +1,5 @@
 <?php
 
-use Symfony\Component\Security\Acl\Exception\Exception;
 use UKMNorge\Geografi\Fylker;
 use UKMNorge\Wordpress\User;
 
