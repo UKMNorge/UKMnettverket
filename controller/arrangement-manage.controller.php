@@ -42,7 +42,7 @@ elseif (isset($_POST['path'])) {
         );
     }
 
-    if( $_GET['type'] == 'fylke' && $_POST['pamelding'] == 'apen' ) {
+    if ($_GET['type'] == 'fylke' && $_POST['pamelding'] == 'apen') {
         throw new Exception(
             'BEKLAGER, vi støtter ikke påmelding for fylkesarrangementer enda, men det kommer snart!'
         );
@@ -75,17 +75,17 @@ elseif (isset($_POST['path'])) {
 
 
     // Legg til alle kommuner i fellesmønstringen
-    if (isset($_POST['kommuner']) && is_array($_POST['kommuner']) && sizeof( $_POST['kommuner'] ) > 0) {
+    if (isset($_POST['kommuner']) && is_array($_POST['kommuner']) && sizeof($_POST['kommuner']) > 0) {
         $fellesmonstring = true;
-        foreach( $_POST['kommuner'] as $kommune_id ) {
-            $kommune = new Kommune( $kommune_id );
-            $arrangement->getKommuner()->leggTil( $kommune );
+        foreach ($_POST['kommuner'] as $kommune_id) {
+            $kommune = new Kommune($kommune_id);
+            $arrangement->getKommuner()->leggTil($kommune);
         }
     } else {
         $fellesmonstring = false;
     }
 
-    if( isset($_POST['start'] ) ) {
+    if (isset($_POST['start'])) {
         $arrangement->setStart(
             Write::inputToDateTime(
                 $_POST['start'],
@@ -94,27 +94,40 @@ elseif (isset($_POST['path'])) {
         );
     }
 
-    if( isset($_POST['pamelding'])) {
-        if( $_POST['pamelding'] == 'betinget' ) {
+    if (isset($_POST['pamelding'])) {
+        if ($_POST['pamelding'] == 'betinget') {
             $arrangement->setPamelding('betinget');
-        }
-        else if( $_POST['pamelding'] == 'apen' ) {
+            $arrangement->setHarVideresending(false);
+        } else if ($_POST['pamelding'] == 'apen') {
             $arrangement->setPamelding('apen');
-        }
-        else {
+            $arrangement->setHarVideresending(false);
+        } else {
             $arrangement->setPamelding('ingen');
         }
     }
 
-    $arrangement->setSynlig( $_POST['synlig'] == 'true' );
+    $arrangement->setSynlig($_POST['synlig'] == 'true');
     Write::save($arrangement);
 
     $omrade = new Omrade($_GET['type'], $_GET['omrade']);
 
     // Hvis område ikke har en blogg, legg arrangementet hit
-    if( $omrade->getArrangementer(get_site_option('season'))->getAntall() == 1 && !$fellesmonstring) {
-        $blog_id = Blog::getIdByPath($_POST['path']);
-        Blog::oppdaterFraArrangement( $blog_id, $arrangement );
+    if ($omrade->getArrangementer(get_site_option('season'))->getAntall() == 1 && !$fellesmonstring) {
+        try {
+            $blog_id = Blog::getIdByPath($_POST['path']);
+            Blog::oppdaterFraArrangement($blog_id, $arrangement);
+        } catch (Exception $e) {
+            // 172007 = fant ingen blogg 
+            // (som kan skje hvis vi ikke har opprettet blogger for alle kommuner og fylker)
+            if ($e->getCode() == 172007) {
+                $blog_id = Blog::opprettForArrangement(
+                    $arrangement,
+                    $_POST['path']
+                );
+            } else {
+                throw $e;
+            }
+        }
     }
     // Opprett blogg
     else {

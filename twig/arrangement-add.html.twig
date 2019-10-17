@@ -17,7 +17,7 @@
     });
 
     $(document).on('change', '#radioButtonValue_synlig', (e) => {
-        if( $(e.target).val() == 'true' ) {
+        if ($(e.target).val() == 'true') {
             $('#startDate').slideDown();
         } else {
             $('#startDate').slideUp();
@@ -29,8 +29,13 @@
     });
 
     $(document).on('keyup', '#arrangement_navn', () => {
-        if ($('#omrade_type').val() == 'kommune') {
+        // Kommunen arrangerer sammen med andre: lag liste av kommunenavn
+        if ($('#omrade_type').val() == 'kommune' && $('#radioButtonValue_sammen') && $('#radioButtonValue_sammen').val() == 'yes') {
             $('#path').val(UKMresources.arrangement.getPathFromForm(checkboxSelector));
+        }
+        // Første arrangement i området
+        else if ($('#omrade_har_arrangement').val() == 'false') {
+            $('#path').val(UKMresources.arrangement.getPathFromForm(false, '#omrade_navn'));
         } else {
             $('#path').val(UKMresources.arrangement.getPathFromForm(false, '#arrangement_navn'));
         }
@@ -42,7 +47,7 @@
     $(document).ready(() => {
         UKMresources.optionCard.init();
         UKMresources.optionCard.on('pamelding', (valgt) => {
-            if( valgt == 'videresending') {
+            if (valgt == 'videresending') {
                 $('#velgSynlig').slideDown();
             } else {
                 $('#velgSynlig').slideUp();
@@ -220,7 +225,7 @@
                 <div class="col-xs-12 col-sm-6">
                     <div class="form-group">
                         <label>Navn på arrangementet</label>
-                        <input type="text" class="form-control form-control-lg" name="navn" id="arrangement_navn" value="{{ omrade.getNavn() }}" placeholder="Trøndelag, Viken Øst, Nordland, Agder..." required/>
+                        <input type="text" class="form-control form-control-lg" name="navn" id="arrangement_navn" value="{{ omrade.getType() == 'fylke' ? 'UKM-festivalen i '}}{{ omrade.getNavn() }}" placeholder="Trøndelag, Viken Øst, Nordland, Agder..." required/>
                     </div>
 
                     <div class="form-group" id="startDate">

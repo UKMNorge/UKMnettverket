@@ -67,7 +67,7 @@ UKMresources.arrangement = function($) {
             // Området har flere arrangementer - prefix
             var name = $('#omrade_har_arrangement').val() == 'true' ? $('#omrade_navn').val() + '-' : '';
 
-            // Fyklke-område
+            // Fylke-område
             if (checkbox_selector === false) {
                 name += $(name_selector).val();
             }
