@@ -54,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user->setPhone((int) $_POST['phone']);
 
         $user = WriteUser::save($user);
+        WriteUser::aktiver($user);
 
         $omrade = Omrade::getByType( 
             $_POST['omrade_type'], 
