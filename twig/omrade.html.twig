@@ -15,7 +15,7 @@
                         </div>
                         <b>{{ admin.getUser().getNavn() }}</b>
                         {{ admin.getUser().getPhone() }}
-                   </li>
+                    </li>
                 {% else %}
                     <li class="list-group-item">
                         Ingen administratorer er lagt til enda.
@@ -39,7 +39,12 @@
                                 <span class="dashicons dashicons-external"></span>
                             </a>
                         </div>
-                        <b>{{ arrangement.getNavn() }}</b>
+                        <b>
+                            <a href="{{ arrangement.getLink() }}wp-admin/" target="_blank">
+
+                                {{ arrangement.getNavn() }}
+                            </a>
+                        </b>
                         <br/>
                         <small>
                             <div style="margin-top: .4em;">
@@ -52,7 +57,8 @@
 
                                 <span style="margin-left: 1em;"></span>
                                 <span class="dashicons dashicons-buddicons-buddypress-logo"></span>
-                                ??{#{ arrangement.getInnslag().getAntall() }#}
+                                ??
+                                {#{ arrangement.getInnslag().getAntall() }#}
                                 påmeldte
                             </div>
                             <div style="margin-top: .6em;">
@@ -61,7 +67,7 @@
                                     Skjult arrangement
                                 {% else %}
                                     <a href="{{arrangement.getLink()}}" class="nocolor" target="_blank">
-                                    {{ arrangement.getLink()}}
+                                        {{ arrangement.getLink()}}
                                     </a>
                                 {% endif %}
                                 {#<a href="#"><span class="dashicons dashicons-edit" style="font-size: 1.5em; margin-top: 0.1em; margin-left: 0em; height: auto; width: auto"></span></a>#}
