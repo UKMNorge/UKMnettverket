@@ -1,5 +1,6 @@
 <?php
 
+use UKMNorge\Arrangement\Arrangement;
 use UKMNorge\Arrangement\Write;
 use UKMNorge\Geografi\Fylker;
 use UKMNorge\Geografi\Kommune;
@@ -44,14 +45,9 @@ elseif (isset($_POST['path'])) {
 
     if ($_GET['type'] == 'fylke' && $_POST['pamelding'] == 'apen') {
         throw new Exception(
-            'BEKLAGER, vi støtter ikke påmelding for fylkesarrangementer enda, men det kommer snart!'
+            'BEKLAGER, vi støtter ikke påmelding for fylkesarrangementer enda. Det kommer snart!'
         );
     }
-
-    // Vi har alt, opprett blogg
-    require_once('UKM/write_monstring.class.php');
-    require_once('UKM/write_kontakt.class.php');
-
 
     if ($_GET['type'] == 'fylke') {
         $geografi = Fylker::getById($_GET['omrade']);
@@ -61,8 +57,9 @@ elseif (isset($_POST['path'])) {
         throw new Exception('Mangler info for å definere geografi');
     }
 
+    // Setup logger 
     Logger::initWP(0);
-
+    
     // Opprett arrangement
     $arrangement = Write::create(
         $_GET['type'],                              // Type mønstring
@@ -72,7 +69,6 @@ elseif (isset($_POST['path'])) {
         $geografi,             // Geografisk tilhørighet (hm..)
         $_POST['path']
     );
-
 
     // Legg til alle kommuner i fellesmønstringen
     if (isset($_POST['kommuner']) && is_array($_POST['kommuner']) && sizeof($_POST['kommuner']) > 0) {
@@ -85,6 +81,7 @@ elseif (isset($_POST['path'])) {
         $fellesmonstring = false;
     }
 
+    // Sett start-dato (hvis vi har den)
     if (isset($_POST['start'])) {
         $arrangement->setStart(
             Write::inputToDateTime(
@@ -94,6 +91,7 @@ elseif (isset($_POST['path'])) {
         );
     }
 
+    // Angi påmeldingsinnstillinger
     if (isset($_POST['pamelding'])) {
         if ($_POST['pamelding'] == 'betinget') {
             $arrangement->setPamelding('betinget');
@@ -106,16 +104,45 @@ elseif (isset($_POST['path'])) {
         }
     }
 
+    // Sett synlighet
     $arrangement->setSynlig($_POST['synlig'] == 'true');
+    
+    // Lagre arrangementet
     Write::save($arrangement);
 
+    // Hvilket område jobber vi med?
     $omrade = new Omrade($_GET['type'], $_GET['omrade']);
 
-    // Hvis område ikke har en blogg, legg arrangementet hit
-    if ($omrade->getArrangementer(get_site_option('season'))->getAntall() == 1 && !$fellesmonstring) {
+    /////////////////////
+    /// OPPRETT BLOGG ///
+    /////////////////////
+
+    // Hvis område
+    // - er land
+    // Drit i det. For now.
+    if( $omrade->getType() == 'land' ) {
+        throw new Exception(
+            'Beklager, kan ikke opprette blogg for nasjonale arrangementer enda.'
+        );
+    }
+    // Hvis arrangementet
+    // - tilhører et fylke
+    // - eller er en fellesmønstring
+    // Opprett en ny blogg
+    elseif( $omrade->getType() == 'fylke' || $fellesmonstring ) {
+        $blog_id = Blog::opprettForArrangement(
+            $arrangement,
+            $_POST['path']
+        );
+    }
+    // Hvis arrangementet
+    // - tilhører en kommune (implisitt av if)
+    // - ikke har et arrangement fra før
+    // Oppdater den eksisterende siden (eller opprett om den ikke finnes)
+    // OBS: 1 == 0, da arrangementet ble opprettet litt lenger opp i scriptet
+    elseif( $omrade->getArrangementer( get_site_option('season') )->getAntall() == 1 ) {
         try {
             $blog_id = Blog::getIdByPath($_POST['path']);
-            Blog::oppdaterFraArrangement($blog_id, $arrangement);
         } catch (Exception $e) {
             // 172007 = fant ingen blogg 
             // (som kan skje hvis vi ikke har opprettet blogger for alle kommuner og fylker)
@@ -128,8 +155,63 @@ elseif (isset($_POST['path'])) {
                 throw $e;
             }
         }
+        Blog::oppdaterFraArrangement($blog_id, $arrangement);
     }
-    // Opprett blogg
+    // Hvis arrangementet
+    // - tilhører en kommune (implisitt av if)
+    // - har ett arrangement fra før
+    // Opprett ny blogg for dette arrangementet
+    // Flytt kommune/land-siden til ny blogg
+    // Opprett ny kommune/land-side
+    // OBS: 2 == 1, da arrangementet ble opprettet litt lenger opp i scriptet
+    elseif ($omrade->getArrangementer(get_site_option('season'))->getAntall() == 2) {
+        // Opprett blogg for nytt arrangement
+        $blog_id = Blog::opprettForArrangement(
+            $arrangement,
+            $_POST['path']
+        );
+        Blog::oppdaterFraArrangement($blog_id, $arrangement);
+        
+        // Identifiser kommuneside, og gjør klar for flytting
+        $kommune = $omrade->getKommune();
+        $flytt_blog_id = Blog::getIdByPath( $kommune->getPath() );
+        
+        // Beregn ny path
+        $kommune_path = rtrim($kommune->getNavn(), '/');
+        $flytt_arrangement = new Arrangement( get_blog_option( $flytt_blog_id, 'pl_id') );
+        $ny_path = Blog::sanitizePath( $kommune_path .'-'. $flytt_arrangement->getNavn() );
+        try { 
+            Blog::getIdByPath($ny_path);
+            // bloggen finnes fra før - lag manuell path (denne SKAL ikke finnes fra før).
+            $ny_path = Blog::sanitizePath($kommune_path .'-arrangement-1/');
+        } catch( Exception $e ) {
+            // Hvis feilkoden ikke er "bloggen finnes ikke", kast exception
+            if( $e->getCode() != 172007) {
+                throw $e;
+            }
+        }
+        // Flytt blogg
+        Blog::flytt( $flytt_blog_id, $ny_path );
+        Blog::oppdaterFraArrangement($blog_id, $flytt_arrangement);
+        $flytt_arrangement->setPath( $ny_path );
+        Write::save( $flytt_arrangement );
+
+        // Opprett ny kommuneside og legg til områdets admins
+        $ny_kommune_blog_id = Blog::opprettForKommune( new Kommune($_GET['omrade']) );
+        foreach ($omrade->getAdministratorer()->getAll() as $admin) {
+            Blog::leggTilBruker($ny_kommune_blog_id, $admin->getId(), 'editor');
+        }
+        if( $omrade->getType() == 'kommune' ) {
+            $fylke_omrade = Omrade::getByFylke( $omrade->getFylke()->getId() );
+            foreach( $fylke_omrade->getAdministratorer()->getAll() as $admin ) {
+                Blog::leggTilBruker($ny_kommune_blog_id, $admin->getId(), 'editor');
+            }
+        }
+    }
+    // Hvis arrangementet
+    // - tilhører en kommune (implisitt av if)
+    // - har flere arrangementer fra før
+    // Opprett ny blogg for dette arrangementet
     else {
         $blog_id = Blog::opprettForArrangement(
             $arrangement,
@@ -137,7 +219,7 @@ elseif (isset($_POST['path'])) {
         );
     }
 
-    // Legg til admins
+    // Legg til admins som kontakter og administratorer for bloggen
     foreach ($omrade->getAdministratorer()->getAll() as $admin) {
         Blog::leggTilBruker($blog_id, $admin->getId(), 'editor');
 
@@ -151,6 +233,14 @@ elseif (isset($_POST['path'])) {
 
         $arrangement->getKontaktpersoner()->leggTil($kontakt);
     }
+
+    if( $omrade->getType() == 'kommune' ) {
+        $fylke_omrade = Omrade::getByFylke( $omrade->getFylke()->getId() );
+        foreach( $fylke_omrade->getAdministratorer()->getAll() as $admin ) {
+            Blog::leggTilBruker($blog_id, $admin->getId(), 'editor');
+        }
+    }
+    
     Write::save($arrangement);
 
     UKMnettverket::addViewData('arrangement', $arrangement);

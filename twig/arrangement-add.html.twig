@@ -6,6 +6,7 @@
 <script>
     var checkboxSelector = 'input[name="kommuner[]"]';
 
+    // VALGT FELLESMØNSTRING JA/NEI
     $(document).on('change', '#radioButtonValue_sammen', (e) => {
         if ($(e.target).val() == 'yes') {
             $('#medArrangor').slideDown();
@@ -16,6 +17,7 @@
         }
     });
 
+    // VALGT SYNLIG PÅ UKM.NO JA/NEI
     $(document).on('change', '#radioButtonValue_synlig', (e) => {
         if ($(e.target).val() == 'true') {
             $('#startDate').slideDown();
@@ -24,26 +26,35 @@
         }
     });
 
+    // KRYSSET AV CHECKBOX (HVIS FELLESMØNSTRING)
     $(document).on('click', checkboxSelector, (e) => {
         UKMresources.arrangement.setNameFromCheckbox(checkboxSelector, '#arrangement_navn');
     });
 
+    // ENDRET NAVN PÅ ARRANGEMENTET
     $(document).on('keyup', '#arrangement_navn', () => {
         // Kommunen arrangerer sammen med andre: lag liste av kommunenavn
         if ($('#omrade_type').val() == 'kommune' && $('#radioButtonValue_sammen') && $('#radioButtonValue_sammen').val() == 'yes') {
             $('#path').val(UKMresources.arrangement.getPathFromForm(checkboxSelector));
         }
-        // Første arrangement i området
-        else if ($('#omrade_har_arrangement').val() == 'false') {
+        // Første arrangement i kommunen overtar kommunens path
+        else if ( $('#omrade_type').val() == 'kommune' && $('#omrade_har_arrangement').val() == 'false') {
             $('#path').val(UKMresources.arrangement.getPathFromForm(false, '#omrade_navn'));
-        } else {
+            $('#path-infos').slideUp(); // Skjul path - 
+        }
+        // Alle andre får arrangementsnavn
+        else {
             $('#path').val(UKMresources.arrangement.getPathFromForm(false, '#arrangement_navn'));
         }
+        $('#path').trigger('keyup');
     });
+    
+    // ENDRET PATH
     $(document).on('keyup', '#path', () => {
         UKMresources.arrangement.isPathAvailable($('#path').val());
     });
 
+    // INITIER SKJEMA
     $(document).ready(() => {
         UKMresources.optionCard.init();
         UKMresources.optionCard.on('pamelding', (valgt) => {
@@ -236,7 +247,7 @@
             </div>
 
 
-            <div class="row">
+            <div class="row" id="path-infos">
                 <div class="col-xs-12 col-sm-6">
                     <b>Nettsted-adresse for arrangementet</b>
                     <div class="input-group input-group">

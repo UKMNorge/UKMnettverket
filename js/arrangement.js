@@ -64,8 +64,13 @@ UKMresources.arrangement = function($) {
             );
         },
         getPathFromForm: (checkbox_selector, name_selector) => {
+            var name = '';
             // Området har flere arrangementer - prefix
-            var name = $('#omrade_har_arrangement').val() == 'true' ? $('#omrade_navn').val() + '-' : '';
+            if ($('#omrade_type').val() == 'fylke') {
+                name = $('#omrade_navn').val() + '-';
+            } else if ($('#omrade_har_arrangement').val() == 'true') {
+                name = $('#omrade_navn').val() + '-';
+            }
 
             // Fylke-område
             if (checkbox_selector === false) {
