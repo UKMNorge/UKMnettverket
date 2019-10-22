@@ -1,0 +1,33 @@
+# Labels: define labels for Issues and Pull Requests
+labels:
+  - name: ⚠️ kritisk
+    color: c01100
+    description: Større feil som hindrer videre utvikling / bruk
+  - name: 🌟 ny funksjonalitet
+    color: 96bc42
+    description: Endring som tilfører funksjonalitet vi ikke har
+  - name: 🎎 duplikat
+    oldname: duplicate
+    color: feea6d
+    description: Det finnes et lignende / likt issue
+  - name: 🏔 Stor
+    color: ee9307
+    description: Større endringer som vil ta vesentlig tid å fikse
+  - name: 🐛 bug
+    oldname: bug
+    color: dd2e19
+    description: Noe som ikke virker
+  - name: 👨🏼‍💻 forbedring
+    oldname: enhancement
+    color: 65d5fd
+    description: Forbedring av eksisterende funksjon
+  - name: 💔 skjerikke
+    oldname: wontfix
+    color: 000000
+    description: Dette blir ikke fulgt opp
+  - name: 📖 Tekst
+    color: 5794fe
+    description: Når det holder å endre teksten
+  - name: 🤓 Brukeropplevelse
+    color: 3163d4
+    description: Forbedringer i brukeropplevelsen
