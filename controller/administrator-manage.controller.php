@@ -106,7 +106,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         foreach( $tags as $index => $tag ) {
             $tags[ $index ] = Mailchimp::sanitizeTag( $tag );
         }
-        Arrangor::tag( $user->getEmail(), $tags );
+        try {
+            Arrangor::tag( $user->getEmail(), $tags );
+        } catch( Exception $e ) {
+            error_log('MAILCHIMP ERROR');
+            error_log('MSG: '. $e->getMessage());
+            error_log('CODE: '. $e->getCode());
+            UKMnettverket::getFlash()->add(
+                'info',
+                'En feil med nyhetsbrevet kan gjøre at '. $user->getName() .' ikke får velkomst-epost. '.
+                'Vi jobber med å rette feilen'
+            );
+        }
 
         UKMnettverket::getFlash()->add(
             'success',
