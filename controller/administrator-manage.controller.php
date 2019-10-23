@@ -55,7 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user->setPhone((int) $_POST['phone']);
 
         $user = WriteUser::save($user);
-        WriteUser::aktiver($user);
+
+        // Deaktiverte brukere reaktiveres og får nytt passord
+        if( !User::erAktiv( $user->getId() ) ) {
+            WriteUser::aktiver($user);
+            $passord = WriteUser::genererPassord();
+            WriteUser::setPassord( $user, $passord );
+            WriteUser::sendNyttPassord( $user->getNavn(), $user->getEpost(), $passord );
+        }
 
         
         $omrade = Omrade::getByType( 
