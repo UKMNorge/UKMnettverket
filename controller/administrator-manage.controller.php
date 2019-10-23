@@ -1,5 +1,7 @@
 <?php
 
+use UKMNorge\API\Mailchimp\Liste\Arrangor;
+use UKMNorge\API\Mailchimp\Mailchimp;
 use UKMNorge\Wordpress\User;
 use UKMNorge\Wordpress\WriteUser;
 use UKMNorge\Nettverk\Administrator;
@@ -63,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             WriteUser::setPassord( $user, $passord );
             WriteUser::sendNyttPassord( $user->getNavn(), $user->getEpost(), $passord );
         }
-
         
         $omrade = Omrade::getByType( 
             $_POST['omrade_type'], 
@@ -76,10 +77,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Abonner på blog 1 - alle må det.
         Blog::leggTilBruker(1, $user->getId(), 'subscriber');
         
+        // Send velkommen-epost
         if( !$created ) {
             WriteOmrade::sendVelkommenTilNyttOmrade( $user->getName(), $user->getEmail(), $omrade );
         }
         
+        // Admin må abonnere på nyhetsbrevet vårt
+        $arrangorliste = Arrangor::getList();
+        $arrangorliste->addSubscriber(
+            [
+                'email_address' => $user->getEmail(),
+                'first_name' => $user->getFirstName(),
+                'last_name' => $user->getLastName(),
+            ]
+        );
+        $mailchimp = new Mailchimp();
+        $mailchimp->saveListChanges( $arrangorliste );
+
+        // Tagg vår nye administrator
+        $tags = [
+            'UKMadmin',
+            'UKM'.get_site_option('season'),
+            $omrade->getType() == 'kommune' ? 'lokalkontakt' : 'fylkeskontakt',
+            $omrade->getId(),
+            $omrade->getNavn(),
+        ];
+
+        foreach( $tags as $index => $tag ) {
+            $tags[ $index ] = Mailchimp::sanitizeTag( $tag );
+        }
+        Arrangor::tag( $user->getEmail(), $tags );
+
         UKMnettverket::getFlash()->add(
             'success',
             ($created ? 
