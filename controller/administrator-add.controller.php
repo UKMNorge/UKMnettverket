@@ -6,7 +6,7 @@ use UKMNorge\Wordpress\User;
 require_once('UKM/Autoloader.php');
 
 throw new Exception(
-    'Beklager, funksjonen er deaktivert frem til kl 21:20'
+    'Beklager, vi jobber med å rette en feil i funksjonen. Antatt ferdig innen kl 21:45'
 );
 switch( $_GET['type'] ) {
     case 'fylke':
