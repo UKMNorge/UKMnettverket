@@ -5,9 +5,6 @@ use UKMNorge\Wordpress\User;
 
 require_once('UKM/Autoloader.php');
 
-throw new Exception(
-    'Beklager, funksjonen er deaktivert frem til kl 21:20'
-);
 switch( $_GET['type'] ) {
     case 'fylke':
         UKMNettverket::addViewData('fylke', Fylker::getById($_GET['omrade']));
