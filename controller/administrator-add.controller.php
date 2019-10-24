@@ -5,6 +5,11 @@ use UKMNorge\Wordpress\User;
 
 require_once('UKM/Autoloader.php');
 
+if( !isset( $_GET['debug'] ) ) {
+    throw new Exception(
+        'Beklager, vi jobber med å rette en feil i funksjonen. Antatt ferdig innen kl 22:00'
+    );
+}
 switch( $_GET['type'] ) {
     case 'fylke':
         UKMNettverket::addViewData('fylke', Fylker::getById($_GET['omrade']));
