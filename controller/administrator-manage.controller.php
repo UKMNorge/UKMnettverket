@@ -81,7 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Abonner på blog 1 - alle må det.
         Blog::leggTilBruker(1, $user->getId(), 'subscriber');
 
-        // Send velkommen-epost
+        // Send velkommen-epost hvis brukeren er oppdatert
+        // Hvis brukeren er deaktivert vil det også sendes en e-post med nytt passord automatisk
         if (!$created) {
             WriteOmrade::sendVelkommenTilNyttOmrade($user->getName(), $user->getEmail(), $omrade);
         }
