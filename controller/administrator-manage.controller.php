@@ -3,12 +3,15 @@
 use UKMNorge\API\Mailchimp\Liste\Arrangor;
 use UKMNorge\API\Mailchimp\Mailchimp;
 use UKMNorge\API\Mailchimp\Subscriber;
+use UKMNorge\Kommunikasjon\Epost;
+use UKMNorge\Kommunikasjon\Mottaker;
 use UKMNorge\Wordpress\User;
 use UKMNorge\Wordpress\WriteUser;
 use UKMNorge\Nettverk\Administrator;
 use UKMNorge\Nettverk\Omrade;
 use UKMNorge\Nettverk\WriteOmrade;
 use UKMNorge\Rapporter\Template\Write;
+use UKMNorge\Twig\Twig;
 use UKMNorge\Wordpress\Blog;
 
 require_once('UKM/Autoloader.php');
@@ -94,16 +97,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Abonner på Arrangør-lista
             Arrangor::subscribe($subscriber);
             // Legg til tags
-            $tags = Arrangor::addTags(
-                $subscriber,
-                [
-                    'UKMadmin',
-                    'UKM' . get_site_option('season'),
-                    ($omrade->getType() == 'kommune' ? 'lokalkontakt' : 'fylkeskontakt'),
-                    $omrade->getId(),
-                    $omrade->getNavn(),
-                ]
-            );
+            $tags_to_add = [
+                'UKMadmin',
+                'UKM' . get_site_option('season'),
+                ($omrade->getType() == 'kommune' ? 'lokalkontakt' : 'fylkeskontakt'),
+                $omrade->getId(),
+                $omrade->getNavn(),
+            ];
+            $tags = Arrangor::addTags($subscriber, $tags_to_add );
             // Håndter tag-error
             if ($tags->hasError()) {
                 $message = '';
@@ -113,6 +114,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 throw new Exception( rtrim( $message, ', ') );
             }
         } catch (Exception $e) {
+            #Twig::addPath('UKM/Nettverket/twig/');
+            $epost = Epost::fraSupport();
+            $epost->leggTilMottaker( Mottaker::fraEpost('support@ukm.no','UKM Support' ) );
+            $epost->leggTilBlindkopi( Mottaker::fraEpost('marius@ukm.no','Marius Mandal') );
+            $epost->setEmne('Feil tagget administrator');
+            $epost->setMelding( 
+                Twig::render(
+                    'epost_tag_feilet.html.twig',
+                    [
+                        'epost' => $epostadresse,
+                        'tags' => $tags_to_add,
+                        'feilmelding' => rtrim( $message, ', ')
+                    ]
+                )
+            );
+            $epost->send();
+
             // Håndter 
             UKMnettverket::getFlash()->add(
                 'info',
