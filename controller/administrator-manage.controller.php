@@ -124,9 +124,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 Twig::render(
                     'epost_tag_feilet.html.twig',
                     [
-                        'epost' => $epostadresse,
+                        'epost' => $user->getEmail(),
                         'tags' => $tags_to_add,
-                        'feilmelding' => rtrim( $message, ', ')
+                        'feilmelding' => rtrim( $e->getMessage(), ', ')
                     ]
                 )
             );
