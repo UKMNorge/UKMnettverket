@@ -95,8 +95,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         );
 
         try {
-            // Abonner på Arrangør-lista
-            Arrangor::subscribe($subscriber);
             // Legg til tags
             $tags_to_add = [
                 'UKMadmin',
@@ -105,6 +103,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $omrade->getId(),
                 $omrade->getNavn(),
             ];
+            // Abonner på Arrangør-lista
+            Arrangor::subscribe($subscriber);
             $tags = Arrangor::addTags($subscriber, $tags_to_add );
             // Håndter tag-error
             if ($tags->hasError()) {
@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     'epost_tag_feilet.html.twig',
                     [
                         'epost' => $user->getEmail(),
-                        'tags' => join(', ', $tags_to_add),
+                        'tags_to_add' => join(', ', $tags_to_add),
                         'feilmelding' => rtrim( $e->getMessage(), ', ')
                     ]
                 )
