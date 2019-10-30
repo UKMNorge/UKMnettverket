@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     'epost_tag_feilet.html.twig',
                     [
                         'epost' => $user->getEmail(),
-                        'tags' => $tags_to_add,
+                        'tags' => join(', ', $tags_to_add),
                         'feilmelding' => rtrim( $e->getMessage(), ', ')
                     ]
                 )
