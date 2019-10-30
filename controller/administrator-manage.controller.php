@@ -3,6 +3,7 @@
 use UKMNorge\API\Mailchimp\Liste\Arrangor;
 use UKMNorge\API\Mailchimp\Mailchimp;
 use UKMNorge\API\Mailchimp\Subscriber;
+use UKMNorge\API\Mailchimp\Tag;
 use UKMNorge\Kommunikasjon\Epost;
 use UKMNorge\Kommunikasjon\Mottaker;
 use UKMNorge\Wordpress\User;
@@ -97,11 +98,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         try {
             // Legg til tags
             $tags_to_add = [
-                'UKMadmin',
-                'UKM' . get_site_option('season'),
-                ($omrade->getType() == 'kommune' ? 'lokalkontakt' : 'fylkeskontakt'),
-                $omrade->getId(),
-                $omrade->getNavn(),
+                Tag::sanitize('UKMadmin'),
+                Tag::sanitize('UKM' . get_site_option('season')),
+                Tag::sanitize(($omrade->getType() == 'kommune' ? 'lokalkontakt' : 'fylkeskontakt')),
+                Tag::sanitize($omrade->getId()),
+                Tag::sanitize($omrade->getNavn()),
             ];
             // Abonner på Arrangør-lista
             Arrangor::subscribe($subscriber);
