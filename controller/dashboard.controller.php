@@ -54,4 +54,5 @@ if (isset($_GET['omrade']) && isset($_GET['type'])) {
     UKMnettverket::addViewData('omrader', $omrader);
 }
 
+UKMnettverket::addViewData('current_admin', $current_admin);
 require_once('administrator-manage.controller.php');

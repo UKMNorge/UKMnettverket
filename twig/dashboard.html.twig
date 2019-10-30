@@ -34,12 +34,29 @@
         {% else %}
             <div class="col-xs-12">
                 <p class="lead">
-                    Fant ingen områder du er administrator for.
-                    {% if GET('page') == 'UKMnettverket_kommune' %}
-                        Hvis du er fylke-administrator, må du velge ditt fylke i menyen først, og redigere kommunene dine derfra.
-                    {% endif %}
+                    Fant ingen {{ GET('page') == 'UKMnettverket_kommune' ? 'kommuner/bydeler' : 'fylker' }} du er administrator for.
                 </p>
 
+                {% if GET('page') == 'UKMnettverket_kommune' %}
+                    <p class="lead">
+                    {% if current_admin.erAdmin('fylke') %}
+                        {% if current_admin.getAntallOmrader('fylke') == 1 %}
+                            Hvis du velger "<a href="?page=UKMnettverket_fylke">{{ (current_admin.getOmrader('fylke')|first).getNavn() }}</a>" i menyen til venstre, kan du velge ett av dine fylker, 
+                            og deretter redigere administratorer og arrangement for dine kommuner.
+                        {% else %}
+                            Hvis du velger "Dine fylker" i menyen til venstre, kan du velge ett av dine fylker, 
+                            og deretter redigere administratorer og arrangement for dine kommuner.
+                        {% endif %}
+                    {% else %}
+                        <p class="lead">
+                            Kontakt 
+                            <a href="mailto:support@ukm.no?subject=Bruker uten område ({{ current_admin.getId() }})">support@ukm.no</a>
+                            og fortell oss hvilken kommune/bydel du ønsker tilgang til.
+                        </p>
+                    {% endif %}
+                    </p>
+                {% endif %}
+                    
             </div>
         {% endfor %}
     </div>
