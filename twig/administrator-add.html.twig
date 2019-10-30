@@ -1,7 +1,7 @@
 <h2>Legg til administrator for
     {{ fylke.getNavn() }}</h2>
-
-<div style="width: 98%">
+    
+<div class="col-12 col-xs-12 col-md-7">
     <div class="card text-danger" id="fatalErrorContainer" style="display: none;"></div>
     <form
         action="?page={{ GET('page') }}{{ doAdd is not defined ? '&action=administrator-add' }}&omrade={{ GET('omrade') }}&type={{ GET('type') }}" id="formContainer" method="POST">
@@ -34,6 +34,13 @@
             <div class="form-group">
                 <label for="phone">Mobil</label>
                 <input class="form-control" id="phone" type="tel" name="phone" maxlength="8" required value="{{ user.getPhone() }}"/>
+                <p class="mt-0 small text-muted">
+                    Hvis du ikke har tilgengelig telefonnummer, skriver du 0. Hvis du oppgir 
+                    <span class="bind" data-bind="#first_name">en person</span> sitt private
+                    nummer, må du ha tillatelse til dette av personvernhensyn. 
+                    Ved innlogging vil alle administratorer med nummer 0 få spørsmål om å
+                    oppgi mobilnummer.
+                </p>
             </div>
 
             <div class="form-group" style="margin-bottom: -.2em;">
@@ -48,12 +55,12 @@
                     </div>
                     <div id="username_exists" class="text-danger" style="display:none;">
                         Dette brukernavnet er opptatt. Skriv inn nytt brukernavn.
-                        <br />
+                        <br/>
                         <b>OBS: du kan kun bruke A-Z, a-z, 0-9, - og _</b>
                     </div>
                     <div id="username_available" class="text-success" style="display:none;">
                         Brukernavnet er ledig.
-                    </div> 
+                    </div>
                     <script>
                         $(document).on('keyup', '#username', () => {
                             UKMresources.administratorer.isUsernameAvailable($('#username').val());
@@ -69,6 +76,14 @@
                 <label for="email">E-postadresse</label>
                 <input class="form-control" id="email" type="email" name="email" value="{{ user.getEmail() }}" readonly/>
             </div>
+
+            <p class="text-muted" style="margin-bottom: 1.5em;">
+                Kontaktinformasjon du oppgir her vil vises på
+                {{ GET('type') == 'fylke' ? 'fylkets' : ( GET('omrade')==3 ? 'bydelens' : 'kommunens') }}
+                nettside til de har opprettet arrangement. 
+                Fra og med da styrer administratorene selv om, og i tilfelle hvem sin, 
+                kontaktinfo som skal være tilgjengelig på UKM.no.
+            </p>
 
             <div class="form-group">
                 <button class="btn btn-sm btn-success" type="submit" id="doAddUserAsAdmin">Legg til bruker som administrator</button>
