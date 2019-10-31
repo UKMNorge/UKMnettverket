@@ -45,7 +45,7 @@ UKMresources.arrangement = function($) {
             });
             return path.replace(new RegExp('[^a-zA-Z0-9-]', 'g'), '');
         },
-        setNameFromCheckbox(checkbox_selector, name_selector) {
+        setNameFromCheckbox: function(checkbox_selector, name_selector) {
             var selected = self.getSelected(checkbox_selector);
 
             if (selected.length == 1) {
