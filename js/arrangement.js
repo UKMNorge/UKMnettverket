@@ -40,9 +40,9 @@ UKMresources.arrangement = function($) {
             replace.set('é', 'e');
             replace.set('è', 'e');
 
-            for (var [key, val] of replace) {
-                path = path.replace(new RegExp(key, 'g'), val);
-            }
+            replace.forEach(function(value, key) {
+                path = path.replace(new RegExp(key, 'g'), value);
+            });
             return path.replace(new RegExp('[^a-zA-Z0-9-]', 'g'), '');
         },
         setNameFromCheckbox(checkbox_selector, name_selector) {
