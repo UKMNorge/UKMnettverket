@@ -7,7 +7,7 @@
     var checkboxSelector = 'input[name="kommuner[]"]';
 
     // VALGT FELLESMØNSTRING JA/NEI
-    $(document).on('change', '#radioButtonValue_sammen', (e) => {
+    $(document).on('change', '#radioButtonValue_sammen', function(e) {
         if ($(e.target).val() == 'yes') {
             $('#medArrangor').slideDown();
         } else {
@@ -18,7 +18,7 @@
     });
 
     // VALGT SYNLIG PÅ UKM.NO JA/NEI
-    $(document).on('change', '#radioButtonValue_synlig', (e) => {
+    $(document).on('change', '#radioButtonValue_synlig', function(e) {
         if ($(e.target).val() == 'true') {
             $('#startDate').slideDown();
         } else {
@@ -27,12 +27,12 @@
     });
 
     // KRYSSET AV CHECKBOX (HVIS FELLESMØNSTRING)
-    $(document).on('click', checkboxSelector, (e) => {
+    $(document).on('click', checkboxSelector, function(e) {
         UKMresources.arrangement.setNameFromCheckbox(checkboxSelector, '#arrangement_navn');
     });
 
     // ENDRET NAVN PÅ ARRANGEMENTET
-    $(document).on('keyup', '#arrangement_navn', () => {
+    $(document).on('keyup', '#arrangement_navn', function() {
         // Kommunen arrangerer sammen med andre: lag liste av kommunenavn
         if ($('#omrade_type').val() == 'kommune' && $('#radioButtonValue_sammen') && $('#radioButtonValue_sammen').val() == 'yes') {
             $('#path').val(UKMresources.arrangement.getPathFromForm(checkboxSelector));
@@ -50,14 +50,14 @@
     });
     
     // ENDRET PATH
-    $(document).on('keyup', '#path', () => {
+    $(document).on('keyup', '#path', function() {
         UKMresources.arrangement.isPathAvailable($('#path').val());
     });
 
     // INITIER SKJEMA
-    $(document).ready(() => {
+    $(document).ready(function() {
         UKMresources.optionCard.init();
-        UKMresources.optionCard.on('pamelding', (valgt) => {
+        UKMresources.optionCard.on('pamelding', function(valgt) {
             if (valgt == 'videresending') {
                 $('#velgSynlig').slideDown();
             } else {
@@ -65,7 +65,7 @@
             }
             $('#omArrangementet').slideDown();
         });
-        UKMresources.optionCard.on('type', (valgt) => {
+        UKMresources.optionCard.on('type', function(valgt) {
             if (valgt == 'monstring') {
                 $('#fellesmonstringWarning').slideDown();
             } else {

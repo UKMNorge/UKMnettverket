@@ -62,10 +62,10 @@
                         Brukernavnet er ledig.
                     </div>
                     <script>
-                        $(document).on('keyup', '#username', () => {
+                        $(document).on('keyup', '#username', function() {
                             UKMresources.administratorer.isUsernameAvailable($('#username').val());
                         });
-                        $(document).ready(() => {
+                        $(document).ready(function() {
                             $('#username').keyup();
                         });
                     </script>

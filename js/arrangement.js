@@ -9,24 +9,24 @@ UKMresources.arrangement = function($) {
             fatalError: '#fatalErrorContainer',
             main: '#formContainer'
         },
-        handleSuccess: (response) => {
+        handleSuccess: function(response) {
             $('#path').val(response.path);
             $('#path').attr('readonly', true);
         },
-        handleError: (response) => {
+        handleError: function(response) {
             $('#path').removeAttr('readonly');
         },
     });
 
     var self = {
-        isPathAvailable: (path) => {
+        isPathAvailable: function(path) {
             return WebsitePathSearch.do({
                 path: path,
                 omrade_type: $('#omrade_type').val(),
                 omrade_id: $('#omrade_id').val()
             });
         },
-        sanitizePath: (path) => {
+        sanitizePath: function(path) {
             if (typeof path !== 'string') {
                 return '';
             }
@@ -58,12 +58,12 @@ UKMresources.arrangement = function($) {
             }
             $(name_selector).val(selected_text).keyup();
         },
-        getPathFromCheckbox: (checkbox_selector) => {
+        getPathFromCheckbox: function(checkbox_selector) {
             return self.sanitizePath(
                 self.getSelected(checkbox_selector).join('-')
             );
         },
-        getPathFromForm: (checkbox_selector, name_selector) => {
+        getPathFromForm: function(checkbox_selector, name_selector) {
             var name = '';
             // Området har flere arrangementer - prefix
             if ($('#omrade_type').val() == 'fylke') {
@@ -84,9 +84,9 @@ UKMresources.arrangement = function($) {
             return self.sanitizePath(name);
         },
 
-        getSelected: (checkbox_selector) => {
+        getSelected: function(checkbox_selector) {
             var selected = [];
-            $(checkbox_selector).each((index, item) => {
+            $(checkbox_selector).each(function(index, item) {
                 if ($(item).is(':checked')) {
                     selected.push($(item).attr('data-name'));
                 }
