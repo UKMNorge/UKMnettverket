@@ -1,4 +1,5 @@
 UKMresources.arrangement = function($) {
+    var allowPathEdit = false;
     var WebsitePathSearch = UKMresources.Request({
         action: 'UKMnettverket_ajax',
         controller: 'pathAvailable',
@@ -11,7 +12,9 @@ UKMresources.arrangement = function($) {
         },
         handleSuccess: function(response) {
             $('#path').val(response.path);
-            $('#path').attr('readonly', true);
+            if (!allowPathEdit) {
+                $('#path').attr('readonly', true);
+            }
         },
         handleError: function(response) {
             $('#path').removeAttr('readonly');
@@ -19,6 +22,9 @@ UKMresources.arrangement = function($) {
     });
 
     var self = {
+        allowPathEdit: function() {
+            allowPathEdit = true;
+        },
         isPathAvailable: function(path) {
             return WebsitePathSearch.do({
                 path: path,

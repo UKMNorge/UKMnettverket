@@ -1,0 +1,28 @@
+<div class="col-12 col-xs-12 col-md-8">
+    <h2>Velg administratorer for
+        {{arrangement.getNavn()}}</h2>
+
+    <p class="lead">
+        Dette er en hurtigvelger for å legge til kommune-administratorer. 
+                En fullstendig oversikt over brukere med tilgang til arrangementet finnes i arrangementsystemet, under
+                menyvalget "<a href="{{arrengement.getUrl()}}wp-admin/users.php">Brukere</a>".
+    </p>
+
+    <p class="small">
+        <a href="?page={{GET('page')}}&omrade={{GET('omrade')}}&type={{GET('type')}}">Tilbake til
+            {{omrade.getNavn() }}</a>
+    </p>
+
+    <form method="POST" action="?page={{GET('page')}}&omrade={{GET('omrade')}}&type={{GET('type')}}&fix={{GET('fix')}}&arr={{GET('arr')}}">
+
+        {% include "arrangement/administratorer_omrade.html.twig" with {id: 'home', blog: arrangement.getPath(), omrade: omrade.getNavn(), administratorer: omrade.getAdministratorer() } %}
+        {% for kommune in arrangement.getKommuner().getAll() if arrangement.erFellesmonstring() %}
+            {% include "arrangement/administratorer_omrade.html.twig" with {id: 'kommune'~kommune.getId(), blog: arrangement.getPath(), omrade: kommune.getNavn(), administratorer: kommune.getOmrade().getAdministratorer() } %}
+        {% endfor %}
+        {% include "arrangement/administratorer_omrade.html.twig" with {id: 'fylke', blog: arrangement.getPath(), omrade: fylke_omrade.getNavn(), administratorer: fylke_omrade.getAdministratorer() } %}
+
+        <div class="mt-5 form-group">
+            <button class="btn btn-success btn-lg" type="submit">Lagre</button>
+        </div>
+    </form>
+</div>

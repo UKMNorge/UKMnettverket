@@ -40,7 +40,7 @@ if (isset($_GET['removeAdmin'])) {
 /**
  *  LEGG TIL ADMINISTRATOR
  */
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])) {
     try {
         $user = User::loadByEmail($_POST['email']);
     } catch (Exception $e) {

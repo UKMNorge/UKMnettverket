@@ -1,0 +1,33 @@
+
+<h4 class="mt-5">Administratorer fra {{ omrade }}</h4>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Har tilgang</th>
+            <th>Navn</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for admin in administratorer.getAll() if admin.getId()  %}
+            <tr>
+                <td width="200">
+                    <div class="btn-group radioButtons" data-name="admin_{{admin.getUser().getId()}}_{{id}}">
+                        <button type="button" class="btn btn-default {{admin.harTilgangTilBlog( arrangement.getPath() )?'selected'}}" value="yes">
+                            &nbsp; Ja &nbsp;</button>
+                        <button type="button" class="btn btn-default {{not admin.harTilgangTilBlog( arrangement.getPath() )?'selected'}}" value="no">
+                            &nbsp; Nei &nbsp;</button>
+                    </div>
+                    <input type="hidden" name="name_{{admin.getUser().getId()}}" value="{{admin.getUser().getName()}}" />
+                </td>
+                <td>{{admin.getUser().getNavn()}}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">
+                    Det er ingen registrerte administratorer i
+                    {{omrade}}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,82 @@
+<div class="col-12 col-xs-12 col-md-8">
+    <h2>Velg nettstedadresse for
+        {{arrangement.getNavn()}}</h2>
+
+    <p class="small">
+        <a href="?page={{GET('page')}}&omrade={{GET('omrade')}}&type={{GET('type')}}">Tilbake til {{omrade.getNavn() }}</a>
+    </p>
+
+    <form method="POST" action="?page={{GET('page')}}&omrade={{GET('omrade')}}&type={{GET('type')}}&fix={{GET('fix')}}&arr={{GET('arr')}}">
+        <div id="path-infos">
+            <div class="input-group input-group">
+                <span class="input-group-addon">
+                    UKM.no/
+                </span>
+                <input type="text" class="form-control" name="path" id="path" value="{{path}}">
+            </div>
+
+            <div id="path_status" style="margin-bottom: 1em;">
+                <div id="path_loading" style="display: none;">
+                    <img src="/wp-admin/images/wpspin_light.gif"/>
+                    Sjekker om adressen er ledig...
+                </div>
+                <div id="path_exists" class="text-danger" style="display:none;">
+                    Denne adressen er opptatt. Skriv inn ny adresse.
+                    <br/>
+                    <b>OBS: du kan kun bruke a-z, 0-9 og _</b>
+                </div>
+                <div id="path_available" class="text-success" style="display:none;">
+                    Adressen er ledig.
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4 form-group">
+            <button class="btn btn-success" type="submit">Opprett nettsted</button>
+        </div>
+    </form>
+
+
+    {% if omrade.getArrangementer(season).getAntall() > 1 %}
+        <h3 class="mt-5">Andre arrangementer i
+            {{omrade.getNavn()}}
+            </h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Arrangement</th>
+                    <th>Path</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for annet_arrangement in omrade.getArrangementer(season).getAll() if annet_arrangement.getId() != GET('arr') %}
+                    <tr>
+                        <td>
+                            {{annet_arrangement.getNavn()}}
+                            {% if annet_arrangement.erFellesmonstring() %}
+                                <br/><small>
+                                    {% for arr_kommune in annet_arrangement.getKommuner().getAll() %}
+                                        {{ arr_kommune.getNavn() }}{{ not loop.last ? ', '}}
+                                    {% endfor %}
+                                </small>
+                            {% endif %}
+                        </td>
+                        <td>{{annet_arrangement.getPath()}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+
+<script>
+    // ENDRET PATH
+    $(document).on('keyup', '#path', function () {
+        UKMresources.arrangement.allowPathEdit();
+        UKMresources.arrangement.isPathAvailable($('#path').val());
+    });
+
+    $(document).ready(function () {
+        $('#path').keyup();
+    });
+</script>

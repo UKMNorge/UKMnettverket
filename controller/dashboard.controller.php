@@ -56,3 +56,6 @@ if (isset($_GET['omrade']) && isset($_GET['type'])) {
 
 UKMnettverket::addViewData('current_admin', $current_admin);
 require_once('administrator-manage.controller.php');
+
+// Re-inkluderer actioncontroller, da action nå har fått ny verdi
+UKMnettverket::includeActionController();
