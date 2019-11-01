@@ -28,7 +28,7 @@
                                     <a href="{{URL}}&fix=aktiver_nettsted" class="btn btn-xs btn-ukm">Aktiver nettside</a>
                                 {% endif %}
 
-                                {% if omrade.getArrangementer(season).getAntall() == 1 %}
+                                {% if omrade.getArrangementer(season).getAntall() == 1 and not omrade.getArrangementer(season).getFirst().erFellesmonstring() %}
                                     <a href="{{URL}}&fix=oppdater_arrangement" class="btn btn-xs btn-ukm">Oppdater fra arrangement-info</a>
                                 {% else %}
                                     <a href="{{URL}}&fix=fjern_arrangement" class="btn btn-xs btn-ukm">Fjern arrangement-info</a>
