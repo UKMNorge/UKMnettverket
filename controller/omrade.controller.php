@@ -160,13 +160,11 @@ elseif ($omrade->getType() == 'kommune') {
                         throw Exception('Kunne ikke fjerne arrangement, da nettstedet må opprettes først.');
                     }
 
+                    $blog_id = Blog::getIdByPath($path);
                     if ($FIX == 'kommune') {
-                        $blog_id = Blog::getIdByPath($path);
                         $arrangement = new Arrangement(
                             $omrade->getArrangementer(get_site_option('season'))->getFirst()->getId()
                         );
-                    } else {
-                        throw new Exception('BEKLAGER, ikke implementert enda');
                     }
                     Blog::oppdaterFraArrangement($blog_id, $arrangement);
                     UKMnettverket::getFlash()->success('Nettstedet er nå oppdatert med arrangement-info, og viser arrangementet ' . $arrangement->getNavn());
