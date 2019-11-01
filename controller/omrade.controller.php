@@ -65,11 +65,35 @@ elseif ($omrade->getType() == 'kommune') {
                                 $_POST['path']
                             );
                             UKMnettverket::getFlash()->success('Nettstedet er nå flyttet, og arrangement-innstillinger er satt.');
-                            UKMnettverket::addViewData('blog_eksisterer',true);
+                            try {
+                                $slettet = Blog::getDetails(
+                                    Blog::getIdByPath($path),
+                                    'deleted'
+                                );
+                            } catch (Exception $e) {
+                                $slettet = true;
+                            }
+                        
+                            UKMnettverket::addViewData([
+                                'blog_eksisterer' => true,
+                                'blog_slettet' => $slettet
+                            ]);
                         } else {
                             Blog::opprettForArrangement($arrangement, $_POST['path']);
                             UKMnettverket::getFlash()->success('Nettstedet er nå opprettet, og arrangement-innstillinger er satt.');
-                            UKMnettverket::addViewData('blog_eksisterer',true);
+                            try {
+                                $slettet = Blog::getDetails(
+                                    Blog::getIdByPath($path),
+                                    'deleted'
+                                );
+                            } catch (Exception $e) {
+                                $slettet = true;
+                            }
+                        
+                            UKMnettverket::addViewData([
+                                'blog_eksisterer' => true,
+                                'blog_slettet' => $slettet
+                            ]);
                         }
                         $arrangement->setPath($_POST['path']);
                         Write::save($arrangement);
