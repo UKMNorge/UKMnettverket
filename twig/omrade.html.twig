@@ -12,6 +12,8 @@
                             <a href="//{{UKM_HOSTNAME}}{{ omrade.getKommune().getPath() }}">{{UKM_HOSTNAME}}{{omrade.getKommune().getPath()}}</a>
                             {% if is_super_admin and not blog_eksisterer %}
                                 <code>⚠️ siden finnes ikke!</code>
+                            {% elseif is_super_admin and blog_slettet %}
+                                <code>⚠️ siden er deaktivert!</code>
                             {% endif %}
                         </p>
 
@@ -21,6 +23,9 @@
                                     <a href="{{URL}}&fix=opprett_nettsted" class="btn btn-xs btn-ukm">Opprett nettside</a>
                                 {% else %}
                                     <a href="{{URL}}&fix=oppdater_fra_kommune" class="btn btn-xs btn-ukm">Oppdater fra kommune-info</a>
+                                {% endif %}
+                                {% if blog_eksisterer and blog_slettet %}
+                                    <a href="{{URL}}&fix=aktiver_nettsted" class="btn btn-xs btn-ukm">Aktiver nettside</a>
                                 {% endif %}
 
                                 {% if omrade.getArrangementer(season).getAntall() == 1 %}

@@ -22,9 +22,20 @@ elseif ($omrade->getType() == 'kommune') {
     $path = $kommune->getPath();
 
 
+    try {
+        $slettet = Blog::getDetails(
+            Blog::getIdByPath($path),
+            'deleted'
+        );
+    } catch (Exception $e) {
+        $slettet = true;
+    }
+
     UKMnettverket::addViewData([
         'blog_eksisterer' => Blog::eksisterer($path),
+        'blog_slettet' => $slettet
     ]);
+
 
     // Hvis vi jobber med arrangement, sett path fra arrangementet
     if ($FIX == 'arrangement') {
@@ -148,6 +159,10 @@ elseif ($omrade->getType() == 'kommune') {
                             'deleted' => false
                         ]
                     );
+                    // Hvis fix==arrangement, så settes variablen i bunn av scriptet
+                    if( $FIX == 'kommune') {
+                        UKMnettverket::addViewData('blog_slettet', false);
+                    }
                     UKMnettverket::getFlash()->success('Nettstedet er nå aktivert');
                     break;
 
