@@ -7,7 +7,16 @@ use UKMNorge\Wordpress\Blog;
 
 $omrade = UKMnettverket::getViewData()['omrade'];
 
-if ($omrade->getType() == 'kommune') {
+if($omrade->getType() == 'fylke' ) {
+    $fylke = $omrade->getFylke();
+    $path = $fylke->getPath();
+
+    UKMnettverket::addViewData([
+        'blog_eksisterer' => Blog::eksisterer($path),
+    ]);
+    
+}
+elseif ($omrade->getType() == 'kommune') {
     $FIX = isset($_GET['arr']) ? 'arrangement' : 'kommune';
     $kommune = $omrade->getKommune();
     $path = $kommune->getPath();
@@ -35,6 +44,7 @@ if ($omrade->getType() == 'kommune') {
                     if ($FIX == 'kommune') {
                         Blog::opprettForKommune($kommune);
                         UKMnettverket::getFlash()->success('Nettstedet er nå opprettet, og alle kommune-innstillinger er satt.');
+                        UKMnettverket::addViewData('blog_eksisterer',true);
                     }
                     // Opprett arrangement-blogg
                     elseif (isset($_POST['path'])) {
@@ -44,9 +54,11 @@ if ($omrade->getType() == 'kommune') {
                                 $_POST['path']
                             );
                             UKMnettverket::getFlash()->success('Nettstedet er nå flyttet, og arrangement-innstillinger er satt.');
+                            UKMnettverket::addViewData('blog_eksisterer',true);
                         } else {
                             Blog::opprettForArrangement($arrangement, $_POST['path']);
                             UKMnettverket::getFlash()->success('Nettstedet er nå opprettet, og arrangement-innstillinger er satt.');
+                            UKMnettverket::addViewData('blog_eksisterer',true);
                         }
                         $arrangement->setPath($_POST['path']);
                         Write::save($arrangement);
@@ -193,23 +205,20 @@ if ($omrade->getType() == 'kommune') {
             UKMnettverket::getFlash()->error($e->getMessage());
         }
     }
+}
+foreach ($omrade->getArrangementer(get_site_option('season'))->getAll() as $arrangement) {
+    $arrangement->setAttr(
+        'blog_eksisterer',
+        Blog::eksisterer($arrangement->getPath())
+    );
 
-
-
-    foreach ($omrade->getArrangementer(get_site_option('season'))->getAll() as $arrangement) {
-        $arrangement->setAttr(
-            'blog_eksisterer',
-            Blog::eksisterer($arrangement->getPath())
+    try {
+        $slettet = Blog::getDetails(
+            Blog::getIdByPath($arrangement->getPath()),
+            'deleted'
         );
-
-        try {
-            $slettet = Blog::getDetails(
-                Blog::getIdByPath($arrangement->getPath()),
-                'deleted'
-            );
-        } catch (Exception $e) {
-            $slettet = true;
-        }
-        $arrangement->setAttr('blog_slettet', $slettet);
+    } catch (Exception $e) {
+        $slettet = true;
     }
+    $arrangement->setAttr('blog_slettet', $slettet);
 }
