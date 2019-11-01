@@ -179,7 +179,6 @@
         {% if omrade.getType() == 'fylke' %}
             <div class="col-xs-12 col-md-4">
                 <h4>{{ omrade.getFylke().erOslo() ? 'Bydeler' : 'Kommuner' }}</h4>
-
                 <ol class="list-group">
                     {% for kommune in omrade.getFylke().getKommuner().getAll() %}
                         <li class="list-group-item">
@@ -188,7 +187,9 @@
                                     <span class="dashicons dashicons-edit"></span>
                                 </a>
                             </div>
-                            <b>{{ kommune.getNavn() }}</b>
+                            <a href="?page=UKMnettverket_kommune&omrade={{ kommune.getId() }}&type=kommune">
+                                <b>{{ kommune.getNavn() }}</b>
+                            </a>
                         </li>
                     {% endfor %}
                 </ol>

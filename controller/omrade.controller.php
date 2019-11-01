@@ -7,20 +7,18 @@ use UKMNorge\Wordpress\Blog;
 
 $omrade = UKMnettverket::getViewData()['omrade'];
 
-if($omrade->getType() == 'fylke' ) {
-    $fylke = $omrade->getFylke();
-    $path = $fylke->getPath();
+// Vi jobber enten med et arrangement, eller en kommune
+if ( isset($_GET['arr']) || $omrade->getType() == 'kommune') {
 
-    UKMnettverket::addViewData([
-        'blog_eksisterer' => Blog::eksisterer($path),
-    ]);
-    
-}
-elseif ($omrade->getType() == 'kommune') {
-    $FIX = isset($_GET['arr']) ? 'arrangement' : 'kommune';
-    $kommune = $omrade->getKommune();
-    $path = $kommune->getPath();
-
+    if( $omrade->getType() == 'kommune' ) {
+        $FIX = isset($_GET['arr']) ? 'arrangement' : 'kommune';
+        $kommune = $omrade->getKommune();
+        $path = $kommune->getPath();
+    } else {
+        $FIX = isset($_GET['arr']) ? 'arrangement' : 'fylke';
+        $fylke = $omrade->getFylke();
+        $path = $fylke->getPath();
+    }
 
     try {
         $slettet = Blog::getDetails(
@@ -56,9 +54,18 @@ elseif ($omrade->getType() == 'kommune') {
                         Blog::opprettForKommune($kommune);
                         UKMnettverket::getFlash()->success('Nettstedet er nå opprettet, og alle kommune-innstillinger er satt.');
                         UKMnettverket::addViewData('blog_eksisterer',true);
+                        UKMnettverket::addViewData('blog_slettet',false);
+                    }
+                    // Opprett fylke-blogg
+                    elseif( $FIX == 'fylke' ) {
+                        Blog::opprettForFylke($fylke);
+                        UKMnettverket::getFlash()->success('Nettstedet er nå opprettet, og alle fylke-innstillinger er satt.');
+                        UKMnettverket::addViewData('blog_eksisterer',true);
+                        UKMnettverket::addViewData('blog_slettet',false);
                     }
                     // Opprett arrangement-blogg
                     elseif (isset($_POST['path'])) {
+                        // Flytt eksisterende blogg
                         if (Blog::eksisterer($path)) {
                             Blog::flytt(
                                 Blog::getIdByPath($path),
@@ -78,7 +85,9 @@ elseif ($omrade->getType() == 'kommune') {
                                 'blog_eksisterer' => true,
                                 'blog_slettet' => $slettet
                             ]);
-                        } else {
+                        } 
+                        // Opprett en ny blogg
+                        else {
                             Blog::opprettForArrangement($arrangement, $_POST['path']);
                             UKMnettverket::getFlash()->success('Nettstedet er nå opprettet, og arrangement-innstillinger er satt.');
                             try {
@@ -143,7 +152,17 @@ elseif ($omrade->getType() == 'kommune') {
                     );
                     UKMnettverket::getFlash()->success('Nettstedet er nå oppdatert med alle kommune-innstillinger.');
                     break;
-
+                    // OPPDATER FRA FYLKE-INNSTILLINGER
+                case 'oppdater_fra_fylke':
+                    if(!Blog::eksisterer($path)) {
+                        throw new Exception('Nettstedet eksisterer ikke, og må opprettes først.');
+                    }
+                    Blog::oppdaterFraFylke(
+                        Blog::getIdByPath($path),
+                        $fylke
+                    );
+                    UKMnettverket::getFlash()->success('Nettstedet er nå oppdatert med alle fylke-innstillinger.');
+                    break;
                     // FJERN ARRANGEMENT-INNSTILLINGER
                 case 'fjern_arrangement':
                     if (!Blog::eksisterer($path)) {
@@ -151,7 +170,7 @@ elseif ($omrade->getType() == 'kommune') {
                     }
                     $blog_id = Blog::getIdByPath($path);
                     Blog::fjernArrangementData($blog_id);
-                    UKMnettverket::getFlash()->success('All arrangement-info er nå fjernet fra nettstedet, og det fungerer som en ren kommuneside');
+                    UKMnettverket::getFlash()->success('All arrangement-info er nå fjernet fra nettstedet, og det fungerer som en ren '. $FIX .'side');
                     break;
 
                     // OPPDATER FRA ARRANGEMENT-INNSTILLINGER
@@ -187,7 +206,7 @@ elseif ($omrade->getType() == 'kommune') {
                     }
                     UKMnettverket::getFlash()->success('Nettstedet er nå aktivert');
                     break;
-
+                    // ENDRE ADMINISTRATORER
                 case 'leggtil_administratorer':
                     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $give = [];
@@ -243,6 +262,18 @@ elseif ($omrade->getType() == 'kommune') {
         }
     }
 }
+// Vi har med ren fylkesside-operasjoner å gjøre (de er det få av)
+elseif($omrade->getType() == 'fylke' ) {
+    $fylke = $omrade->getFylke();
+    $path = $fylke->getPath();
+
+    UKMnettverket::addViewData([
+        'blog_eksisterer' => Blog::eksisterer($path),
+    ]);
+}
+
+
+// Forbered info om alle arrangementer i området
 foreach ($omrade->getArrangementer(get_site_option('season'))->getAll() as $arrangement) {
     $arrangement->setAttr(
         'blog_eksisterer',
