@@ -148,5 +148,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])) {
                 : $user->getName() . ' er ') .
                 'lagt til som administrator for ' . $omrade->getNavn()
         );
+
+        // Legg også til admin for alle eksisterende arrangementer
+        try {
+            WriteOmrade::leggTilAdminIAlleArrangementer(
+                $omrade,
+                $administrator,
+                (int) get_site_option('season')
+            );
+        } catch (Exception $e) {
+            UKMnettverket::getFlash()->error(
+                'Systemet fikk ikke lagt til administratoren i alle områdets arrangementer. ' .
+                    'Kontakt <a href="mailto:support@ukm.no">support@ukm.no</a>. Systemet sa: ' .
+                    $e->getMessage()
+            );
+        }
     }
 }
