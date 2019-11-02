@@ -34,6 +34,21 @@ if (isset($_GET['removeAdmin'])) {
             $admin->getUser()->getNavn() . ' er fjernet som administrator for ' . $omrade->getNavn()
         );
     }
+
+    // Fjern også admin for alle eksisterende arrangementer
+    try {
+        WriteOmrade::fjernAdminFraAlleArrangementer(
+            $omrade,
+            $admin,
+            (int) get_site_option('season')
+        );
+    } catch (Exception $e) {
+        UKMnettverket::getFlash()->error(
+            'Systemet fikk ikke fjernet administratoren fra alle områdets arrangementer. ' .
+                'Kontakt <a href="mailto:support@ukm.no">support@ukm.no</a>. Systemet sa: ' .
+                $e->getMessage()
+        );
+    }
 }
 
 
