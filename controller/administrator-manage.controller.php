@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])) {
                 throw new Exception( rtrim( $message, ', ') );
             }
         } catch (Exception $e) {
-            #Twig::addPath('UKM/Nettverket/twig/');
+            Twig::addPath(dirname(stream_resolve_include_path('UKM/Nettverk/twig/epost_tag_feilet.html.twig')));
             $epost = Epost::fraSupport();
             $epost->leggTilMottaker( Mottaker::fraEpost('support@ukm.no','UKM Support' ) );
             $epost->leggTilBlindkopi( Mottaker::fraEpost('marius@ukm.no','Marius Mandal') );
