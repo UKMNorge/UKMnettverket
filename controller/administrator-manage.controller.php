@@ -106,28 +106,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])) {
             ];
             // Abonner på Arrangør-lista
             Arrangor::subscribe($subscriber);
-            $tags = Arrangor::addTags($subscriber, $tags_to_add );
+            $tags = Arrangor::addTags($subscriber, $tags_to_add);
             // Håndter tag-error
             if ($tags->hasError()) {
                 $message = '';
-                foreach( $tags->getError() as $error ) {
-                    $message .= $error->getMessage() .', ';
+                foreach ($tags->getError() as $error) {
+                    $message .= $error->getMessage() . ', ';
                 }
-                throw new Exception( rtrim( $message, ', ') );
+                throw new Exception(rtrim($message, ', '));
             }
         } catch (Exception $e) {
             Twig::addPath(dirname(stream_resolve_include_path('UKM/Nettverk/twig/epost_tag_feilet.html.twig')));
             $epost = Epost::fraSupport();
-            $epost->leggTilMottaker( Mottaker::fraEpost('support@ukm.no','UKM Support' ) );
-            $epost->leggTilBlindkopi( Mottaker::fraEpost('marius@ukm.no','Marius Mandal') );
+            $epost->leggTilMottaker(Mottaker::fraEpost('support@ukm.no', 'UKM Support'));
+            $epost->leggTilBlindkopi(Mottaker::fraEpost('marius@ukm.no', 'Marius Mandal'));
             $epost->setEmne('Feil tagget administrator');
-            $epost->setMelding( 
+            $epost->setMelding(
                 Twig::render(
                     'epost_tag_feilet.html.twig',
                     [
                         'epost' => $user->getEmail(),
                         'tags_to_add' => join(', ', $tags_to_add),
-                        'feilmelding' => rtrim( $e->getMessage(), ', ')
+                        'feilmelding' => rtrim($e->getMessage(), ', ')
                     ]
                 )
             );
@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])) {
             UKMnettverket::getFlash()->add(
                 'info',
                 'En feil med nyhetsbrevet kan gjøre at ' . $user->getName() . ' ikke får velkomst-epost. ' .
-                'Vi jobber med å rette feilen. Systemet sa: '. $e->getMessage()
+                    'Vi jobber med å rette feilen. Systemet sa: ' . $e->getMessage()
             );
         }
 
