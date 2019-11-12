@@ -130,10 +130,47 @@ elseif (isset($_POST['path'])) {
     // - eller er en fellesmønstring
     // Opprett en ny blogg
     elseif( $omrade->getType() == 'fylke' || $fellesmonstring ) {
-        $blog_id = Blog::opprettForArrangement(
-            $arrangement,
-            $_POST['path']
-        );
+        // Oppretter man en fellesmønstring med en path som finnes, 
+        // hvor bloggen også er deaktivert, så kan vi overta den.
+        // Skulle bloggen finnes - så er det en bug. Da burde arrangementet
+        // muligens hatt annet navn. Det er uansett en edge-case som bør håndteres.
+        if( Blog::eksisterer( $_POST['path'] ) ) {
+            $blog_id = Blog::getIdByPath( $_POST['path'] );
+            // Nettstedadressen er tatt, men inneholder info om gammelt arrangement
+            // overta.
+            if( Blog::erDeaktivert( $blog_id ) ) {
+                Blog::oppdaterFraArrangement($blog_id, $arrangement);
+                Blog::aktiver( $blog_id );
+            }
+            // Nettstedadressen er tatt, og fortsatt aktiv. Da er det skummelt å overta,
+            // ettersom dette kan være et arrangement i årets sesong (mulig å sjekke det da)
+            else {
+                // Nettstedet er et arrangement.
+                if( Blog::getOption( $blog_id, 'pl_id' ) ) {
+                    $arrangement = new Arrangement( Blog::getOption( $blog_id, 'pl_id') );
+                    // Skulle arrangementet være fra i fjor eller forifjor, er det bare å overta det.
+                    if( $arrangement->getSesong() < get_site_option('season') ) {
+                        Blog::oppdaterFraArrangement($blog_id, $arrangement);
+                    } else {
+                        throw new Exception(
+                            'Kunne ikke opprette arrangementets nettsted, da nettstedadressen er opptatt. '.
+                            'Fordi arrangementet er fra i år, er det ikke mulig å overta nettstedet. '.
+                            'Kontakt <a href="mailto:support@ukm.no?subject=Opprett nettsted">support@ukm.no</a>'
+                        );
+                    }
+                } else {
+                    throw new Exception(
+                        'Kunne ikke opprette arrangementets nettsted. Kontakt '.
+                        '<a href="mailto:support@ukm.no?subject=Opprett nettsted - fant ikke pl_id">support@ukm.no</a>.'
+                    );
+                }
+            }
+        } else {
+            $blog_id = Blog::opprettForArrangement(
+                $arrangement,
+                $_POST['path']
+            );
+        }
     }
     // Hvis arrangementet
     // - tilhører en kommune (implisitt av if)
