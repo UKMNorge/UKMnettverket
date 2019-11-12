@@ -45,6 +45,34 @@
                                 {% endif %}
                             </div>
                         {% endif %}
+
+                        {% if omrade.getArrangementer( season ).getAntall() > 0 and pakrevd_mangler|length > 0 %}
+                            {% if is_super_admin %}<hr />{% endif %}
+                            <p class="text-danger bold">
+                                {{ omrade.getNavn() }} mangler påmelding for 
+                                {% for type in pakrevd_mangler %}{{ type.getNavn()|lower }}{{ loop.index == pakrevd_mangler|length - 1 ? ' og ' : (not loop.last ? ', ')}}{% endfor %}.
+                            </p>
+                            <p>
+                                Når du arrangerer UKM, kreves det at du tar i mot påmeldinger for
+                                {% for type in pakrevd_typer %}{{ type.getNavn()|lower }}{{ loop.index == pakrevd_typer|length-1 ? ' og ' : (not loop.last ? ', ')}}{% endfor %}. 
+                                <br />
+                                Det er du som bestemmer om {{ omrade.getNavn() }} skal ha flere arrangement som til sammen tilbyr alle kategoriene, eller om ett arrangement skal tilby alle.
+                                <br />
+                                Du kan ha flere arrangement som tar i mot påmelding for samme kategori, så lenge alle kategoriene er inkludert.
+                            </p>
+                            <p>
+                                {% if omrade.getArrangementer(season).getAntall() == 1 %}
+                                    {% set arrangement = omrade.getArrangementer(season).getFirst() %}
+                                    Rett feilen ved å gå inn i 
+                                    <a href="{{ arrangement.getLink() }}wp-admin/">arrangementssystemet for {{ arrangement.getNavn() }}</a>.
+                                {% else %}
+                                    Rett feilen ved trykke deg inn i arrangementssystemet for ett av dine arrangementer, velg "Arrangement" i menyen,
+                                    og kryss av for 
+                                    {% for type in pakrevd_mangler %}{{ type.getNavn()|lower }}{{ loop.index == pakrevd_mangler|length - 1 ? ' og ' : (not loop.last ? ', ')}}{% endfor %}.
+                                {% endif %}
+                            </p>
+
+                        {% endif %}
                     </li>
                 </li>
             {% elseif omrade.getType() == 'fylke' %}
