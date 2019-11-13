@@ -21,9 +21,13 @@
                             <p>
                                 Lokalsiden (kommunesiden) kan finnes i 2 tilstander:
                                 <br />
-                                1. Området har kun ett arrangement: lokalsiden viser arragementsinformasjon.
+                                1. Området har kun ett arrangement 
                                 <br />
-                                2. Området har ingen, eller flere arrangement: lokalsiden viser en liste over arrangementer i området.
+                                 &nbsp; &nbsp; 1a. Arrangementet er IKKE fellesmønstring: lokalsiden viser arragementsinformasjon.
+                                <br />
+                                 &nbsp; &nbsp; 1b. Arrangementet <bold>er</bold> fellesmønstring: lokalsiden skal ikke ha arrangementsinformasjon.
+                                <br />
+                                2. Området har flere, eller ingen arrangement: lokalsiden viser en liste over arrangementer i området, og arrangement-info skal da fjernes.
                                 <br />
                                 Dette området har {{ omrade.getArrangementer(season).getAntall() }} arrangement, og skal derfor være i tilstand
                                 {{ omrade.getArrangementer(season).getAntall() == 1 ? '1' : '2' }}.
@@ -53,12 +57,9 @@
                                 {% for type in pakrevd_mangler %}{{ type.getNavn()|lower }}{{ loop.index == pakrevd_mangler|length - 1 ? ' og ' : (not loop.last ? ', ')}}{% endfor %}.
                             </p>
                             <p>
-                                Når du arrangerer UKM, kreves det at du tar i mot påmeldinger for
-                                {% for type in pakrevd_typer %}{{ type.getNavn()|lower }}{{ loop.index == pakrevd_typer|length-1 ? ' og ' : (not loop.last ? ', ')}}{% endfor %}. 
-                                <br />
-                                Det er du som bestemmer om {{ omrade.getNavn() }} skal ha flere arrangement som til sammen tilbyr alle kategoriene, eller om ett arrangement skal tilby alle.
-                                <br />
-                                Du kan ha flere arrangement som tar i mot påmelding for samme kategori, så lenge alle kategoriene er inkludert.
+                                I UKM skal det være mulig å melde seg på utstilling, film og alle scenekategorier (dans, litteratur, musikk, teater og annet).
+                                Du avgjør om {{ omrade.getNavn() }} skal ha flere arrangement som til sammen dekker alt, eller kun ett som tilbyr alle kategorier. 
+                                Det er mulig å åpne for samme kategori i flere arrangementer.
                             </p>
                             <p>
                                 {% if omrade.getArrangementer(season).getAntall() == 1 %}
