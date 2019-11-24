@@ -134,7 +134,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])) {
             Twig::addPath(dirname(stream_resolve_include_path('UKM/Nettverk/twig/epost_tag_feilet.html.twig')));
             $epost = Epost::fraSupport();
             $epost->leggTilMottaker(Mottaker::fraEpost('support@ukm.no', 'UKM Support'));
-            $epost->leggTilBlindkopi(Mottaker::fraEpost('marius@ukm.no', 'Marius Mandal'));
             $epost->setEmne('Feil tagget administrator');
             $epost->setMelding(
                 Twig::render(

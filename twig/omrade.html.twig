@@ -21,29 +21,58 @@
                             <p>
                                 Lokalsiden (kommunesiden) kan finnes i 2 tilstander:
                                 <br />
-                                1. Området har kun ett arrangement: lokalsiden viser arragementsinformasjon.
+                                1. Området har kun ett arrangement 
                                 <br />
-                                2. Området har ingen, eller flere arrangement: lokalsiden viser en liste over arrangementer i området.
+                                 &nbsp; &nbsp; 1a. Arrangementet er IKKE fellesmønstring: lokalsiden viser arragementsinformasjon.
+                                <br />
+                                 &nbsp; &nbsp; 1b. Arrangementet <bold>er</bold> fellesmønstring: lokalsiden skal ikke ha arrangementsinformasjon.
+                                <br />
+                                2. Området har flere, eller ingen arrangement: lokalsiden viser en liste over arrangementer i området, og arrangement-info skal da fjernes.
                                 <br />
                                 Dette området har {{ omrade.getArrangementer(season).getAntall() }} arrangement, og skal derfor være i tilstand
                                 {{ omrade.getArrangementer(season).getAntall() == 1 ? '1' : '2' }}.
                             </p>
                             <div class="mt-4 mb-2">
                                 {% if not blog_eksisterer %}
-                                    <a href="{{URL}}&fix=opprett_nettsted" class="btn btn-xs btn-ukm">Opprett nettside</a>
+                                    <a href="{{URL}}&fix=opprett_nettsted" class="btn btn-xs btn-ukm superadmin">Opprett nettside</a>
                                 {% else %}
-                                    <a href="{{URL}}&fix=oppdater_fra_kommune" class="btn btn-xs btn-ukm">Oppdater fra kommune-info</a>
+                                    <a href="{{URL}}&fix=oppdater_fra_kommune" class="btn btn-xs btn-ukm superadmin">Oppdater fra kommune-info</a>
                                 {% endif %}
                                 {% if blog_eksisterer and blog_slettet %}
-                                    <a href="{{URL}}&fix=aktiver_nettsted" class="btn btn-xs btn-ukm">Aktiver nettside</a>
+                                    <a href="{{URL}}&fix=aktiver_nettsted" class="btn btn-xs btn-ukm superadmin">Aktiver nettside</a>
                                 {% endif %}
 
                                 {% if omrade.getArrangementer(season).getAntall() == 1 and not omrade.getArrangementer(season).getFirst().erFellesmonstring() %}
-                                    <a href="{{URL}}&fix=oppdater_arrangement" class="btn btn-xs btn-ukm">Oppdater fra arrangement-info</a>
+                                    <a href="{{URL}}&fix=oppdater_arrangement" class="btn btn-xs btn-ukm superadmin">Oppdater fra arrangement-info</a>
                                 {% else %}
-                                    <a href="{{URL}}&fix=fjern_arrangement" class="btn btn-xs btn-ukm">Fjern arrangement-info</a>
+                                    <a href="{{URL}}&fix=fjern_arrangement" class="btn btn-xs btn-ukm superadmin">Fjern arrangement-info</a>
                                 {% endif %}
                             </div>
+                        {% endif %}
+
+                        {% if omrade.getArrangementer( season ).getAntall() > 0 and pakrevd_mangler|length > 0 %}
+                            {% if is_super_admin %}<hr />{% endif %}
+                            <p class="text-danger bold">
+                                {{ omrade.getNavn() }} mangler påmelding for 
+                                {% for type in pakrevd_mangler %}{{ type.getNavn()|lower }}{{ loop.index == pakrevd_mangler|length - 1 ? ' og ' : (not loop.last ? ', ')}}{% endfor %}.
+                            </p>
+                            <p>
+                                I UKM skal det være mulig å melde seg på utstilling, film og alle scenekategorier (dans, litteratur, musikk, teater og annet).
+                                Du avgjør om {{ omrade.getNavn() }} skal ha flere arrangement som til sammen dekker alt, eller kun ett som tilbyr alle kategorier. 
+                                Det er mulig å åpne for samme kategori i flere arrangementer.
+                            </p>
+                            <p>
+                                {% if omrade.getArrangementer(season).getAntall() == 1 %}
+                                    {% set arrangement = omrade.getArrangementer(season).getFirst() %}
+                                    Rett feilen ved å gå inn i 
+                                    <a href="{{ arrangement.getLink() }}wp-admin/">arrangementssystemet for {{ arrangement.getNavn() }}</a>.
+                                {% else %}
+                                    Rett feilen ved trykke deg inn i arrangementssystemet for ett av dine arrangementer, velg "Arrangement" i menyen,
+                                    og kryss av for 
+                                    {% for type in pakrevd_mangler %}{{ type.getNavn()|lower }}{{ loop.index == pakrevd_mangler|length - 1 ? ' og ' : (not loop.last ? ', ')}}{% endfor %}.
+                                {% endif %}
+                            </p>
+
                         {% endif %}
                     </li>
                 </li>
@@ -65,12 +94,12 @@
                             </p>
                             <div class="mt-4 mb-2">
                                 {% if not blog_eksisterer %}
-                                    <a href="{{URL}}&fix=opprett_nettsted" class="btn btn-xs btn-ukm">Opprett nettside</a>
+                                    <a href="{{URL}}&fix=opprett_nettsted" class="btn btn-xs btn-ukm superadmin">Opprett nettside</a>
                                 {% else %}
-                                    <a href="{{URL}}&fix=oppdater_fra_fylke" class="btn btn-xs btn-ukm">Oppdater siden med fylke-info</a>
+                                    <a href="{{URL}}&fix=oppdater_fra_fylke" class="btn btn-xs btn-ukm superadmin">Oppdater siden med fylke-info</a>
                                 {% endif %}
                                 {% if blog_eksisterer and blog_slettet %}
-                                    <a href="{{URL}}&fix=aktiver_nettsted" class="btn btn-xs btn-ukm">Aktiver nettside</a>
+                                    <a href="{{URL}}&fix=aktiver_nettsted" class="btn btn-xs btn-ukm superadmin">Aktiver nettside</a>
                                 {% endif %}
                             </div>
                         {% endif %}
@@ -192,16 +221,16 @@
                         </small>
                         {% if is_super_admin %}
                             <div class="mt-3 mb-3">
-                                <a href="{{URL}}&fix=leggtil_administratorer&arr={{arrangement.getId()}}" class="btn btn-xs btn-ukm">Endre administratorer</a>
+                                <a href="{{URL}}&fix=leggtil_administratorer&arr={{arrangement.getId()}}" class="btn btn-xs btn-ukm superadmin">Endre administratorer</a>
 
                                 {% if not arrangement.getAttr('blog_eksisterer') %}
-                                    <a href="{{URL}}&fix=opprett_nettsted&arr={{arrangement.getId()}}" class="btn btn-xs btn-ukm">Opprett
+                                    <a href="{{URL}}&fix=opprett_nettsted&arr={{arrangement.getId()}}" class="btn btn-xs btn-ukm superadmin">Opprett
                                         {{ arrangement.erSynlig() ? 'nettsted' : 'arrangementsystem' }}</a>
                                 {% elseif arrangement.getAttr('blog_slettet') %}
-                                    <a href="{{URL}}&fix=aktiver_nettsted&arr={{arrangement.getId()}}" class="btn btn-xs btn-ukm">Aktiver
+                                    <a href="{{URL}}&fix=aktiver_nettsted&arr={{arrangement.getId()}}" class="btn btn-xs btn-ukm superadmin">Aktiver
                                         {{ arrangement.erSynlig() ? 'nettsted' : 'arrangementsystem' }}</a>
                                 {% else %}
-                                    <a href="{{URL}}&fix=oppdater_arrangement&arr={{arrangement.getId()}}" class="btn btn-xs btn-ukm">Oppdater fra arrangement-info</a>
+                                    <a href="{{URL}}&fix=oppdater_arrangement&arr={{arrangement.getId()}}" class="btn btn-xs btn-ukm superadmin">Oppdater fra arrangement-info</a>
                                 {% endif %}
                             </div>
                         {% endif %}

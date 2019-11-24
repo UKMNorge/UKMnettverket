@@ -2,6 +2,7 @@
 
 use UKMNorge\Arrangement\Arrangement;
 use UKMNorge\Arrangement\Write;
+use UKMNorge\Innslag\Typer\Typer;
 use UKMNorge\Nettverk\Omrade;
 use UKMNorge\Wordpress\Blog;
 
@@ -262,8 +263,15 @@ if (isset($_GET['fix'])) {
     }
 }
 
+
+$innslag_typer = new Typer();
+
 // Forbered info om alle arrangementer i området
 foreach ($omrade->getArrangementer(get_site_option('season'))->getAll() as $arrangement) {
+    // Legg til alle innslag-typer vi tilbyr
+    foreach( $arrangement->getInnslagTyper()->getAll() as $innslag_type ) {
+        $innslag_typer->add( $innslag_type );
+    }
     $arrangement->setAttr(
         'blog_eksisterer',
         Blog::eksisterer($arrangement->getPath())
@@ -279,3 +287,15 @@ foreach ($omrade->getArrangementer(get_site_option('season'))->getAll() as $arra
     }
     $arrangement->setAttr('blog_slettet', $slettet);
 }
+
+$pakrevd = Typer::getPakrevd();
+$pakrevd_mangler = [];
+foreach( $pakrevd as $type ) {
+    if( !$innslag_typer->har( $type ) ) {
+        $pakrevd_mangler[] = $type;
+    }
+}
+
+UKMnettverket::addViewData('innslag_typer', $innslag_typer);
+UKMnettverket::addViewData('pakrevd_typer', Typer::getPakrevd());
+UKMnettverket::addViewData('pakrevd_mangler', $pakrevd_mangler);
