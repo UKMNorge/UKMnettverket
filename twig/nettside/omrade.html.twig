@@ -1,0 +1,16 @@
+{% set path = omrade.getType() == 'kommune' ? omrade.getKommune().getPath() : omrade.getFylke().getPath() %}
+<p>
+    {% if omrade.getType() == 'kommune' %}
+        Fordi du har flere arrangement, finnes det også en kommuneside for {{omrade.getNavn()}} 
+        hvor du kan ha et eget forsidebilde, eller informasjon til deltakere som lurer på hvilket arrangement de skal velge.
+    {% else %}
+        I tillegg til at hvert av dine arrangement har en egen nettside, finnes det også en fylkesside for {{omrade.getNavn() }}.
+        Denne siden kan ha et eget forsidebilde, og informasjon til deltakere som lurer på hvorfor det finnes flere fylkesfestivaler, 
+        andre arrangement eller lignende.
+    {% endif %}
+</p>
+<p>
+    <a href="//{{UKM_HOSTNAME}}{{ path }}wp-admin/edit.php?page=UKMnettside_forside" target="_blank" class="btn btn-ukm btn-sm">Endre forsidebilde</a>
+    <a href="//{{UKM_HOSTNAME}}{{ path }}wp-admin/edit.php?page=UKMnettside_forside" target="_blank" class="btn btn-ukm btn-sm">Endre informasjonstekst</a>
+
+</p>
