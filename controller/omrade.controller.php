@@ -35,6 +35,18 @@ UKMnettverket::addViewData([
     'blog_slettet' => $slettet
 ]);
 
+// Gjør alle admins til admins av hoved-nettstedet
+if( Blog::eksisterer($path) ) {
+    $omrade_blogg = Blog::getIdByPath($path);
+    foreach( $omrade->getAdministratorer()->getAll() as $admin ) {
+        try {
+            Blog::leggTilBruker( $omrade_blogg, $admin->getId(), 'editor');    
+        } catch( Exception $e ) {
+            // Ignorer alle feil - dette er en slags backup-ish thingie.
+        }
+    }
+}
+
 
 // Hvis vi jobber med arrangement, sett path fra arrangementet
 if ($FIX == 'arrangement') {
@@ -262,7 +274,6 @@ if (isset($_GET['fix'])) {
         UKMnettverket::getFlash()->error($e->getMessage());
     }
 }
-
 
 $innslag_typer = new Typer();
 
