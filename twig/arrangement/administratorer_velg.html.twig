@@ -16,7 +16,7 @@
     <form method="POST" action="?page={{GET('page')}}&omrade={{GET('omrade')}}&type={{GET('type')}}&fix={{GET('fix')}}&arr={{GET('arr')}}">
 
         {% include "arrangement/administratorer_omrade.html.twig" with {id: 'home', blog: arrangement.getPath(), omrade: omrade.getNavn(), administratorer: omrade.getAdministratorer() } %}
-        {% for kommune in arrangement.getKommuner().getAll() if arrangement.erFellesmonstring() %}
+        {% for kommune in arrangement.getKommuner().getAll()|filter( arrangement => arrangement.erFellesmonstring() ) %}
             {% include "arrangement/administratorer_omrade.html.twig" with {id: 'kommune'~kommune.getId(), blog: arrangement.getPath(), omrade: kommune.getNavn(), administratorer: kommune.getOmrade().getAdministratorer() } %}
         {% endfor %}
         {% include "arrangement/administratorer_omrade.html.twig" with {id: 'fylke', blog: arrangement.getPath(), omrade: fylke_omrade.getNavn(), administratorer: fylke_omrade.getAdministratorer() } %}

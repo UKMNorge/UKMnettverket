@@ -8,7 +8,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for admin in administratorer.getAll() if admin.getId()  %}
+        {% for admin in administratorer.getAll()|filter( admin => admin.getId() ) %}
             <tr>
                 <td width="200">
                     <div class="btn-group radioButtons" data-name="admin_{{admin.getUser().getId()}}_{{id}}">
