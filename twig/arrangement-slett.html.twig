@@ -28,12 +28,13 @@
                             da det ikke er noe automatikk for dette i systemet.
                         </p>
                     </div>
-				{% elseif omrade.getArrangementer(sesong).getAntall() > 1 and (arrangement.getInnslag().getAntall() > 0 or arrangement.getKontaktpersoner().getAntall() > 0) %}
+				{#% elseif omrade.getArrangementer(sesong).getAntall() > 1 and (arrangement.getInnslag().getAntall() > 0 or arrangement.getKontaktpersoner().getAntall() > 0) %#}
+				{% elseif omrade.getArrangementer(sesong).getAntall() > 1 and arrangement.getInnslag().getAntall() %}
 					<h3 class="mt-3">
-						Hvilket arrangement overtar
-						{{ arrangement.getInnslag().getAntall() > 0 ? 'innslag' }}
-						{{ arrangement.getInnslag().getAntall() > 0 and arrangement.getKontaktpersoner().getAntall() > 0 ? 'og' }}
-						{{ arrangement.getKontaktpersoner().getAntall() > 0 ? 'kontaktpersoner' }}
+						Hvilket arrangement skal overta
+						{{ arrangement.getInnslag().getAntall() > 0 ? 'påmeldte innslag' }}
+						{#{ arrangement.getInnslag().getAntall() > 0 and arrangement.getKontaktpersoner().getAntall() > 0 ? 'og' }}
+						{{ arrangement.getKontaktpersoner().getAntall() > 0 ? 'kontaktpersoner' }#}
 						?
 					</h3>
 
@@ -70,7 +71,7 @@
                             Disse blir flyttet til det valgte arrangementet.
 						{% endif %}
 					</li>
-					<li class="list-group-item">
+					{#<li class="list-group-item">
 						<b>Kontaktpersoner</b><br/>
 						{% if arrangement.getKontaktpersoner().getAntall() == 0 %}
 							Arrangementet har ingen kontaktpersoner. Det er greit 👍🏼
@@ -95,7 +96,7 @@
 								{% endfor %}
 							</ol>
 						{% endif %}
-					</li>
+					</li>#}
 					<li class="list-group-item">
 						<b>Nyhetssaker (innlegg)</b><br/>
 						{% if num_posts > 0 %}
@@ -123,7 +124,8 @@
 				</ol>
 
 
-				{% if omrade.getArrangementer(sesong).getAntall() > 1 and (arrangement.getInnslag().getAntall() > 0 or arrangement.getKontaktpersoner().getAntall() > 0) %}
+				{#% if omrade.getArrangementer(sesong).getAntall() > 1 and (arrangement.getInnslag().getAntall() > 0 or arrangement.getKontaktpersoner().getAntall() > 0) %#}
+				{% if omrade.getArrangementer(sesong).getAntall() > 1 and arrangement.getInnslag().getAntall() > 0 %}
 					<h3 class="mt-3">Er du klar?</h3>
 					<button type="submit" class="btn btn-danger" onclick="return confirm('Er du sikker?');">Overfør informasjon, og slett arrangementet</button>
 				{% else %}

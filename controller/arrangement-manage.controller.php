@@ -183,6 +183,8 @@ elseif (isset($_POST['path'])) {
         } catch (Exception $e) {
             // 172007 = fant ingen blogg 
             // (som kan skje hvis vi ikke har opprettet blogger for alle kommuner og fylker)
+            // Fordi vi vet dette er første arrangement, og kommune-siden da skal vise 
+            // arrangementsinfo, opprettes den like godt "forArrangement"
             if ($e->getCode() == 172007) {
                 $blog_id = Blog::opprettForArrangement(
                     $arrangement,
@@ -217,24 +219,48 @@ elseif (isset($_POST['path'])) {
         $kommune_path = rtrim($kommune->getNavn(), '/');
         $flytt_arrangement = new Arrangement( get_blog_option( $flytt_blog_id, 'pl_id') );
         $ny_path = Blog::sanitizePath( $kommune_path .'-'. $flytt_arrangement->getNavn() );
+        
+        $arrangement_blog_eksisterer = false;
         try { 
-            Blog::getIdByPath($ny_path);
-            // bloggen finnes fra før - lag manuell path (denne SKAL ikke finnes fra før).
-            $ny_path = Blog::sanitizePath($kommune_path .'-arrangement-1/');
+            $existing_blog = Blog::getIdByPath($ny_path);
+            
+            if( Blog::getOption( $existing_blog, 'pl_id' ) == $flytt_arrangement->getId() ) {
+                $arrangement_blog_eksisterer = true;
+                Blog::aktiver( $existing_blog ); // Den skal være deaktivert. Aktiver for sikkerhets skyld
+            } else {
+                // bloggen finnes fra før - lag manuell path (denne SKAL ikke finnes fra før).
+                $ny_path = Blog::sanitizePath($kommune_path .'-arrangement-1/');
+            }
         } catch( Exception $e ) {
             // Hvis feilkoden ikke er "bloggen finnes ikke", kast exception
             if( $e->getCode() != 172007) {
                 throw $e;
             }
         }
-        // Flytt blogg
-        Blog::flytt( $flytt_blog_id, $ny_path );
+        
+        // Flytt kommunesiden ut til egen blogg hvis 
+        // arrangementet ikke tidligere har hatt en egen blogg
+        if( !$arrangement_blog_eksisterer ) {
+            Blog::flytt( $flytt_blog_id, $ny_path );
+        }
         Blog::oppdaterFraArrangement($blog_id, $flytt_arrangement);
         $flytt_arrangement->setPath( $ny_path );
         Write::save( $flytt_arrangement );
 
         // Opprett ny kommuneside og legg til områdets admins
-        $ny_kommune_blog_id = Blog::opprettForKommune( new Kommune($_GET['omrade']) );
+        try {
+            $ny_kommune_blog_id = Blog::opprettForKommune( $kommune );
+        } catch( Exception $e ) {
+            // 172008 = 'Kunne ikke opprette blogg da siden allerede eksisterer'
+            if( $e->getCode() == 172008 ) {
+                $ny_kommune_blog_id = Blog::getIdByPath( $kommune->getPath() );
+            } else {
+                throw $e;
+            }
+        }
+        // Siden vi nå har flere arrangement, skal kommunesiden være en ren kommuneside
+        Blog::fjernArrangementData( $ny_kommune_blog_id );
+
         foreach ($omrade->getAdministratorer()->getAll() as $admin) {
             Blog::leggTilBruker($ny_kommune_blog_id, $admin->getId(), 'editor');
         }
