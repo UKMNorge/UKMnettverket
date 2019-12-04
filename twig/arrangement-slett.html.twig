@@ -1,0 +1,136 @@
+<style>
+	.mt-3 {
+		margin-top: 1.5em;
+	}
+</style>
+<script>
+    jQuery(document).on('change', '#velgArrangement', function(){
+        jQuery('#steg2').slideDown();
+    });
+</script>
+<form action="?page={{GET('page')}}&omrade={{GET('omrade')}}&type={{GET('type')}}&fix=arrangement_slett&arr={{GET('arr')}}" method="POST">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-xs-12 col-md-8">
+				<h2>Slett "{{ arrangement.getNavn()}}"</h2>
+				{% include "wp_modul.flashbag.html.twig" %}
+
+				{% if omrade.getArrangementer(sesong).getAntall() == 1 and arrangement.getInnslag().getAntall() > 0 %}
+					<div class="alert alert-danger">
+                        <h3 style="margin-top:0;">Beklager, du kan ikke slette dette arrangementet</h3>
+                        <p>
+                            Fordi du har påmeldte, kan du ikke slette dette arrangementet, da det er ditt eneste arrangement.
+                            Hvis arrangementet virkelig skal slettes, må du først inn på 
+                            "<a href="{{arrangement.getLink()}}wp-admin/admin.php?page=UKMdeltakere">påmeldte</a>", 
+                                melde av alle innslag, og så prøve igjen.
+                            <br/>
+                            Husk: hvis du melder av et innslag, må du gi de beskjed om at de er avmeldt, 
+                            da det ikke er noe automatikk for dette i systemet.
+                        </p>
+                    </div>
+				{% elseif omrade.getArrangementer(sesong).getAntall() > 1 and (arrangement.getInnslag().getAntall() > 0 or arrangement.getKontaktpersoner().getAntall() > 0) %}
+					<h3 class="mt-3">
+						Hvilket arrangement overtar
+						{{ arrangement.getInnslag().getAntall() > 0 ? 'innslag' }}
+						{{ arrangement.getInnslag().getAntall() > 0 and arrangement.getKontaktpersoner().getAntall() > 0 ? 'og' }}
+						{{ arrangement.getKontaktpersoner().getAntall() > 0 ? 'kontaktpersoner' }}
+						?
+					</h3>
+
+					<select name="transfer" id="velgArrangement" class="form-control" required>
+                        <option value="false" selected disabled>Velg arrangement</option>
+						{% for annet_arr in omrade.getArrangementer(sesong).getAll()|filter( annet_arr => annet_arr.getId() != arrangement.getId() ) %}
+							<option value="{{ annet_arr.getId() }}">
+								{{ annet_arr.getNavn() }}
+							</option>
+						{% else %}
+							<option value="false" disabled>Du har bare dette arrangementet</option>
+						{% endfor %}
+					</select>
+                {% else %}
+                    <script>
+                        jQuery(document).ready(function(){
+                            jQuery('#steg2').show();
+                        });
+                    </script>
+				{% endif %}
+
+                <div id="steg2" style="display:none;">
+				<h3>Sjekkliste</h3>
+				<ol class="list-group">
+					<li class="list-group-item">
+						<b>Påmeldte</b><br/>
+						{% if arrangement.getInnslag().getAntall() == 0 %}
+							Arrangementet har ingen påmeldte. Det er en god ting når det skal slettes
+							<span style="font-size:1.4em;">😎</span>
+						{% else %}
+							Arrangementet har
+							{{ arrangement.getInnslag().getAntall() }}
+							påmeldte innslag.
+                            Disse blir flyttet til det valgte arrangementet.
+						{% endif %}
+					</li>
+					<li class="list-group-item">
+						<b>Kontaktpersoner</b><br/>
+						{% if arrangement.getKontaktpersoner().getAntall() == 0 %}
+							Arrangementet har ingen kontaktpersoner. Det er greit 👍🏼
+						{% elseif omrade.getArrangementer(sesong).getAntall() == 1 %}
+							Fordi du ikke har andre arrangement, vil kontaktpersonene slettes med arrangementet. Ikke så farlig
+							<span style="font-size:1.4em;">🥺</span>
+						{% else %}
+							Arrangementet har
+							{{ arrangement.getKontaktpersoner().getAntall() }}
+							kontaktperson{{ arrangement.getKontaktpersoner().getAntall > 1 ? 'er'}}.
+							                        Kryss av
+							{{ arrangement.getKontaktpersoner().getAntall() == 1 ? 'om' : 'for de' }}
+							du ønsker å overføre til et annet arrangementet.
+							<ol class="list-group list-group-flush" style="margin-top:1em;margin-bottom:.5em;">
+								{% for kontaktperson in arrangement.getKontaktpersoner().getAll() %}
+									<li class="list-group-item">
+										<label>
+											<input class="form-control" type="checkbox" name="kontaktperson[]" value="{{ kontaktperson.getId() }}"/>
+											{{ kontaktperson.getNavn() }}
+										</label>
+									</li>
+								{% endfor %}
+							</ol>
+						{% endif %}
+					</li>
+					<li class="list-group-item">
+						<b>Nyhetssaker (innlegg)</b><br/>
+						{% if num_posts > 0 %}
+							Du har
+							{{ num_posts }}
+							publisert{{ num_posts > 1 ? 'e' }}
+							nyhetssak{{ num_posts > 1 ? 'er'}}
+							på denne arrangementssiden.
+							{% if is_kommune_path %}
+								Fordi dette arrangementet vises på kommunesiden, vil disse bli bevart
+							{% else %}
+								<span class="text-danger">
+									<br/>Hvis du vil ta vare på
+									{{ num_posts == 1 ? 'dette':'disse' }}, må du be
+									<a href="mailto:support@ukm.no?subject=Flytt nyhetssaker og slett arrangement">support@ukm.no</a>
+									om å slette arrangementet for deg. Hvis ikke blir alle nyhetssakene slettet for godt
+									<span style="font-size:1.4em;">😬</span>
+								</span>
+							{% endif %}
+						{% else %}
+							Du har ingen nyhetssaker som vil bli slettet om du sletter dette arrangementet
+							<span style="font-size:1.4em;">🥳</span>
+						{% endif %}
+					</li>
+				</ol>
+
+
+				{% if omrade.getArrangementer(sesong).getAntall() > 1 and (arrangement.getInnslag().getAntall() > 0 or arrangement.getKontaktpersoner().getAntall() > 0) %}
+					<h3 class="mt-3">Er du klar?</h3>
+					<button type="submit" class="btn btn-danger" onclick="return confirm('Er du sikker?');">Overfør informasjon, og slett arrangementet</button>
+				{% else %}
+					<h3 class="mt-3">Er du klar?</h3>
+					<button type="submit" class="btn btn-danger" onclick="return confirm('Er du sikker?');">Slett arrangementet</button>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</form>

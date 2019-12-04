@@ -242,8 +242,8 @@
 								{% endif %}
 							</div>
 						</small>
-						{% if is_super_admin %}
-							<div class="mt-3 mb-3">
+                        <div class="mt-3 mb-3">
+    						{% if is_super_admin %}
 								<a href="{{URL}}&fix=leggtil_administratorer&arr={{arrangement.getId()}}" class="btn btn-xs btn-ukm superadmin">Endre administratorer</a>
 
 								{% if not arrangement.getAttr('blog_eksisterer') %}
@@ -255,8 +255,9 @@
 								{% else %}
 									<a href="{{URL}}&fix=oppdater_arrangement&arr={{arrangement.getId()}}" class="btn btn-xs btn-ukm superadmin">Oppdater fra arrangement-info</a>
 								{% endif %}
-							</div>
-						{% endif %}
+                                <a href="{{URL}}&action=arrangement-slett&arr={{arrangement.getId()}}" class="btn btn-xs btn-ukm superadmin">Slett arrangement</a>
+						    {% endif %}
+                        </div>
 					</li>
 				{% else %}
 					<li class="list-group-item">

@@ -3,10 +3,12 @@
 use UKMNorge\Arrangement\Arrangement;
 use UKMNorge\Arrangement\Write;
 use UKMNorge\Innslag\Typer\Typer;
+use UKMNorge\Innslag\Write as WriteInnslag;
 use UKMNorge\Nettverk\Omrade;
 use UKMNorge\Wordpress\Blog;
 
 $omrade = UKMnettverket::getViewData()['omrade'];
+UKMnettverket::setupLogger();
 
 // Vi jobber enten med et arrangement, eller en kommune
 if( $omrade->getType() == 'kommune' ) {
@@ -57,6 +59,39 @@ if ($FIX == 'arrangement') {
 if (isset($_GET['fix'])) {
     try {
         switch ($_GET['fix']) {
+            // FAKTISK SLETT ARRANGEMENT
+            case 'arrangement_slett':
+                UKMlogger::setPlId( $_GET['arr'] );
+                $message = '';
+                $success = true;
+                if( isset($_POST['transfer'] ) ) {
+                    $arrangement_mottaker = new Arrangement( $_POST['transfer'] );
+                    $message_ok = '';
+                    $message_fail = '';
+                    foreach( $arrangement->getInnslag()->getAll() as $innslag ) {
+                        try {
+                            WriteInnslag::flytt( $innslag, $arrangement, $arrangement_mottaker );
+                            $message_ok .= '"'. $innslag->getNavn() .'", ';
+                        } catch( Exception $e ) {
+                            $message_fail .= '"'. $innslag->getNavn() .'": <code>'. $e->getMessage().'</code>, ';
+                        }
+                    }
+                    if( !empty( $message_ok ) ) {
+                        $message = '<br />Overførte innslag: '. rtrim($message_ok, ', ');
+                    }
+                    if( !empty( $message_fail ) ) {
+                        $success = false;
+                        $message .= '<br />Ikke overførte innslag: '. rtrim($message_fail, ', ');
+                    }
+                }
+                Write::avlys( $arrangement );
+
+                if( $success ) {
+                    UKMnettverket::getFlash()->success('Arrangementet er nå slettet.' . $message);
+                } else {
+                    UKMnettverket::getFlash()->success('Arrangementet er nå slettet, men ikke alle innslag ble overført.' . $message);
+                }
+            break;
                 // OPPRETT BLOGG
             case 'opprett_nettsted':
                 if (Blog::eksisterer($path)) {
