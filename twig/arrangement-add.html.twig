@@ -7,71 +7,71 @@
     var checkboxSelector = 'input[name="kommuner[]"]';
 
     // VALGT FELLESMØNSTRING JA/NEI
-    $(document).on('change', '#radioButtonValue_sammen', function(e) {
-        if ($(e.target).val() == 'yes') {
-            $('#medArrangor').slideDown();
+    jQuery(document).on('change', '#radioButtonValue_sammen', function(e) {
+        if (jQuery(e.target).val() == 'yes') {
+            jQuery('#medArrangor').slideDown();
         } else {
-            $(checkboxSelector).not(':disabled').removeAttr('checked');
+            jQuery(checkboxSelector).not(':disabled').removeAttr('checked');
             UKMresources.arrangement.setNameFromCheckbox(checkboxSelector, '#arrangement_navn');
-            $('#medArrangor').slideUp();
+            jQuery('#medArrangor').slideUp();
         }
     });
 
     // VALGT SYNLIG PÅ UKM.NO JA/NEI
-    $(document).on('change', '#radioButtonValue_synlig', function(e) {
-        if ($(e.target).val() == 'true') {
-            $('#startDate').slideDown();
+    jQuery(document).on('change', '#radioButtonValue_synlig', function(e) {
+        if (jQuery(e.target).val() == 'true') {
+            jQuery('#startDate').slideDown();
         } else {
-            $('#startDate').slideUp();
+            jQuery('#startDate').slideUp();
         }
     });
 
     // KRYSSET AV CHECKBOX (HVIS FELLESMØNSTRING)
-    $(document).on('click', checkboxSelector, function(e) {
+    jQuery(document).on('click', checkboxSelector, function(e) {
         UKMresources.arrangement.setNameFromCheckbox(checkboxSelector, '#arrangement_navn');
     });
 
     // ENDRET NAVN PÅ ARRANGEMENTET
-    $(document).on('keyup', '#arrangement_navn', function() {
+    jQuery(document).on('keyup', '#arrangement_navn', function() {
         // Kommunen arrangerer sammen med andre: lag liste av kommunenavn
-        if ($('#omrade_type').val() == 'kommune' && $('#radioButtonValue_sammen') && $('#radioButtonValue_sammen').val() == 'yes') {
-            $('#path').val(UKMresources.arrangement.getPathFromForm(checkboxSelector));
+        if (jQuery('#omrade_type').val() == 'kommune' && jQuery('#radioButtonValue_sammen') && jQuery('#radioButtonValue_sammen').val() == 'yes') {
+            jQuery('#path').val(UKMresources.arrangement.getPathFromForm(checkboxSelector));
         }
         // Første arrangement i kommunen overtar kommunens path
-        else if ( $('#omrade_type').val() == 'kommune' && $('#omrade_har_arrangement').val() == 'false') {
-            $('#path').val(UKMresources.arrangement.getPathFromForm(false, '#omrade_navn'));
-            $('#path-infos').slideUp(); // Skjul path - 
+        else if ( jQuery('#omrade_type').val() == 'kommune' && jQuery('#omrade_har_arrangement').val() == 'false') {
+            jQuery('#path').val(UKMresources.arrangement.getPathFromForm(false, '#omrade_navn'));
+            jQuery('#path-infos').slideUp(); // Skjul path - 
         }
         // Alle andre får arrangementsnavn
         else {
-            $('#path').val(UKMresources.arrangement.getPathFromForm(false, '#arrangement_navn'));
+            jQuery('#path').val(UKMresources.arrangement.getPathFromForm(false, '#arrangement_navn'));
         }
-        $('#path').trigger('keyup');
+        jQuery('#path').trigger('keyup');
     });
     
     // ENDRET PATH
-    $(document).on('keyup', '#path', function() {
-        UKMresources.arrangement.isPathAvailable($('#path').val());
+    jQuery(document).on('keyup', '#path', function() {
+        UKMresources.arrangement.isPathAvailable(jQuery('#path').val());
     });
 
     // INITIER SKJEMA
-    $(document).ready(function() {
+    jQuery(document).ready(function() {
         UKMresources.optionCard.on('pamelding', function(valgt) {
             if (valgt == 'videresending') {
-                $('#velgSynlig').slideDown();
+                jQuery('#velgSynlig').slideDown();
             } else {
-                $('#velgSynlig').slideUp();
+                jQuery('#velgSynlig').slideUp();
             }
-            $('#omArrangementet').slideDown();
+            jQuery('#omArrangementet').slideDown();
         });
         UKMresources.optionCard.on('type', function(valgt) {
             if (valgt == 'monstring') {
-                $('#fellesmonstringWarning').slideDown();
+                jQuery('#fellesmonstringWarning').slideDown();
             } else {
-                $('#fellesmonstringWarning').slideUp();
+                jQuery('#fellesmonstringWarning').slideUp();
             }
         });
-        $('#arrangement_navn').keyup();
+        jQuery('#arrangement_navn').keyup();
     });
 </script>
 

@@ -62,11 +62,11 @@
                         Brukernavnet er ledig.
                     </div>
                     <script>
-                        $(document).on('keyup', '#username', function() {
-                            UKMresources.administratorer.isUsernameAvailable($('#username').val());
+                        jQuery(document).on('keyup', '#username', function() {
+                            UKMresources.administratorer.isUsernameAvailable(jQuery('#username').val());
                         });
-                        $(document).ready(function() {
-                            $('#username').keyup();
+                        jQuery(document).ready(function() {
+                            jQuery('#username').keyup();
                         });
                     </script>
                 </div>
