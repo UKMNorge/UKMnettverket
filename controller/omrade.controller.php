@@ -68,7 +68,18 @@ if (isset($_GET['fix'])) {
                     $arrangement_mottaker = new Arrangement( $_POST['transfer'] );
                     $message_ok = '';
                     $message_fail = '';
+
+                    // Flytt alle fullstendig påmeldte
                     foreach( $arrangement->getInnslag()->getAll() as $innslag ) {
+                        try {
+                            WriteInnslag::flytt( $innslag, $arrangement, $arrangement_mottaker );
+                            $message_ok .= '"'. $innslag->getNavn() .'", ';
+                        } catch( Exception $e ) {
+                            $message_fail .= '"'. $innslag->getNavn() .'": <code>'. $e->getMessage().'</code>, ';
+                        }
+                    }
+                    // Flytt alle påbegynte påmeldinger
+                    foreach( $arrangement->getInnslag()->getAllUfullstendige() as $innslag ) {
                         try {
                             WriteInnslag::flytt( $innslag, $arrangement, $arrangement_mottaker );
                             $message_ok .= '"'. $innslag->getNavn() .'", ';

@@ -1,3 +1,4 @@
+{% set har_innslag = arrangement.getInnslag().getAntall() > 0 or arrangement.getInnslag().getAllUfullstendige()|length > 0 %}
 <style>
 	.mt-3 {
 		margin-top: 1.5em;
@@ -15,7 +16,7 @@
 				<h2>Slett "{{ arrangement.getNavn()}}"</h2>
 				{% include "wp_modul.flashbag.html.twig" %}
 
-				{% if omrade.getArrangementer(sesong).getAntall() == 1 and arrangement.getInnslag().getAntall() > 0 %}
+				{% if omrade.getArrangementer(sesong).getAntall() == 1 and har_innslag %}
 					<div class="alert alert-danger">
                         <h3 style="margin-top:0;">Beklager, du kan ikke slette dette arrangementet</h3>
                         <p>
@@ -28,12 +29,12 @@
                             da det ikke er noe automatikk for dette i systemet.
                         </p>
                     </div>
-				{#% elseif omrade.getArrangementer(sesong).getAntall() > 1 and (arrangement.getInnslag().getAntall() > 0 or arrangement.getKontaktpersoner().getAntall() > 0) %#}
-				{% elseif omrade.getArrangementer(sesong).getAntall() > 1 and arrangement.getInnslag().getAntall() %}
+				{#% elseif omrade.getArrangementer(sesong).getAntall() > 1 and (har_innslag or arrangement.getKontaktpersoner().getAntall() > 0) %#}
+				{% elseif omrade.getArrangementer(sesong).getAntall() > 1 and har_innslag %}
 					<h3 class="mt-3">
 						Hvilket arrangement skal overta
-						{{ arrangement.getInnslag().getAntall() > 0 ? 'påmeldte innslag' }}
-						{#{ arrangement.getInnslag().getAntall() > 0 and arrangement.getKontaktpersoner().getAntall() > 0 ? 'og' }}
+						{{ har_innslag ? 'påmeldte innslag' }}
+						{#{ har_innslag and arrangement.getKontaktpersoner().getAntall() > 0 ? 'og' }}
 						{{ arrangement.getKontaktpersoner().getAntall() > 0 ? 'kontaktpersoner' }#}
 						?
 					</h3>
@@ -124,8 +125,8 @@
 				</ol>
 
 
-				{#% if omrade.getArrangementer(sesong).getAntall() > 1 and (arrangement.getInnslag().getAntall() > 0 or arrangement.getKontaktpersoner().getAntall() > 0) %#}
-				{% if omrade.getArrangementer(sesong).getAntall() > 1 and arrangement.getInnslag().getAntall() > 0 %}
+				{#% if omrade.getArrangementer(sesong).getAntall() > 1 and (har_innslag or arrangement.getKontaktpersoner().getAntall() > 0) %#}
+				{% if omrade.getArrangementer(sesong).getAntall() > 1 and har_innslag %}
 					<h3 class="mt-3">Er du klar?</h3>
 					<button type="submit" class="btn btn-danger" onclick="return confirm('Er du sikker?');">Overfør informasjon, og slett arrangementet</button>
 				{% else %}
