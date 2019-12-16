@@ -8,6 +8,7 @@ use UKMNorge\Log\Logger;
 use UKMNorge\Nettverk\Omrade;
 use UKMNorge\Wordpress\Blog;
 use UKMNorge\Arrangement\Kontaktperson\Write as WriteKontakt;
+use UKMNorge\Innslag\Typer\Typer;
 
 require_once('UKM/Autoloader.php');
 
@@ -100,6 +101,26 @@ elseif (isset($_POST['path'])) {
 
     // Sett synlighet
     $arrangement->setSynlig($_POST['synlig'] == 'true');
+
+    // Hvis dette er arrangement-arrangement 
+    // (i motsetning til mønstring-arrangement), angi dette.
+    if( $_POST['type'] == 'arrangement' ) {
+        $arrangement->setSubtype('arrangement');
+
+        // Fjern alle typer som legges til som standard når ingen er lagt til.
+        $arrangement->getInnslagTyper()->getAll(); // gjennomfør innlasting
+        foreach (Typer::getAllTyper() as $tilbud) {
+            try {
+                $arrangement->getInnslagtyper()->fjern(Typer::getByName($tilbud->getKey()));
+            } catch (Exception $e) {
+                if ($e->getCode() != 110001) {
+                    throw $e;
+                }
+            }
+        }
+        // Legg til typen som skal være der
+        $arrangement->getInnslagTyper()->leggTil(Typer::getByKey('enkeltperson'));
+    }
     
     // Lagre arrangementet
     Write::save($arrangement);
