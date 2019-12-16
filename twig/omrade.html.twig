@@ -130,6 +130,22 @@
 				</li>
 			{% endif %}
 		</div>
+		{% if omrade.getType() == 'fylke' %}
+			<h2>&nbsp;</h2>
+			<div class="col-xs-12 col-md-4">
+				<ol class="list-group">
+					<li class="list-group-item">
+                        <p>
+                            <b>Kontaktinformasjon til administratorer i {{ omrade.getNavn() }}</b>
+                        </p>
+                        
+                        <p>
+                            <a href="?page={{GET('page')}}&omrade={{GET('omrade')}}&type={{GET('type')}}&action=epost" class="btn btn-sm btn-ukm">Send e-post</a>
+                        </p>
+                    </li>
+				</ol>
+			</div>
+		{% endif %}
 	</div>
 
 	<div class="row">

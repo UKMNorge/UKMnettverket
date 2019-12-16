@@ -1,0 +1,38 @@
+<h2>
+    E-post til administratorer i {{ omrade.getNavn() }}
+    <small>
+        <a href="?page={{GET('page')}}&omrade={{GET('omrade')}}&type={{GET('type')}}" class="hideEmail btn btn-default btn-sm">Avbryt, tilbake til fylket</a>
+    </small>
+</h2>
+
+<p>
+    Klikk på en av lenkene nedenfor for å sende e-post til de.
+</p>
+
+
+
+<h4 class="mt-5">Administratorer for {{ omrade.getFylke().erOslo() ? 'bydelene' : 'kommunene'}}</h4>
+<p>
+    <b>For deg som har mac:</b>
+    <br />
+    <a href="mailto:{{email_kommune|join(',')}}">{{email_kommune|join(',')}}</a>
+</p>
+
+<p>
+    <b>For deg som bruker windows eller outlook:</b>
+    <br />
+    <a href="mailto:{{email_kommune|join(';')}}">{{email_kommune|join(';')}}</a>
+</p>
+
+<h4 class="mt-5">Administratorer for {{omrade.getNavn()}}</h4>
+<p>
+    <b>For deg som har mac:</b>
+    <br />
+    <a href="mailto:{{email_fylke|join(',')}}">{{email_fylke|join(',')}}</a>
+</p>
+
+<p>
+    <b>For deg som bruker windows eller outlook:</b>
+    <br />
+    <a href="mailto:{{email_fylke|join(';')}}">{{email_fylke|join(';')}}</a>
+</p>
