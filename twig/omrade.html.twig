@@ -18,7 +18,7 @@
 						</p>
 
 						{% if omrade.getArrangementer( season ).getAntall() > 1 %}
-                            {% include "nettside/omrade.html.twig" %}
+							{% include "nettside/omrade.html.twig" %}
 						{% endif %}
 
 						{% if is_super_admin and omrade.getType() == 'kommune' %}
@@ -73,10 +73,10 @@
 							</p>
 							<p>
 								I UKM skal det være mulig å melde seg på utstilling, film og alle scenekategorier (dans, litteratur, musikk, teater og annet).
-								                                Du avgjør om
+																                                Du avgjør om
 								{{ omrade.getNavn() }}
 								skal ha flere arrangement som til sammen dekker alt, eller kun ett som tilbyr alle kategorier. 
-								                                Det er mulig å åpne for samme kategori i flere arrangementer.
+																                                Det er mulig å åpne for samme kategori i flere arrangementer.
 							</p>
 							<p>
 								{% if omrade.getArrangementer(season).getAntall() == 1 %}
@@ -86,7 +86,7 @@
 										{{ arrangement.getNavn() }}</a>.
 								{% else %}
 									Rett feilen ved trykke deg inn i arrangementssystemet for ett av dine arrangementer, velg "Arrangement" i menyen,
-									                                    og kryss av for
+																		                                    og kryss av for
 									{% for type in pakrevd_mangler %}
 										{{ type.getNavn()|lower }}{{ loop.index == pakrevd_mangler|length - 1 ? ' og ' : (not loop.last ? ', ')}}
 									{% endfor %}.
@@ -107,24 +107,24 @@
 								<code>⚠️ siden er deaktivert!</code>
 							{% endif %}
 						</p>
-                        {% include "nettside/omrade.html.twig" %}
+						{% include "nettside/omrade.html.twig" %}
 						{% if is_super_admin %}
-                            <div class="superadmin">
-                                <p>
-                                    Fylkessiden skal aldri være tilknyttet ett spesifikt arrangement, men være en informasjonsside for hele fylket. 
-                                                                    Her vises lenker til alle fylkets arrangementer. Fylkessiden skal aldri slettes.
-                                </p>
-                                <div class="mt-4 mb-2">
-                                    {% if not blog_eksisterer %}
-                                        <a href="{{URL}}&fix=opprett_nettsted" class="btn btn-xs btn-ukm superadmin">Opprett nettside</a>
-                                    {% else %}
-                                        <a href="{{URL}}&fix=oppdater_fra_fylke" class="btn btn-xs btn-ukm superadmin">Oppdater siden med fylke-info</a>
-                                    {% endif %}
-                                    {% if blog_eksisterer and blog_slettet %}
-                                        <a href="{{URL}}&fix=aktiver_nettsted" class="btn btn-xs btn-ukm superadmin">Aktiver nettside</a>
-                                    {% endif %}
-                                </div>
-                            </div>
+							<div class="superadmin">
+								<p>
+									Fylkessiden skal aldri være tilknyttet ett spesifikt arrangement, men være en informasjonsside for hele fylket. 
+									Her vises lenker til alle fylkets arrangementer. Fylkessiden skal aldri slettes.
+								</p>
+								<div class="mt-4 mb-2">
+									{% if not blog_eksisterer %}
+										<a href="{{URL}}&fix=opprett_nettsted" class="btn btn-xs btn-ukm superadmin">Opprett nettside</a>
+									{% else %}
+										<a href="{{URL}}&fix=oppdater_fra_fylke" class="btn btn-xs btn-ukm superadmin">Oppdater siden med fylke-info</a>
+									{% endif %}
+									{% if blog_eksisterer and blog_slettet %}
+										<a href="{{URL}}&fix=aktiver_nettsted" class="btn btn-xs btn-ukm superadmin">Aktiver nettside</a>
+									{% endif %}
+								</div>
+							</div>
 						{% endif %}
 					</li>
 				</li>
@@ -258,8 +258,8 @@
 								{% endif %}
 							</div>
 						</small>
-                        <div class="mt-3 mb-3">
-    						{% if is_super_admin %}
+						<div class="mt-3 mb-3">
+							{% if is_super_admin %}
 								<a href="{{URL}}&fix=leggtil_administratorer&arr={{arrangement.getId()}}" class="btn btn-xs btn-ukm superadmin">Endre administratorer</a>
 
 								{% if not arrangement.getAttr('blog_eksisterer') %}
@@ -271,9 +271,9 @@
 								{% else %}
 									<a href="{{URL}}&fix=oppdater_arrangement&arr={{arrangement.getId()}}" class="btn btn-xs btn-ukm superadmin">Oppdater fra arrangement-info</a>
 								{% endif %}
-                                <a href="{{URL}}&action=arrangement-slett&arr={{arrangement.getId()}}" class="btn btn-xs btn-ukm superadmin">Slett arrangement</a>
-						    {% endif %}
-                        </div>
+								<a href="{{URL}}&action=arrangement-slett&arr={{arrangement.getId()}}" class="btn btn-xs btn-ukm superadmin">Slett arrangement</a>
+							{% endif %}
+						</div>
 					</li>
 				{% else %}
 					<li class="list-group-item">
