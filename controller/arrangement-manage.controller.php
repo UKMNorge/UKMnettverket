@@ -31,12 +31,6 @@ if (empty($_POST['type']) || empty($_POST['pamelding'])) {
 // VI HAR ALLE VERIDER
 elseif (isset($_POST['path'])) {
     /** IKKE STØTTEDE VERDIER **/
-    if ($_POST['type'] == 'arrangement') {
-        throw new Exception(
-            'BEKLAGER, vi støtter ikke andre typer arrangement for øyeblikket. Det kommer snart'
-        );
-    }
-
     if ($_POST['pamelding'] == 'lukket') {
         throw new Exception(
             'BEKLAGER, vi støtter ikke påmelding med krav for øyeblikket. Det kommer snart'
