@@ -119,6 +119,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])) {
                 Tag::sanitize($omrade->getId()),
                 Tag::sanitize($omrade->getNavn()),
             ];
+            
+            if( UKM_HOSTNAME == 'ukm.dev') {
+                throw new Exception(
+                    'Tagger ikke admins i UKM.dev'
+                );
+            }
+            
             // Abonner på Arrangør-lista
             Arrangor::subscribe($subscriber);
             $tags = Arrangor::addTags($subscriber, $tags_to_add);
