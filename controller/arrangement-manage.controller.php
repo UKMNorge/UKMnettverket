@@ -38,12 +38,7 @@ elseif (isset($_POST['path'])) {
         );
     }
 
-    if ($_GET['type'] == 'fylke' && $_POST['pamelding'] == 'apen') {
-        throw new Exception(
-            'BEKLAGER, vi støtter ikke påmelding for fylkesarrangementer enda. Det kommer snart!'
-        );
-    }
-
+    
     if ($_GET['type'] == 'fylke') {
         $geografi = [Fylker::getById($_GET['omrade'])];
     } elseif ($_GET['type'] == 'kommune') {
