@@ -17,7 +17,7 @@
 							{% endif %}
 						</p>
 
-						{% if omrade.getArrangementer( season ).getAntall() > 1 %}
+						{% if omrade.getArrangementer( season ).getAntall() != 1 %}
 							{% include "nettside/omrade.html.twig" %}
 						{% endif %}
 
