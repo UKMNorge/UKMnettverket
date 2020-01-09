@@ -85,6 +85,15 @@ elseif (isset($_POST['path'])) {
             )
         );
     }
+    // Sett slutt-dato (hvis vi har den)
+    //if (isset($_POST['stop'])) {
+        $arrangement->setStop(
+            Write::inputToDateTime(
+                $_POST['start'],
+                '22:00'
+            )
+        );
+    //}
 
     // Angi påmeldingsinnstillinger
     if (isset($_POST['pamelding'])) {
