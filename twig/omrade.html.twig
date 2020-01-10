@@ -254,9 +254,11 @@
 								{% endif %}
 
 								{% if is_super_admin %}
-									<a href="{{URL}}&fix=oppdater_path&arr={{arrangement.getId()}}">
-										<span class="dashicons dashicons-edit" style="font-size: 1.5em; margin-top: 0.1em; margin-left: 0em; height: auto; width: auto"></span>
-									</a>
+                                    {% if arrangement.erSynlig() %}
+                                        <a href="{{URL}}&fix=oppdater_path&arr={{arrangement.getId()}}">
+                                            <span class="dashicons dashicons-edit" style="font-size: 1.5em; margin-top: 0.1em; margin-left: 0em; height: auto; width: auto"></span>
+                                        </a>
+                                    {% endif %}
 
 									{% if not arrangement.getAttr('blog_eksisterer') %}
 										<span class="text-danger">{{ arrangement.erSynlig() ? 'Nettstedet' : 'Arrangementsystemet' }}
