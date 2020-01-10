@@ -167,6 +167,13 @@
 								<span class="dashicons dashicons-email-alt" style="margin-left:.5 rem"></span>
 							</a>
 						</div>
+						{% if is_super_admin %}
+							<div class="float-right pull-right"  style="margin-right: .7rem;">
+								<a class="btn btn-xs btn-ukm superadmin" href="/wp-admin/network/user-edit.php?user_id={{ admin.getId() }}">
+									Endre passord
+								</a>
+							</div>
+						{% endif %}
 						<div class="administrator_liste_punkt">
 							<b>{{ admin.getUser().getNavn() }}</b>
 							{{ admin.getUser().getPhone() }}
