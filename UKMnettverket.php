@@ -17,6 +17,7 @@ class UKMnettverket extends Modul
 {
     public static $action = 'dashboard';
     public static $path_plugin = null;
+    public static $current_admin;
 
     /**
      * Register hooks
@@ -41,16 +42,52 @@ class UKMnettverket extends Modul
         );
     }
 
+    /**
+     * Er CurrentUser administrator for ett eller flere fylker?
+     *
+     * @return Bool
+     */
+    public static function erCurrentAdminFylkeAdmin()
+    {
+        return static::getCurrentAdmin()->erAdmin('fylke');
+    }
+
+    /**
+     * Er CurrentUser administrator for en eller flere kommuner?
+     *
+     * @return Bool
+     */
+    public static function erCurrentAdminKommuneAdmin()
+    {
+        return static::getCurrentAdmin()->erAdmin('kommune');
+    }
+
+    /**
+     * Hent admin-objekt for current user
+     *
+     * @return Administrator
+     */
+    public static function getCurrentAdmin()
+    {
+        if (is_null(static::$current_admin)) {
+            static::$current_admin = new Administrator(get_current_user_id());
+        }
+        return static::$current_admin;
+    }
+
+    /**
+     * Registrer menyen
+     *
+     * @return void
+     */
     public static function meny()
     {
-        $current_admin = new Administrator(get_current_user_id());
-
         $scripts = [];
 
         // Hvis vedkommende er admin for ett eller flere fylker
-        if ($current_admin->erAdmin('fylke')) {
-            $meny = ($current_admin->getAntallOmrader('fylke') == 1) ?
-                $current_admin->getOmrade('fylke')->getNavn() : 'Dine fylker';
+        if (static::erCurrentAdminFylkeAdmin()) {
+            $meny = (static::getCurrentAdmin()->getAntallOmrader('fylke') == 1) ?
+                static::getCurrentAdmin()->getOmrade('fylke')->getNavn() : 'Dine fylker';
             $scripts[] = add_menu_page(
                 'GEO',
                 $meny,
@@ -63,19 +100,19 @@ class UKMnettverket extends Modul
         }
 
         // Hvis vedkommende er admin for en eller flere kommuner
-        if ($current_admin->erAdmin('fylke') || $current_admin->erAdmin('kommune')) {
-            if (isset($_GET['omrade']) && isset($_GET['type']) && $_GET['type'] == 'kommune' && $current_admin->getAntallOmrader('kommune') == 1) {
-                if( $current_admin->getOmrade('kommune')->getId() == 'kommune_'. $_GET['omrade'] ) {
-                    $meny = $current_admin->getOmrade('kommune')->getNavn();
+        if (static::erCurrentAdminFylkeAdmin() || static::erCurrentAdminKommuneAdmin()) {
+            if (isset($_GET['omrade']) && isset($_GET['type']) && $_GET['type'] == 'kommune' && static::getCurrentAdmin()->getAntallOmrader('kommune') == 1) {
+                if (static::getCurrentAdmin()->getOmrade('kommune')->getId() == 'kommune_' . $_GET['omrade']) {
+                    $meny = static::getCurrentAdmin()->getOmrade('kommune')->getNavn();
                 } else {
                     $meny = 'Dine kommuner';
                 }
-             } elseif( $current_admin->getAntallOmrader('kommune') == 1 ) {
-                $meny = $current_admin->getOmrade('kommune')->getNavn();
-             } else {
-                 $meny = 'Dine kommuner';
-             }
-            
+            } elseif (static::getCurrentAdmin()->getAntallOmrader('kommune') == 1) {
+                $meny = static::getCurrentAdmin()->getOmrade('kommune')->getNavn();
+            } else {
+                $meny = 'Dine kommuner';
+            }
+
             $scripts[] = add_menu_page(
                 'GEO',
                 $meny,
