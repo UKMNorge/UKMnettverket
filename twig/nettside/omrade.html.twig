@@ -12,6 +12,6 @@
 <p>
     <a href="//{{UKM_HOSTNAME}}{{ path }}wp-admin/edit.php?page=UKMnettside" target="_blank" class="btn btn-ukm btn-sm">Endre forsidebilde og informasjonstekst</a>
     <a href="//{{UKM_HOSTNAME}}{{ path }}wp-admin/edit.php" target="_blank" class="btn btn-ukm btn-sm">
-        Nyheter på {{ omrade.getType() == 'kommune' and omrade.getKommune().getFylke().erOslo() ? 'bydels' : 'kommune'}}siden
+        Nyheter på {{ omrade.getType() == 'kommune' and omrade.getKommune().getFylke().erOslo() ? 'bydels' : (omrade.getType() == 'fylke' ? 'fylkes' : 'kommune') }}siden
     </a>
 </p>
