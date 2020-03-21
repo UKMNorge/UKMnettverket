@@ -10,8 +10,7 @@
     {% endif %}
 </p>
 <p>
-    <a href="//{{UKM_HOSTNAME}}{{ path }}wp-admin/edit.php?page=UKMnettside_forside" target="_blank" class="btn btn-ukm btn-sm">Endre forsidebilde</a>
-    <a href="//{{UKM_HOSTNAME}}{{ path }}wp-admin/edit.php?page=UKMnettside_infoside" target="_blank" class="btn btn-ukm btn-sm">Endre informasjonstekst</a>
+    <a href="//{{UKM_HOSTNAME}}{{ path }}wp-admin/edit.php?page=UKMnettside" target="_blank" class="btn btn-ukm btn-sm">Endre forsidebilde og informasjonstekst</a>
     <a href="//{{UKM_HOSTNAME}}{{ path }}wp-admin/edit.php" target="_blank" class="btn btn-ukm btn-sm">
         Nyheter på {{ omrade.getType() == 'kommune' and omrade.getKommune().getFylke().erOslo() ? 'bydels' : 'kommune'}}siden
     </a>
