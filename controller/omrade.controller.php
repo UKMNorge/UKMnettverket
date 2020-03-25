@@ -4,6 +4,7 @@ use UKMNorge\Arrangement\Arrangement;
 use UKMNorge\Arrangement\Write;
 use UKMNorge\Innslag\Typer\Typer;
 use UKMNorge\Innslag\Write as WriteInnslag;
+use UKMNorge\Log\Logger;
 use UKMNorge\Nettverk\Omrade;
 use UKMNorge\Wordpress\Blog;
 
@@ -61,7 +62,7 @@ if (isset($_GET['fix'])) {
         switch ($_GET['fix']) {
             // FAKTISK SLETT ARRANGEMENT
             case 'arrangement_slett':
-                UKMlogger::setPlId( $_GET['arr'] );
+                Logger::setPlId( $_GET['arr'] );
                 $message = '';
                 $success = true;
                 if( isset($_POST['transfer'] ) ) {
