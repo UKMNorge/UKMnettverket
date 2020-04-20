@@ -21,6 +21,7 @@ if (is_user_admin()) {
         $omrade = $fylke->getNettverkOmrade();
         $omrader[$omrade->getId()] = $omrade;
     }
+    $omrader['fylke_33'] = Fylker::getById(33)->getNettverkOmrade(); // norgescupen
 }
 
 if (isset($_GET['omrade']) && isset($_GET['type'])) {
