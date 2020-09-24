@@ -55,11 +55,17 @@ elseif (isset($_POST['path'])) {
     // Setup logger 
     Logger::initWP(0);
     
+    $start = Write::inputToDateTime(
+        $_POST['start'],
+        '18:00'
+    );
+
+
     // Opprett arrangement
     $arrangement = Write::create(
         $_GET['type'],                              // Type mønstring
         $_GET['omrade'],                             // Eier
-        (int) get_site_option('season'),            // Sesong
+        (int) $start->format('Y'),            // Sesong
         $_POST['navn'],                             // Navn
         $geografi,             // Geografisk tilhørighet (hm..)
         $_POST['path']
@@ -201,7 +207,7 @@ elseif (isset($_POST['path'])) {
     // - ikke har et arrangement fra før
     // Oppdater den eksisterende siden (eller opprett om den ikke finnes)
     // OBS: 1 == 0, da arrangementet ble opprettet litt lenger opp i scriptet
-    elseif( $omrade->getArrangementer( get_site_option('season') )->getAntall() == 1 ) {
+    elseif( $omrade->getArrangementer()->getAntall() == 1 ) {
         try {
             $blog_id = Blog::getIdByPath($_POST['path']);
         } catch (Exception $e) {
@@ -227,7 +233,7 @@ elseif (isset($_POST['path'])) {
     // Flytt kommune/land-siden til ny blogg
     // Opprett ny kommune/land-side
     // OBS: 2 == 1, da arrangementet ble opprettet litt lenger opp i scriptet
-    elseif ($omrade->getArrangementer(get_site_option('season'))->getAntall() == 2) {
+    elseif ($omrade->getArrangementer()->getAntall() == 2) {
         // Opprett blogg for nytt arrangement
         $blog_id = Blog::opprettForArrangement(
             $arrangement,

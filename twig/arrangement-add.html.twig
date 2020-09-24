@@ -56,6 +56,10 @@
         UKMresources.arrangement.isPathAvailable(jQuery('#path').val());
     });
 
+    jQuery(document).on('change', '#arrangement_start', function(){
+        jQuery('#arrangement_navn').trigger('keyup');
+    });
+
     // INITIER SKJEMA
     jQuery(document).ready(function() {
         UKMresources.optionCard.on('pamelding', function(valgt) {
@@ -86,7 +90,7 @@
         <input type="hidden" name="omrade_navn" id="omrade_navn" value="{{omrade.getNavn()}}"/>
         <input type="hidden" name="omrade_type" id="omrade_type" value="{{GET('type')}}"/>
         <input type="hidden" name="omrade_id" id="omrade_id" value="{{GET('omrade')}}"/>
-        <input type="hidden" name="omrade_har_arrangement" id="omrade_har_arrangement" value="{{ omrade.getArrangementer(sesong).har() ? 'true' : 'false' }}"/>
+        <input type="hidden" name="omrade_har_arrangement" id="omrade_har_arrangement" value="{{ omrade.getArrangementer().har() ? 'true' : 'false' }}"/>
 
         <p class="lead">
             Arrangement du legger til blir tilknyttet
@@ -241,7 +245,7 @@
 
                     <div class="form-group" id="startDate">
                         <label>Når starter arrangementet?</label>
-                        <input class="datepicker_{{ GET('type') }} form-control" type="text" name="start" value="{{ "now + 2 months"|dato('d.m.Y') }}" required>
+                        <input class="datepicker_{{ GET('type') }} form-control" type="text" id="arrangement_start" name="start" value="{{ "now + 2 months"|dato('d.m.Y') }}" required>
                     </div>
                     {#<div class="form-group" id="stopDate">
                         <label>Når slutter arrangementet?</label>

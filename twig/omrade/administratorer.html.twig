@@ -1,0 +1,62 @@
+<h4>Administratorer</h4>
+
+<ol class="list-group">
+	{% for admin in omrade.getAdministratorer().getAll() %}
+		<li
+			class="list-group-item">
+			<!-- Slett bruker -->
+			<div class="float-right pull-right">
+				<a href="?page={{ GET('page') }}&removeAdmin={{ admin.getId() }}&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}">
+					<span class="dashicons dashicons-trash"></span>
+				</a>
+			</div>
+			<!-- Send mail -->
+			<div class="float-right pull-right" style="margin-right: 1rem;">
+				<a href="mailto:{{ admin.getUser().getEmail() }}">
+					<span class="dashicons dashicons-email-alt" style="margin-left:.5 rem"></span>
+				</a>
+			</div>
+			<!-- Vis på kontaktside -->
+			<div class="float-right pull-right" style="margin-right: 1rem;">
+                {% set action = admin.erKontaktperson(omrade) ? 'hideAdmin' : 'showAdmin' %}
+				<a href="?page={{GET('page')}}&{{action}}={{admin.getId()}}&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}">
+					<span class="dashicons dashicons-{{action == 'hideAdmin' ? 'visibility' : 'hidden' }}" style="margin-left:.5 rem"></span>
+				</a>
+			</div>
+			{% if is_super_admin %}
+				<div class="float-right pull-right" style="margin-right: .7rem;">
+					<a class="superadmin" href="/wp-admin/network/user-edit.php?user_id={{ admin.getId() }}">
+			            <span class="superadmin dashicons dashicons-edit"></span>
+					</a>
+				</div>
+			{% endif %}
+			<div class="administrator_liste_punkt">
+				<b>{{ admin.getUser().getNavn() }}</b>
+				{{ admin.getUser().getPhone() }}
+				{% if is_super_admin %}
+					<br/><small>Brukernavn:
+						{{ admin.getUser().getUsername() }}</small>
+				{% endif %}
+			</div>
+		</li>
+	{% else %}
+		<li class="list-group-item">
+			Ingen administratorer er lagt til enda.
+		</li>
+	{% endfor %}
+	<ol class="list-group-item">
+		<a href="?page={{ GET('page') }}&action=administrator-add&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}" style="text-decoration: none;">
+			<span class="dashicons dashicons-plus"></span>
+            Legg til administrator
+		</a>
+	</ol>
+</ol>
+
+<p class="small text-muted">
+    <b>
+    <span class="dashicons dashicons-visibility"></span> / 
+    <span class="dashicons dashicons-hidden"></span>
+    :
+    </b>
+    Angi om administratoren skal vises på {{ omrade.getNavn() }} sin kontaktside.
+</p>

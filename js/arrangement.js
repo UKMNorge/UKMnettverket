@@ -71,11 +71,12 @@ UKMresources.arrangement = function($) {
         },
         getPathFromForm: function(checkbox_selector, name_selector) {
             var name = '';
+            var year = $('#arrangement_start').datepicker('getDate').getFullYear();
             // Området har flere arrangementer - prefix
             if ($('#omrade_type').val() == 'fylke') {
-                name = $('#omrade_navn').val() + '-';
+                name = year + '-' + $('#omrade_navn').val() + '-';
             } else if ($('#omrade_har_arrangement').val() == 'true') {
-                name = $('#omrade_navn').val() + '-';
+                name = year + '-' + $('#omrade_navn').val() + '-';
             }
 
             // Fylke-område
