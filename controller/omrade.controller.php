@@ -401,6 +401,7 @@ foreach( $innslag_typer as $sesong => $typer_vi_har ) {
     }
 }
 ksort($pakrevd_mangler);
+
 UKMnettverket::addViewData('mangler_noe', $mangler_noe);
 UKMnettverket::addViewData('innslag_typer', $innslag_typer);
 UKMnettverket::addViewData('pakrevd_typer', Typer::getPakrevd());

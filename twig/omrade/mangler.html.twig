@@ -13,14 +13,16 @@
 	Det er mulig å åpne for samme kategori i flere arrangementer.
 </p>
 
-{% for season, typer in pakrevd_mangler|filter( typer => typer|length > 0 ) %}
-    <p>
-        <b>{{season}}:</b>
+<p>
+    <b>Akkurat nå mangler du:</b>
+    {% for season, typer in pakrevd_mangler|filter( typer => typer|length > 0 ) %}
+        <br />
+        <b>I {{season}}:</b>
         {% for type in typer %}
-            {{ type.getNavn()|lower }}{{ loop.index == pakrevd_mangler|length - 1 ? ' og ' : (not loop.last ? ', ')}}
+            {{ type.getNavn()|lower }}{{ loop.index == typer|length - 1 ? ' og ' : (not loop.last ? ', ')}}
         {% endfor %}
-    </p>
-{% endfor %}
+    {% endfor %}
+</p>
 
 <p>
 	{% if omrade.getArrangementer().getAntall() == 1 %}
@@ -29,10 +31,7 @@
 		<a href="{{ arrangement.getLink() }}wp-admin/">arrangementssystemet for
 			{{ arrangement.getNavn() }}</a>.
 	{% else %}
-		Rett feilen ved trykke deg inn i arrangementssystemet for ett av dine arrangementer, velg "Arrangement" i menyen,
-        og kryss av for
-		{% for type in pakrevd_mangler %}
-			{{ type.getNavn()|lower }}{{ loop.index == pakrevd_mangler|length - 1 ? ' og ' : (not loop.last ? ', ')}}
-		{% endfor %}.
+		Rett feilen ved trykke deg inn i arrangementssystemet for ett av dine arrangement
+        og kryss av for kategoriene som mangler.
 	{% endif %}
 </p>
