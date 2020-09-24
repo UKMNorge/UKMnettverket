@@ -389,18 +389,18 @@ foreach( ['getKommendeArrangementer', 'getTidligereArrangementer'] as $groups ) 
 
 $pakrevd = Typer::getPakrevd();
 $mangler_noe = false;
-foreach( $innslag_typer as $sesong => $har ) {
+foreach( $innslag_typer as $sesong => $typer_vi_har ) {
     if( !isset($pakrevd_mangler[$sesong])) {
         $pakrevd_mangler[$sesong] = [];
     }
     foreach( $pakrevd as $type ) {
-        if( !$har->har( $type ) ) {
+        if( !$typer_vi_har->har( $type ) ) {
             $pakrevd_mangler[$sesong][] = $type;
             $mangler_noe = true;
         }
     }
 }
-
+ksort($pakrevd_mangler);
 UKMnettverket::addViewData('mangler_noe', $mangler_noe);
 UKMnettverket::addViewData('innslag_typer', $innslag_typer);
 UKMnettverket::addViewData('pakrevd_typer', Typer::getPakrevd());

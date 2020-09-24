@@ -63,35 +63,7 @@
 						{% if omrade.getArrangementer().getAntall() > 0 and mangler_noe %}
 							{% if is_super_admin %}<hr/>
 							{% endif %}
-							<p class="text-danger bold">
-								{{ omrade.getNavn() }}
-								mangler påmelding for
-								{% for type in pakrevd_mangler %}
-									{{ type.getNavn()|lower }}{{ loop.index == pakrevd_mangler|length - 1 ? ' og ' : (not loop.last ? ', ')}}
-								{% endfor %}.
-							</p>
-							<p>
-								I UKM skal det være mulig å melde seg på utstilling, film og alle scenekategorier (dans, litteratur, musikk, teater og annet).
-																								                                Du avgjør om
-								{{ omrade.getNavn() }}
-								skal ha flere arrangement som til sammen dekker alt, eller kun ett som tilbyr alle kategorier. 
-																								                                Det er mulig å åpne for samme kategori i flere arrangementer.
-							</p>
-							<p>
-								{% if omrade.getArrangementer().getAntall() == 1 %}
-									{% set arrangement = omrade.getArrangementer().getFirst() %}
-									Rett feilen ved å gå inn i
-									<a href="{{ arrangement.getLink() }}wp-admin/">arrangementssystemet for
-										{{ arrangement.getNavn() }}</a>.
-								{% else %}
-									Rett feilen ved trykke deg inn i arrangementssystemet for ett av dine arrangementer, velg "Arrangement" i menyen,
-																											                                    og kryss av for
-									{% for type in pakrevd_mangler %}
-										{{ type.getNavn()|lower }}{{ loop.index == pakrevd_mangler|length - 1 ? ' og ' : (not loop.last ? ', ')}}
-									{% endfor %}.
-								{% endif %}
-							</p>
-
+                            {% include "omrade/mangler.html.twig" %}
 						{% endif %}
 					</li>
 				</li>
