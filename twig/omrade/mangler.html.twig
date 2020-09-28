@@ -1,0 +1,37 @@
+<p class="text-danger bold">
+	{{ omrade.getNavn() }}
+	mangler påmelding for 
+    {% for season, mangler in pakrevd_mangler|filter( mangler => mangler|length > 0 ) %}
+        {{ mangler|length }} sjangre i {{ season }}{{ loop.index == pakrevd_mangler|filter( mangler => mangler|length > 0 )|length - 1 ? ' og ' : (not loop.last ? ', ')}}
+    {% endfor %}
+</p>
+<p>
+	I UKM skal det være mulig å melde seg på utstilling, film og alle scenekategorier (dans, litteratur, musikk, teater og annet).
+     Du avgjør om
+	{{ omrade.getNavn() }}
+	skal ha flere arrangement som til sammen dekker alt, eller kun ett som tilbyr alle kategorier. 
+	Det er mulig å åpne for samme kategori i flere arrangementer.
+</p>
+
+<p>
+    <b>Akkurat nå mangler du:</b>
+    {% for season, typer in pakrevd_mangler|filter( typer => typer|length > 0 ) %}
+        <br />
+        <b>I {{season}}:</b>
+        {% for type in typer %}
+            {{ type.getNavn()|lower }}{{ loop.index == typer|length - 1 ? ' og ' : (not loop.last ? ', ')}}
+        {% endfor %}
+    {% endfor %}
+</p>
+
+<p>
+	{% if omrade.getArrangementer().getAntall() == 1 %}
+		{% set arrangement = omrade.getArrangementer().getFirst() %}
+		Rett feilen ved å gå inn i
+		<a href="{{ arrangement.getLink() }}wp-admin/">arrangementssystemet for
+			{{ arrangement.getNavn() }}</a>.
+	{% else %}
+		Rett feilen ved trykke deg inn i arrangementssystemet for ett av dine arrangement
+        og kryss av for kategoriene som mangler.
+	{% endif %}
+</p>

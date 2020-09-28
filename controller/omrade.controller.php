@@ -6,10 +6,35 @@ use UKMNorge\Innslag\Typer\Typer;
 use UKMNorge\Innslag\Write as WriteInnslag;
 use UKMNorge\Log\Logger;
 use UKMNorge\Nettverk\Omrade;
+use UKMNorge\Nettverk\WriteAdministrator;
 use UKMNorge\Wordpress\Blog;
 
+/**
+ * @var Omrade
+ */
 $omrade = UKMnettverket::getViewData()['omrade'];
 UKMnettverket::setupLogger();
+
+// Skjul eller vis admin som kontaktperson for gitt område
+if( isset($_GET['hideAdmin'] ) || isset($_GET['showAdmin'])) {
+    if( isset($_GET['hideAdmin'])) {
+        $id = $_GET['hideAdmin'];
+        $show = false;
+        $message = 'ikke lengre';
+    } else {
+        $id = $_GET['showAdmin'];
+        $show = true;
+        $message = 'nå';
+    }
+    
+    $admin = $omrade->getAdministratorer()->get(intval($id));
+    $admin->setKontaktpersonSynlighet($omrade, $show);
+    WriteAdministrator::saveKontaktpersonSynlighet($admin, $omrade);
+    
+    UKMnettverket::getFlash()->success(
+        $admin->getNavn() .' vises '. $message .' som kontaktperson for '. $omrade->getNavn()
+    );
+}
 
 // Vi jobber enten med et arrangement, eller en kommune
 if( $omrade->getType() == 'kommune' ) {
@@ -242,7 +267,7 @@ if (isset($_GET['fix'])) {
                 $blog_id = Blog::getIdByPath($path);
                 if ($FIX == 'kommune') {
                     $arrangement = new Arrangement(
-                        $omrade->getArrangementer(get_site_option('season'))->getFirst()->getId()
+                        $omrade->getArrangementer()->getFirst()->getId()
                     );
                 }
                 Blog::oppdaterFraArrangement($blog_id, $arrangement);
@@ -322,38 +347,62 @@ if (isset($_GET['fix'])) {
     }
 }
 
-$innslag_typer = new Typer();
+$innslag_typer = [];
+$arrangementer = [];
+foreach( ['getKommendeArrangementer', 'getTidligereArrangementer'] as $groups ) {
+    // Forbered info om alle arrangementer i området
+    foreach ($omrade->$groups()->getAll() as $arrangement) {
+        
+        // Kommende arrangementer er også i aktuelle arrangementer,
+        // tilse derfor på at vi ikke kjører gjennom samme arrangement to ganger
+        if( in_array( $arrangement->getId(), $arrangementer ) ) {
+            continue;
+        }
+        $arrangementer[] = $arrangement->getId();
 
-// Forbered info om alle arrangementer i området
-foreach ($omrade->getArrangementer(get_site_option('season'))->getAll() as $arrangement) {
-    // Legg til alle innslag-typer vi tilbyr
-    foreach( $arrangement->getInnslagTyper()->getAll() as $innslag_type ) {
-        $innslag_typer->add( $innslag_type );
-    }
-    $arrangement->setAttr(
-        'blog_eksisterer',
-        Blog::eksisterer($arrangement->getPath())
-    );
+        // Legg til alle innslag-typer vi tilbyr
+        if( !in_array($arrangement->getSesong(), $innslag_typer ) ) {
+            $innslag_typer[ $arrangement->getSesong() ] = new Typer();
+        }
+        foreach( $arrangement->getInnslagTyper()->getAll() as $innslag_type ) {
+            $innslag_typer[ $arrangement->getSesong() ]->add( $innslag_type );
+        }
 
-    try {
-        $slettet = Blog::getDetails(
-            Blog::getIdByPath($arrangement->getPath()),
-            'deleted'
+        // Sjekk om bloggen eksisterer
+        $arrangement->setAttr(
+            'blog_eksisterer',
+            Blog::eksisterer($arrangement->getPath())
         );
-    } catch (Exception $e) {
-        $slettet = true;
+
+        // Sjekk om bloggen er merket som slettet
+        try {
+            $slettet = Blog::getDetails(
+                Blog::getIdByPath($arrangement->getPath()),
+                'deleted'
+            );
+        } catch (Exception $e) {
+            $slettet = true;
+        }
+        $arrangement->setAttr('blog_slettet', $slettet);
     }
-    $arrangement->setAttr('blog_slettet', $slettet);
 }
 
 $pakrevd = Typer::getPakrevd();
-$pakrevd_mangler = [];
-foreach( $pakrevd as $type ) {
-    if( !$innslag_typer->har( $type ) ) {
-        $pakrevd_mangler[] = $type;
+$mangler_noe = false;
+foreach( $innslag_typer as $sesong => $typer_vi_har ) {
+    if( !isset($pakrevd_mangler[$sesong])) {
+        $pakrevd_mangler[$sesong] = [];
+    }
+    foreach( $pakrevd as $type ) {
+        if( !$typer_vi_har->har( $type ) ) {
+            $pakrevd_mangler[$sesong][] = $type;
+            $mangler_noe = true;
+        }
     }
 }
+ksort($pakrevd_mangler);
 
+UKMnettverket::addViewData('mangler_noe', $mangler_noe);
 UKMnettverket::addViewData('innslag_typer', $innslag_typer);
 UKMnettverket::addViewData('pakrevd_typer', Typer::getPakrevd());
 UKMnettverket::addViewData('pakrevd_mangler', $pakrevd_mangler);
