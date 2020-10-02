@@ -352,6 +352,9 @@ $arrangementer = [];
 foreach( ['getKommendeArrangementer', 'getTidligereArrangementer'] as $groups ) {
     // Forbered info om alle arrangementer i området
     foreach ($omrade->$groups()->getAll() as $arrangement) {
+        if( $arrangement->getSesong() < 2020 ) {
+            continue;
+        }
         
         // Kommende arrangementer er også i aktuelle arrangementer,
         // tilse derfor på at vi ikke kjører gjennom samme arrangement to ganger
