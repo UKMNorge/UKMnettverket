@@ -111,7 +111,13 @@
 								{{ omrade.getNavn() }}</b>
 						</p>
 
-                        {% if current_admin.getOmrader('fylke')|length > 1 %}
+                        {% if is_super_admin %}
+                            <div class="superadmin text-muted mb-3">
+                                UKM Norge-brukeren får ikke nødvendigvis 
+                                riktige kontaktadresser i rapporten, da 
+                                brukeren må være lagt til som administrator for aktuelt fylke.
+                            </div>
+                        {% elseif current_admin.getOmrader('fylke')|length > 1 %}
                             <p class="text-muted">
                                 Fordi du er admin i flere fylker, må du huske å velge
                                 hvilke fylker du ønsker å se kontaktpersoner for når
