@@ -411,3 +411,4 @@ UKMnettverket::addViewData('mangler_noe', $mangler_noe);
 UKMnettverket::addViewData('innslag_typer', $innslag_typer);
 UKMnettverket::addViewData('pakrevd_typer', Typer::getPakrevd());
 UKMnettverket::addViewData('pakrevd_mangler', $pakrevd_mangler);
+UKMnettverket::addViewData('current_admin', UKMnettverket::getCurrentAdmin());

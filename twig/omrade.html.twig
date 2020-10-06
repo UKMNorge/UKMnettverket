@@ -111,6 +111,14 @@
 								{{ omrade.getNavn() }}</b>
 						</p>
 
+                        {% if current_admin.getOmrader('fylke')|length > 1 %}
+                            <p class="text-muted">
+                                Fordi du er admin i flere fylker, må du huske å velge
+                                hvilke fylker du ønsker å se kontaktpersoner for når
+                                du har åpnet rapporten
+                            </p>
+                        {% endif %}
+
 						<p>
 							<a href="/wp-admin/user/?page=UKMrapporter&action=rapport&rapport=Lokalkontakter" class="btn btn-sm btn-ukm">Vis e-postadresser</a>
 						</p>
