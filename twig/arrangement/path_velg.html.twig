@@ -37,7 +37,7 @@
     </form>
 
 
-    {% if omrade.getArrangementer(season).getAntall() > 1 %}
+    {% if omrade.getKommendeArrangementer().getAntall() > 1 %}
         <h3 class="mt-5">Andre arrangementer i
             {{omrade.getNavn()}}
             </h3>
@@ -49,7 +49,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for annet_arrangement in omrade.getArrangementer(season).getAll()|filter( annet_arrangement => annet_arrangement.getId() != GET('arr') ) %}
+                {% for annet_arrangement in omrade.getKommendeArrangementer().getAll()|filter( annet_arrangement => annet_arrangement.getId() != GET('arr') ) %}
                     <tr>
                         <td>
                             {{annet_arrangement.getNavn()}}
