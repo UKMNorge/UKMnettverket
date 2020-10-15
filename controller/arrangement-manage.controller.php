@@ -310,6 +310,12 @@ elseif (isset($_POST['path'])) {
             $arrangement,
             $_POST['path']
         );
+
+        if( $omrade->getType() == 'kommune' ) {
+            // Forsikre oss om at kommunesiden inneholder kommune-info
+            $kommune_blog_id = Blog::getIdByPath( $kommune->getPath() );
+            Blog::fjernArrangementData( $kommune_blog_id );
+        }
     }
 
     // Legg til admins som kontakter og administratorer for bloggen
