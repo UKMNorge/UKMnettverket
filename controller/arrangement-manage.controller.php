@@ -313,7 +313,7 @@ elseif (isset($_POST['path'])) {
 
         if( $omrade->getType() == 'kommune' ) {
             // Forsikre oss om at kommunesiden inneholder kommune-info
-            $kommune_blog_id = Blog::getIdByPath( $kommune->getPath() );
+            $kommune_blog_id = Blog::getIdByPath( $omrade->getKommune()->getPath() );
             Blog::fjernArrangementData( $kommune_blog_id );
         }
     }
