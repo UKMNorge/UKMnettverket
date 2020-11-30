@@ -77,7 +77,7 @@ if( Blog::eksisterer($path) ) {
 
 
 // Hvis vi jobber med arrangement, sett path fra arrangementet
-if ( in_array($FIX, ['arrangement', 'arrangement_slett'])) {
+if ($FIX == 'arrangement') {
     $arrangement = new Arrangement((int) $_GET['arr']);
     $path = $arrangement->getPath();
 }
