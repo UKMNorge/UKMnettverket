@@ -355,6 +355,11 @@ foreach( ['getKommendeArrangementer', 'getTidligereArrangementer'] as $groups ) 
         if( $arrangement->getSesong() < 2020 ) {
             continue;
         }
+
+        // Sikre at vi har et array
+        if( !isset( $innslag_typer[ $arrangement->getSesong() ] ) ) {
+            $innslag_typer[ $arrangement->getSesong() ] = [];
+        }
         
         // Kommende arrangementer er også i aktuelle arrangementer,
         // tilse derfor på at vi ikke kjører gjennom samme arrangement to ganger
@@ -364,9 +369,6 @@ foreach( ['getKommendeArrangementer', 'getTidligereArrangementer'] as $groups ) 
         $arrangementer[] = $arrangement->getId();
 
         // Legg til alle innslag-typer vi tilbyr
-        if( !in_array($arrangement->getSesong(), $innslag_typer ) ) {
-            $innslag_typer[ $arrangement->getSesong() ] = [];
-        }
         foreach( $arrangement->getInnslagTyper()->getAll() as $innslag_type ) {
             $innslag_typer[ $arrangement->getSesong() ][ $innslag_type->getKey() ] = $innslag_type;
         }
