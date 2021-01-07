@@ -365,10 +365,10 @@ foreach( ['getKommendeArrangementer', 'getTidligereArrangementer'] as $groups ) 
 
         // Legg til alle innslag-typer vi tilbyr
         if( !in_array($arrangement->getSesong(), $innslag_typer ) ) {
-            $innslag_typer[ $arrangement->getSesong() ] = new Typer();
+            $innslag_typer[ $arrangement->getSesong() ] = [];
         }
         foreach( $arrangement->getInnslagTyper()->getAll() as $innslag_type ) {
-            $innslag_typer[ $arrangement->getSesong() ]->add( $innslag_type );
+            $innslag_typer[ $arrangement->getSesong() ][ $innslag_type->getKey() ] = $innslag_type;
         }
 
         // Sjekk om bloggen eksisterer
@@ -397,7 +397,7 @@ foreach( $innslag_typer as $sesong => $typer_vi_har ) {
         $pakrevd_mangler[$sesong] = [];
     }
     foreach( $pakrevd as $type ) {
-        if( !$typer_vi_har->har( $type ) ) {
+        if( !isset($typer_vi_har[ $type->getKey() ] ) ) {
             $pakrevd_mangler[$sesong][] = $type;
             $mangler_noe = true;
         }
