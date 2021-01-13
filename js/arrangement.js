@@ -13,11 +13,13 @@ UKMresources.arrangement = function($) {
         handleSuccess: function(response) {
             $('#path').val(response.path);
             if (!allowPathEdit) {
-                $('#path').attr('readonly', true);
+                $('#path_event').attr('readonly', true);
+                $('#createEvent').attr('disabled',false);
             }
         },
         handleError: function(response) {
-            $('#path').removeAttr('readonly');
+            $('#createEvent').attr('disabled',true);
+            $('#path_event').removeAttr('readonly');
         },
     });
 
@@ -25,9 +27,10 @@ UKMresources.arrangement = function($) {
         allowPathEdit: function() {
             allowPathEdit = true;
         },
-        isPathAvailable: function(path) {
+        isPathAvailable: function(path_geo, path_event) {
             return WebsitePathSearch.do({
-                path: path,
+                path_geo: path_geo.replace('UKM.no/',''),
+                path_event: path_event,
                 omrade_type: $('#omrade_type').val(),
                 omrade_id: $('#omrade_id').val()
             });
@@ -70,24 +73,22 @@ UKMresources.arrangement = function($) {
             );
         },
         getPathFromForm: function(checkbox_selector, name_selector) {
-            var name = '';
             var year = $('#arrangement_start').datepicker('getDate').getFullYear();
+            var url = year + '-' ;
             // Området har flere arrangementer - prefix
             if ($('#omrade_type').val() == 'fylke') {
-                name = year + '-' + $('#omrade_navn').val() + '-';
-            } else if ($('#omrade_har_arrangement').val() == 'true') {
-                name = year + '-' + $('#omrade_navn').val() + '-';
+                url += $('#omrade_navn').val() + '-';
+            } 
+            else if (checkbox_selector === false) {
+                url += $('#omrade_navn').val() + '-';
+            } else {
+                url += self.getPathFromCheckbox(checkbox_selector).toLowerCase() + '-';
             }
 
-            // Fylke-område
-            if (checkbox_selector === false) {
-                name += $(name_selector).val();
-            }
-            // Lokal-område
-            else {
-                name += self.getPathFromCheckbox(checkbox_selector).toLowerCase();
-            }
+            return 'UKM.no/' + self.sanitizePath(url);
+        },
 
+        getUrlFromName: function(name) {
             return self.sanitizePath(name);
         },
 

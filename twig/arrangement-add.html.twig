@@ -6,6 +6,10 @@
 <script>
     var checkboxSelector = 'input[name="kommuner[]"]';
 
+    jQuery(document).on('change', '#path_geo', function(e) {
+        jQuery('#viewPathLabel').html( jQuery('#path_geo').val() );
+    });
+
     // VALGT FELLESMØNSTRING JA/NEI
     jQuery(document).on('change', '#radioButtonValue_sammen', function(e) {
         if (jQuery(e.target).val() == 'yes') {
@@ -37,23 +41,26 @@
     jQuery(document).on('keyup', '#arrangement_navn', function() {
         // Kommunen arrangerer sammen med andre: lag liste av kommunenavn
         if (jQuery('#omrade_type').val() == 'kommune' && jQuery('#radioButtonValue_sammen') && jQuery('#radioButtonValue_sammen').val() == 'yes') {
-            jQuery('#path').val(UKMresources.arrangement.getPathFromForm(checkboxSelector));
+            jQuery('#path_geo').val(UKMresources.arrangement.getPathFromForm(checkboxSelector)).change();
         }
         // Første arrangement i kommunen overtar kommunens path
-        else if ( jQuery('#omrade_type').val() == 'kommune' && jQuery('#omrade_har_arrangement').val() == 'false') {
-            jQuery('#path').val(UKMresources.arrangement.getPathFromForm(false, '#omrade_navn'));
-            jQuery('#path-infos').slideUp(); // Skjul path - 
+        else {
+            jQuery('#path_geo').val(UKMresources.arrangement.getPathFromForm(false, '#omrade_navn')).change();
+            //jQuery('#path-infos').slideUp(); // Skjul path - 
         }
         // Alle andre får arrangementsnavn
-        else {
-            jQuery('#path').val(UKMresources.arrangement.getPathFromForm(false, '#arrangement_navn'));
-        }
-        jQuery('#path').trigger('keyup');
+        
+        jQuery('#path_event').val(UKMresources.arrangement.getUrlFromName(jQuery('#arrangement_navn').val()));
+        
+        jQuery('#path_event').trigger('focusout');
     });
     
     // ENDRET PATH
-    jQuery(document).on('keyup', '#path', function() {
-        UKMresources.arrangement.isPathAvailable(jQuery('#path').val());
+    jQuery(document).on('focusout', '#path_event', function() {
+        var result = UKMresources.arrangement.isPathAvailable(jQuery('#path_geo').val(), jQuery('#path_event').val());
+        if( result && result.path ) {
+            jQuery('#path').val( result.path );
+        }
     });
 
     jQuery(document).on('change', '#arrangement_start', function(){
@@ -104,6 +111,7 @@
         <input type="hidden" name="omrade_type" id="omrade_type" value="{{GET('type')}}"/>
         <input type="hidden" name="omrade_id" id="omrade_id" value="{{GET('omrade')}}"/>
         <input type="hidden" name="omrade_har_arrangement" id="omrade_har_arrangement" value="{{ omrade.getArrangementer().har() ? 'true' : 'false' }}"/>
+        <input type="hidden" name="path" id="path" value="false"/>
 
         <p class="lead">
             Arrangement du legger til blir tilknyttet
@@ -285,11 +293,12 @@
             <div class="row" id="path-infos">
                 <div class="col-xs-12 col-sm-6">
                     <b>Nettsted-adresse for arrangementet</b>
+                    <input type="hidden" name="path_geo" id="path_geo" />
                     <div class="input-group input-group">
-                        <span class="input-group-addon">
+                        <span class="input-group-addon" id="viewPathLabel">
                             UKM.no/
                         </span>
-                        <input type="text" class="form-control" name="path" id="path" value="{{ path_forslag }}" readonly>
+                        <input type="text" class="form-control" name="path_event" id="path_event" value="{{ path_forslag }}" readonly>
                     </div>
 
                     <div id="path_status" style="margin-bottom: 1em;">
@@ -298,7 +307,7 @@
                             Sjekker om adressen er ledig...
                         </div>
                         <div id="path_exists" class="text-danger" style="display:none;">
-                            Denne adressen er opptatt. Skriv inn ny adresse.
+                            Denne adressen er opptatt. Skriv inn ny adresse og <a href="#" onclick="return false;">trykk her</a>.
                             <br/>
                             <b>OBS: du kan kun bruke a-z, 0-9 og _</b>
                         </div>
@@ -311,7 +320,7 @@
 
             <div class="row" style="margin-top: 2em;">
                 <div class="col-xs-12">
-                    <button class="btn btn-success" type="submit">Opprett</button>
+                    <button class="btn btn-success" type="submit" id="createEvent">Opprett</button>
                 </div>
             </div>
         </div>

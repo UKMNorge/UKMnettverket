@@ -184,7 +184,7 @@ class UKMnettverket extends Modul
         );
         wp_enqueue_script(
             'UKMnettverket_arrangement',
-            plugin_dir_url(__FILE__) . 'js/arrangement.js'
+            plugin_dir_url(__FILE__) . 'js/arrangement.js?v=2021-01-13'
         );
         wp_enqueue_script(
             'UKMnettverket_administratorer',
