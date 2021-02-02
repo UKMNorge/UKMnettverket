@@ -72,8 +72,14 @@
         UKMresources.optionCard.on('pamelding', function(valgt) {
             if (valgt == 'videresending') {
                 jQuery('#velgSynlig').slideDown();
+                if( jQuery('#omrade_type').val() == 'fylke' ) {
+                    jQuery('#velgOmrade').slideUp();
+                }
             } else {
                 jQuery('#velgSynlig').slideUp();
+                if( jQuery('#omrade_type').val() == 'fylke' ) {
+                    jQuery('#velgOmrade').slideDown();
+                }
             }
             jQuery('#omArrangementet').slideDown();
         });
@@ -186,9 +192,6 @@
                     <div class="dashicons dashicons-unlock"></div>
                     <div class="header">Åpen påmelding</div>
                     <p>
-                        {% if omrade.getType() == 'fylke' %}
-                            <span class="label label-info">Kommer i 2021</span>
-                        {% endif %}
                         Åpner påmeldingen for hvem som helst gjennom vanlig påmeldingsskjema.
                     </p>
                 </div>
@@ -266,6 +269,23 @@
                             I enkelte tilfeller, hvor
                             {{ omrade.getType() == 'kommune' ? (omrade.getFylke().erOslo() ? 'bydelen' : 'kommunen') : 'fylket' }}
                             har mange arrangementer, er det praktisk å ha et skjult arrangement for å håndtere videresending.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="velgOmrade" style="display:none;">
+                <h4>Er påmeldingen åpen for hele landet, eller kun i {{ omrade.getNavn() }}?</h4>
+                <div class="row" style="margin-top: 2em;">
+                    <div class="col-xs-12 col-sm-6">
+                        <div class="btn-group radioButtons" data-name="nedslagsfelt">
+                            <button type="button" class="btn btn-default selected" value="fylke">
+                                &nbsp; {{ omrade.getNavn() }} &nbsp;</button>
+                            <button type="button" class="btn btn-default" value="land">
+                                &nbsp; Nasjonalt &nbsp;</button>
+                        </div>
+                        <p class="text-muted">
+                            
                         </p>
                     </div>
                 </div>
