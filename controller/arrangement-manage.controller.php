@@ -9,6 +9,7 @@ use UKMNorge\Nettverk\Omrade;
 use UKMNorge\Wordpress\Blog;
 use UKMNorge\Arrangement\Kontaktperson\Write as WriteKontakt;
 use UKMNorge\Innslag\Typer\Typer;
+use UKMNorge\Meta\Write as MetaWrite;
 
 require_once('UKM/Autoloader.php');
 
@@ -35,12 +36,6 @@ elseif (isset($_POST['path'])) {
     if ($_POST['pamelding'] == 'lukket') {
         throw new Exception(
             'BEKLAGER, vi støtter ikke påmelding med krav for øyeblikket. Det kommer snart'
-        );
-    }
-
-    if ($_GET['type'] == 'fylke' && $_POST['pamelding'] == 'apen') {
-        throw new Exception(
-            'BEKLAGER, vi støtter ikke påmelding for fylkesarrangementer enda. Det kommer snart!'
         );
     }
 
@@ -112,6 +107,11 @@ elseif (isset($_POST['path'])) {
         } else {
             $arrangement->setPamelding('ingen');
         }
+    }
+
+    if( isset($_POST['nedslagsfelt']) ) {
+        $nedslagsfelt = $arrangement->getMeta('nedslagsfelt')->setValue($_POST['nedslagsfelt']);
+        MetaWrite::set($nedslagsfelt);
     }
 
     // Sett synlighet
