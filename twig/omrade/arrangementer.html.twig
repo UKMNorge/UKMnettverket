@@ -34,10 +34,12 @@
 					{{ arrangement.getInnslag().getAntallPersonerSimple() }}
 					påmeldte
 
-					<span style="margin-left: 1em;"></span>
-					<span class="dashicons dashicons-groups"></span>
-					{{ arrangement.getInnslag().getAntallSimple() }}
-					innslag
+					{% if arrangement.erMonstring() %}
+						<span style="margin-left: 1em;"></span>
+						<span class="dashicons dashicons-groups"></span>
+						{{ arrangement.getInnslag().getAntallSimple() }}
+						innslag
+					{% endif %}
 				</div>
 				<div style="margin-top: .6em;">
 					{% if arrangement.erFellesmonstring() %}
