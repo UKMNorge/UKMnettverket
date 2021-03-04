@@ -17,9 +17,7 @@
 							{% endif %}
 						</p>
 
-						{% if omrade.getArrangementer().getAntall() != 1 %}
-							{% include "nettside/omrade.html.twig" %}
-						{% endif %}
+						{% include "nettside/omrade.html.twig" %}
 
 						{% if is_super_admin and omrade.getType() == 'kommune' %}
 							<div class="superadmin">
