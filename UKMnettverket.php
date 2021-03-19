@@ -180,15 +180,15 @@ class UKMnettverket extends Modul
 
         wp_enqueue_style(
             'UKMnettverket_arrangement_css',
-            plugin_dir_url(__FILE__) . 'UKMnettverket.css'
+            PLUGIN_PATH . 'UKMnettverket/UKMnettverket.css'
         );
         wp_enqueue_script(
             'UKMnettverket_arrangement',
-            plugin_dir_url(__FILE__) . 'js/arrangement.js?v=2021-01-13'
+            PLUGIN_PATH . 'UKMnettverket/js/arrangement.js?v=2021-01-13'
         );
         wp_enqueue_script(
             'UKMnettverket_administratorer',
-            plugin_dir_url(__FILE__) . 'js/administratorer.js'
+            PLUGIN_PATH . 'UKMnettverket/js/administratorer.js'
         );
     }
 
