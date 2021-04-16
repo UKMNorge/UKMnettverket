@@ -45,9 +45,9 @@
 
             <div class="form-group" style="margin-bottom: -.2em;">
                 <label for="username">Brukernavn</label>
-                <input class="form-control" id="username" type="text" name="username" value="{{ user.getUsername() }}" readonly/>
+                <input class="form-control" id="username" type="text" name="username" value="{{ user.isAvailableUsername(user.getUsername()) ? user.getUsername() : '' }}" required {{ user.isAvailableUsername(user.getUsername()) ? 'readonly' : '' }}/>
             </div>
-            {% if user.ID == 'new' %}
+            {% if user.ID == 'new' or user.isAvailableUsername(user.getUsername()) == false %}
                 <div id="username_status" style="margin-bottom: 1em;">
                     <div id="username_loading" style="display: none;">
                         <img src="/wp-admin/images/wpspin_light.gif"/>
@@ -61,9 +61,14 @@
                     <div id="username_available" class="text-success" style="display:none;">
                         Brukernavnet er ledig.
                     </div>
+                    
                     <script>
                         jQuery(document).on('keyup', '#username', function() {
-                            UKMresources.administratorer.isUsernameAvailable(jQuery('#username').val());
+                            if(jQuery('#username').val().length < 1) {
+                                jQuery('#username_available, #username_exists').css('display', 'none');
+                            } else {
+                                UKMresources.administratorer.isUsernameAvailable(jQuery('#username').val());
+                            }
                         });
                         jQuery(document).ready(function() {
                             jQuery('#username').keyup();
