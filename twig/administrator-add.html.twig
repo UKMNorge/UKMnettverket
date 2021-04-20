@@ -45,7 +45,7 @@
 
             <div class="form-group" style="margin-bottom: -.2em;">
                 <label for="username">Brukernavn</label>
-                <input class="form-control" id="username" type="text" name="username" value="{{ user.isAvailableUsername(user.getUsername()) ? user.getUsername() : '' }}" required {{ user.isAvailableUsername(user.getUsername()) ? 'readonly' : '' }}/>
+                <input class="form-control" id="username" type="text" name="username" value="{{user.getUsername()}}" required {{ user.isAvailableUsername(user.getUsername()) ? 'readonly' : '' }}/>
             </div>
             {% if user.ID == 'new' or user.isAvailableUsername(user.getUsername()) == false %}
                 <div id="username_status" style="margin-bottom: 1em;">
