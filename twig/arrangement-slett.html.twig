@@ -42,9 +42,9 @@ jQuery(document).on('click', '#pamelding_turn_on', function(){
 				{% include "wp_modul.flashbag.html.twig" %}
 		        <div class="alert alert-danger" id="fatalErrorContainer" style="display:none;"></div>
 
-				{% if omrade.getKommendeArrangementer().getAntall() == 1 and har_innslag %}
+				{% if arrangementerSammeType|length < 1 and har_innslag %}
 					<p class="text-danger">
-						Beklager, fordi du har påmeldte, kan du ikke slette dette arrangementet, da det er ditt eneste arrangement.
+						Beklager, fordi du har påmeldte, kan du ikke slette dette arrangementet, da det er ditt eneste arrangement av denne typen.
 					</p>
 
 					<ol class="list-group">
@@ -88,14 +88,14 @@ jQuery(document).on('click', '#pamelding_turn_on', function(){
 
 
 					</ol>
-				{% elseif omrade.getKommendeArrangementer().getAntall() > 2 and har_innslag %}
+				{% elseif arrangementerSammeType|length > 1 and har_innslag %}
 					<h3 class="mt-3">
 						Hvilket arrangement skal overta{{ har_innslag ? 'påmeldte innslag' }}?
 					</h3>
 
 					<select name="transfer" id="velgArrangement" class="form-control" required>
 						<option value="false" selected disabled>Velg arrangement</option>
-						{% for annet_arr in omrade.getKommendeArrangementer().getAll()|filter( annet_arr => annet_arr.getId() != arrangement.getId() ) %}
+						{% for annet_arr in arrangementerSammeType|filter( annet_arr => annet_arr.getId() != arrangement.getId() ) %}
 							<option value="{{ annet_arr.getId() }}">
 								{{ annet_arr.getNavn() }}
 							</option>
@@ -103,8 +103,8 @@ jQuery(document).on('click', '#pamelding_turn_on', function(){
 							<option value="false" disabled>Du har bare dette arrangementet</option>
 						{% endfor %}
 					</select>
-				{% elseif omrade.getKommendeArrangementer().getAntall() == 2 and har_innslag %}
-					{% for annet_arr in omrade.getKommendeArrangementer().getAll()|filter( annet_arr => annet_arr.getId() != arrangement.getId() ) %}
+				{% elseif arrangementerSammeType|length == 1 and har_innslag %}
+					{% for annet_arr in arrangementerSammeType|filter( annet_arr => annet_arr.getId() != arrangement.getId() ) %}
 						<input type="hidden" name="transfer" id="velgArrangement" value="{{ annet_arr.getId() }}"/>
 					{% endfor %}
 					<script>
@@ -135,9 +135,9 @@ jQuery('#steg2').show();
 								{{ arrangement.getInnslag().getAllUfullstendige()|length }}
 								påbegynte påmeldinger.
 								                            Disse blir flyttet til
-								{% if omrade.getKommendeArrangementer().getAntall() == 2 %}
+								{% if arrangementerSammeType|length == 1 %}
 									{# to == 1, da ett slettes #}
-									{{ omrade.getKommendeArrangementer().getFirst().getNavn() }}
+									{{ arrangementerSammeType[0].getNavn() }}
 								{% else %}
 									det valgte arrangementet.
 								{% endif %}
