@@ -45,9 +45,9 @@
 
             <div class="form-group" style="margin-bottom: -.2em;">
                 <label for="username">Brukernavn</label>
-                <input class="form-control" id="username" type="text" name="username" value="{{user.getUsername()}}" required {{ user.isAvailableUsername(user.getUsername()) ? 'readonly' : '' }}/>
+                <input class="form-control" id="username" type="text" name="username" value="{{user.getUsername()}}" required {{ user.isAvailableUsername(user.getUsername()) or user.isReal() == true ? 'readonly' : '' }}/>
             </div>
-            {% if user.ID == 'new' or user.isAvailableUsername(user.getUsername()) == false %}
+            {% if user.ID == 'new' or user.isAvailableUsername(user.getUsername()) == false and user.isReal() == false %}
                 <div id="username_status" style="margin-bottom: 1em;">
                     <div id="username_loading" style="display: none;">
                         <img src="/wp-admin/images/wpspin_light.gif"/>
