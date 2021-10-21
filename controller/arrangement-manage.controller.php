@@ -11,6 +11,7 @@ use UKMNorge\Arrangement\Kontaktperson\Write as WriteKontakt;
 use UKMNorge\Innslag\Typer\Typer;
 use UKMNorge\Innslag\Personer\Person;
 use UKMNorge\Innslag\Write as WriteInnslag;
+use UKMNorge\Arrangement\Program\Write as WriteProgram;
 
 use UKMNorge\Meta\Write as MetaWrite;
 
@@ -124,6 +125,15 @@ elseif (isset($_POST['path'])) {
         // Legg til meta 'kunstgalleri' med verdi 'true' 
         $kunstgalleriMeta = $arrangement->getMeta('kunstgalleri')->setValue('true');
         MetaWrite::set($kunstgalleriMeta);
+
+        // Opprett en hendelse. Alle arrangementer of type kunstgalleri skal ha en hendelse når de opprettes.
+        // En hendelse trenger for å lege til kunstverk i.
+        $start = $arrangement->getStart();
+        $hendelse = WriteProgram::create(
+            $arrangement,
+            "Kunstgalleri hendelse",
+            $start
+        );
 
         /* Tillat bare utstilling innslag */
         // Fjern alle typer som legges til som standard når ingen er lagt til.
