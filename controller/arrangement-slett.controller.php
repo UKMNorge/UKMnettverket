@@ -10,7 +10,7 @@ $omrade = new Omrade($_GET['type'], (Int)$_GET['omrade']);
 
 $arrangementerSammeType = [];
 foreach($omrade->getKommendeArrangementer()->getAll() as $arrang) {
-    if($arrang->getId() != $arrangement->getId() && $arrang->erArrangement() == $arrangement->erArrangement()) {
+    if($arrang->getId() != $arrangement->getId() && $arrang->erArrangement() == $arrangement->erArrangement() && !$arrang->erKunstgalleri()) {
         $arrangementerSammeType[] = $arrang;
     }
 }
