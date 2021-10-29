@@ -9,6 +9,10 @@ use UKMNorge\Nettverk\Omrade;
 use UKMNorge\Wordpress\Blog;
 use UKMNorge\Arrangement\Kontaktperson\Write as WriteKontakt;
 use UKMNorge\Innslag\Typer\Typer;
+use UKMNorge\Innslag\Personer\Person;
+use UKMNorge\Innslag\Write as WriteInnslag;
+use UKMNorge\Arrangement\Program\Write as WriteProgram;
+
 use UKMNorge\Meta\Write as MetaWrite;
 
 require_once('UKM/Autoloader.php');
@@ -116,10 +120,40 @@ elseif (isset($_POST['path'])) {
 
     // Sett synlighet
     $arrangement->setSynlig($_POST['synlig'] == 'true');
+    
+    if( $_POST['type'] == 'kunstgalleri' ) {
+        // Legg til meta 'kunstgalleri' med verdi 'true' 
+        $kunstgalleriMeta = $arrangement->getMeta('kunstgalleri')->setValue('true');
+        MetaWrite::set($kunstgalleriMeta);
+
+        // Opprett en hendelse. Alle arrangementer of type kunstgalleri skal ha en hendelse når de opprettes.
+        // En hendelse trenger for å lege til kunstverk i.
+        $start = $arrangement->getStart();
+        $hendelse = WriteProgram::create(
+            $arrangement,
+            "Kunstgalleri hendelse",
+            $start
+        );
+
+        /* Tillat bare utstilling innslag */
+        // Fjern alle typer som legges til som standard når ingen er lagt til.
+        $arrangement->getInnslagTyper()->getAll(); // gjennomfør innlasting
+        foreach (Typer::getAllTyper() as $tilbud) {
+            try {
+                $arrangement->getInnslagtyper()->fjern(Typer::getByName($tilbud->getKey()));
+            } catch (Exception $e) {
+                if ($e->getCode() != 110001) {
+                    throw $e;
+                }
+            }
+        }
+        // Legg til bare utstilling
+        $arrangement->getInnslagTyper()->leggTil(Typer::getByKey('utstilling'));
+    }
 
     // Hvis dette er arrangement-arrangement 
     // (i motsetning til mønstring-arrangement), angi dette.
-    if( $_POST['type'] == 'arrangement' ) {
+    else if( $_POST['type'] == 'arrangement' ) {
         $arrangement->setSubtype('arrangement');
 
         // Fjern alle typer som legges til som standard når ingen er lagt til.
