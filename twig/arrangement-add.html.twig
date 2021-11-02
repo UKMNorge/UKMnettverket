@@ -41,16 +41,33 @@
     jQuery(document).on('keyup', '#arrangement_navn', function() {
         // Kommunen arrangerer sammen med andre: lag liste av kommunenavn
         if (jQuery('#omrade_type').val() == 'kommune' && jQuery('#radioButtonValue_sammen') && jQuery('#radioButtonValue_sammen').val() == 'yes') {
-            jQuery('#path_geo').val(UKMresources.arrangement.getPathFromForm(checkboxSelector)).change();
+            var value = UKMresources.arrangement.getPathFromForm(checkboxSelector);
+            
+            // Sjekker URL fordi det WP aksepterer URL mindre enn 100
+            if(value.length > 40) {
+                value = value.slice(0, 40);
+            }
+            jQuery('#path_geo').val(value).change();
         }
         // Første arrangement i kommunen overtar kommunens path
         else {
+            var value = UKMresources.arrangement.getPathFromForm(false, '#omrade_navn');
+            
+            // Sjekker URL fordi det WP aksepterer URL mindre enn 100
+            if(value.length > 40) {
+                value = value.slice(0, 40);
+            }
             jQuery('#path_geo').val(UKMresources.arrangement.getPathFromForm(false, '#omrade_navn')).change();
             //jQuery('#path-infos').slideUp(); // Skjul path - 
         }
         // Alle andre får arrangementsnavn
         
-        jQuery('#path_event').val(UKMresources.arrangement.getUrlFromName(jQuery('#arrangement_navn').val()));
+        // Sjekker arrangement navn på URL fordi det WP aksepterer URL mindre enn 100
+        arrangementNavn = UKMresources.arrangement.getUrlFromName(jQuery('#arrangement_navn').val());
+        if(arrangementNavn.length > 40) {
+            arrangementNavn = arrangementNavn.slice(0, 40);
+        }
+        jQuery('#path_event').val(arrangementNavn);
         
         jQuery('#path_event').trigger('focusout');
     });
