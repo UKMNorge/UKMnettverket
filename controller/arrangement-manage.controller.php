@@ -70,11 +70,13 @@ elseif (isset($_POST['path'])) {
         $_POST['path']
     );
 
+    $fellesmonstringKommuner = [];
     // Legg til alle kommuner i fellesmønstringen
     if (isset($_POST['kommuner']) && is_array($_POST['kommuner']) && sizeof($_POST['kommuner']) > 0) {
         $fellesmonstring = true;
         foreach ($_POST['kommuner'] as $kommune_id) {
             $kommune = new Kommune($kommune_id);
+            $fellesmonstringKommuner[] = $kommune;
             $arrangement->getKommuner()->leggTil($kommune);
         }
     } else {
@@ -349,6 +351,21 @@ elseif (isset($_POST['path'])) {
             // Forsikre oss om at kommunesiden inneholder kommune-info
             $kommune_blog_id = Blog::getIdByPath( $omrade->getKommune()->getPath() );
             Blog::fjernArrangementData( $kommune_blog_id );
+        }
+    }
+
+    // Legg til admins fra andre kommuner som er med i fellesmønstringen
+    if($fellesmonstring) {
+        try {
+            $blog_id = Blog::getIdByPath($_POST['path']);
+            foreach($fellesmonstringKommuner as $kommune) {
+                $omrade = Omrade::getByKommune($kommune->getId());
+                foreach($omrade->getAdministratorer()->getAll() as $admin) {
+                    Blog::leggTilBruker($blog_id, $admin->getId(), 'editor');
+                }
+            }
+        } catch(Exception $e) {
+            throw $e;
         }
     }
 
