@@ -1,6 +1,6 @@
 {% set arrangementer = show == 'kommende' ? omrade.getKommendeArrangementer() : omrade.getTidligereArrangementer() %}
 <ol class="list-group">
-	{% for arrangement in arrangementer.getAll()|filter(arrangement => arrangement.getSesong() > 2019) %}
+	{% for arrangement in arrangementer.getAll()|filter(arrangement => arrangement.getSesong() > 2019)|reverse %}
 		<li class="list-group-item">
 			<div class="float-right pull-right">
 				<a href="{{ arrangement.getLink() }}wp-admin/" target="_blank">
