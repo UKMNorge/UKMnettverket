@@ -179,6 +179,9 @@ elseif (isset($_POST['path'])) {
     // Hvilket område jobber vi med?
     $omrade = new Omrade($_GET['type'], $_GET['omrade']);
 
+    // Original område hvor arrangementet opprettes
+    $original_omrade = new Omrade($_GET['type'], $_GET['omrade']);
+
     /////////////////////
     /// OPPRETT BLOGG ///
     /////////////////////
@@ -370,7 +373,7 @@ elseif (isset($_POST['path'])) {
     }
 
     // Legg til admins som kontakter og administratorer for bloggen
-    foreach ($omrade->getAdministratorer()->getAll() as $admin) {
+    foreach ($original_omrade->getAdministratorer()->getAll() as $admin) {
         Blog::leggTilBruker($blog_id, $admin->getId(), 'editor');
 
         $kontakt = WriteKontakt::create(
