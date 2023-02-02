@@ -33,7 +33,7 @@ var uploadFile = function(e) {
             return myXhr;
         },
         success: function (data) {
-            // your callback here
+            location.reload();
         },
         error: function (error) {
             // handle error
