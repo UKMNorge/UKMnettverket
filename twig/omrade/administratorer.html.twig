@@ -3,7 +3,7 @@
 <ol class="list-group">
 	{% for admin in omrade.getAdministratorer().getAll() %}
 		<li
-			class="list-group-item">
+			class="box-admin">
 			<!-- Slett bruker -->
 			<div class="float-right pull-right">
 				<a href="?page={{ GET('page') }}&removeAdmin={{ admin.getId() }}&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}">
@@ -23,6 +23,7 @@
 					<span class="dashicons dashicons-{{action == 'hideAdmin' ? 'visibility' : 'hidden' }}" style="margin-left:.5 rem"></span>
 				</a>
 			</div>
+			
 			{% if is_super_admin %}
 				<div class="float-right pull-right" style="margin-right: .7rem;">
 					<a class="superadmin" href="/wp-admin/network/user-edit.php?user_id={{ admin.getId() }}">
@@ -38,13 +39,38 @@
 						{{ admin.getUser().getUsername() }}</small>
 				{% endif %}
 			</div>
+			{% if admin.erKontaktperson(omrade) %}
+				{% set bilde = admin.getKontaktperson().getBilde() %}
+				
+
+				{% if bilde %}
+					<div>
+						<img class="bruker-img" src="{{ bilde }}" />
+					</div>
+				{% else %}
+					<div class="last-opp-bilde">
+						<a class="button-profilbilde btn btn-light collapsed" data-toggle="collapse" href="#collapseDiv{{ admin.getId() }}" role="button" aria-expanded="false" aria-controls="collapseDiv{{ admin.getId() }}">
+							+ Profilbilde
+						</a>
+						<div>
+							<div class="collapse" id="collapseDiv{{ admin.getId() }}">
+								<div class="card card-body">
+									Last opp profilbilde: <input class="admin-profile-picture" admin-id="{{ admin.getUser().getId() }}" type="file" name="profile_picture" />
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endif %}
+				
+			{% endif %}
+			
 		</li>
 	{% else %}
-		<li class="list-group-item">
+		<li class="box-admin">
 			Ingen administratorer er lagt til enda.
 		</li>
 	{% endfor %}
-	<ol class="list-group-item">
+	<ol class="box-admin">
 		<a href="?page={{ GET('page') }}&action=administrator-add&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}" style="text-decoration: none;">
 			<span class="dashicons dashicons-plus"></span>
             Legg til administrator
@@ -60,3 +86,33 @@
     </b>
     Angi om administratoren skal vises på {{ omrade.getNavn() }} <a href="{{ omrade.getLink() }}kontaktpersoner/">sin kontaktside</a>.
 </p>
+
+
+<style>
+.bruker-img {
+	width: 140px !important;
+	height: auto !important;
+	border-radius: 3px;
+	margin-top: 10px;
+}
+.last-opp-bilde {
+	margin: 10px 0;
+}
+.button-profilbilde.collapsed {
+	display: inline;
+}
+.button-profilbilde {
+	display: none;
+}
+.box-admin {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 2px 7px #00000014;
+    margin-bottom: 4px;
+    overflow: hidden;
+    padding: 15px;
+    position: relative;
+    width: 100%;
+    padding: 20px;
+}
+</style>
