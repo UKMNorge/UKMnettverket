@@ -190,6 +190,10 @@ class UKMnettverket extends Modul
             'UKMnettverket_administratorer',
             static::getPluginUrl() . 'js/administratorer.js'
         );
+        wp_enqueue_script(
+            'UKMnettverket_bildeadmin',
+            static::getPluginUrl() . 'js/bilde-admin.js'
+        );
     }
 
     public static function renderFylke()
