@@ -32,6 +32,7 @@ if (isset($_GET['removeAdmin'])) {
     }
     catch(Exception $e) {
         UKMnettverket::getFlash()->error('Administrator finnes ikke!');
+        return false;
     }
     if ($res) {
         UKMnettverket::getFlash()->add(
