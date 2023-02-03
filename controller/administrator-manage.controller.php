@@ -28,11 +28,11 @@ if (isset($_GET['removeAdmin'])) {
     );
     try{
         $admin = $omrade->getAdministratorer()->get((int) $_GET['removeAdmin']);
+        $res = WriteOmrade::fjernAdmin($omrade, $admin);
     }
     catch(Exception $e) {
         UKMnettverket::getFlash()->error('Administrator finnes ikke!');
     }
-    $res = WriteOmrade::fjernAdmin($omrade, $admin);
     if ($res) {
         UKMnettverket::getFlash()->add(
             'success',
