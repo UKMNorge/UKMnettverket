@@ -11,6 +11,11 @@ var uploadFile = function(e) {
         return;
     }
 
+    var parent = jQuery(e.target).parent().parent();
+    parent.find('.last-opp').hide();
+    parent.find('.last-opp-vent').removeClass('hide');
+    
+
     var that = this;
     var formData = new FormData();
     
@@ -20,7 +25,6 @@ var uploadFile = function(e) {
     formData.append("action", 'UKMnettverket_ajax');
     formData.append("controller", 'uploadAdminBilde');
     formData.append("adminId", jQuery(e.target).attr('admin-id'));
-
 
     jQuery.ajax({
         type: "POST",
