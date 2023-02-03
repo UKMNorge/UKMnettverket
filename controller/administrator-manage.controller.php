@@ -26,7 +26,12 @@ if (isset($_GET['removeAdmin'])) {
         (int) $_GET['omrade'],
         (int) get_option('season')
     );
-    $admin = $omrade->getAdministratorer()->get((int) $_GET['removeAdmin']);
+    try{
+        $admin = $omrade->getAdministratorer()->get((int) $_GET['removeAdmin']);
+    }
+    catch(Exception $e) {
+        UKMnettverket::getFlash()->error('Administrator finnes ikke!');
+    }
     $res = WriteOmrade::fjernAdmin($omrade, $admin);
     if ($res) {
         UKMnettverket::getFlash()->add(
