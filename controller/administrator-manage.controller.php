@@ -31,7 +31,7 @@ if (isset($_GET['removeAdmin'])) {
         $res = WriteOmrade::fjernAdmin($omrade, $admin);
     }
     catch(Exception $e) {
-        UKMnettverket::getFlash()->error('Administrator finnes ikke!');
+        // Admin finnes ikke. Dette skjer når admin er slettet og kallet kjøres flere ganger og derfor brukeren ikke nødvendigvis må få beskjed om det.
         return false;
     }
     if ($res) {
