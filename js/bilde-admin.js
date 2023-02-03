@@ -2,7 +2,41 @@ jQuery(document).ready( function(){
     jQuery('.admin-profile-picture').change((e) => {
         uploadFile(e);
     });
+
+    jQuery('.button-slett-bilde').click((e) => {
+        slettBilde(e);
+    });
 });
+
+var slettBilde = function(e) {
+    var adminId = jQuery(e.currentTarget).attr('admin-id');
+    
+    var data = {
+        adminId : adminId,
+        action: 'UKMnettverket_ajax',
+        controller: 'slettAdminBilde',
+    };
+
+    jQuery.ajax({
+        type: "POST",
+        url: ajaxurl,
+        xhr: function () {
+            var myXhr = jQuery.ajaxSettings.xhr();
+            if (myXhr.upload) {
+                // myXhr.upload.addEventListener('progress', that.progressHandling, false);
+            }
+            return myXhr;
+        },
+        success: function (data) {
+            location.reload();
+        },
+        error: function (error) {
+            // handle error
+        },
+        async: true,
+        data: data,
+    });
+};
 
 
 var uploadFile = function(e) {
