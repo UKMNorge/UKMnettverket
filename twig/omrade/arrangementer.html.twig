@@ -21,7 +21,7 @@
                                         arrangement.getStart()|dato('j. M') :
                                         'ikke registrert'
                                 }}
-					{% if arrangement.getStop()|dato('Y') < season %}
+					{% if arrangement.getStop()|dato('Y') < season-3 %}
 					- <a href="{{ arrangement.getLink() }}wp-admin/admin.php?page=UKMmonstring" target="_blank" class="text-danger bold">ugyldig sluttdato</a>
 					{% elseif arrangement.getStart()|dato('j. M.') != arrangement.getStop()|dato('j. M.') %}
 					- {{ arrangement.getStop()|dato('j. M')}}
