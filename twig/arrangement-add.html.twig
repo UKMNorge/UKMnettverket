@@ -111,6 +111,11 @@
         });
         jQuery('#arrangement_navn').keyup();
 
+
+        // Prevent click events on not-clikable-checkbox
+        jQuery('.not-clikable-checkbox').click((event) => {
+            event.preventDefault(); // Cancel the click event
+        });
     });
 </script>
 
@@ -252,12 +257,23 @@
 
                 <div class="col-xs-6 col-sm-4 col-lg-3">
 
+                {% set fellesPathKommuner = omrade.getKommune().getKommunerOnSamePath() %}
+                {% if fellesPathKommuner %}
+                    <div class="btn-group radioButtons" data-name="sammen">
+                        <button type="button" class="btn btn-default selected" value="yes">
+                            &nbsp; Ja &nbsp;</button>
+                        <button type="button" class="btn btn-default disabled" value="no">
+                            &nbsp; Nei &nbsp;</button>
+                    </div>
+                {% else %}
                     <div class="btn-group radioButtons" data-name="sammen">
                         <button type="button" class="btn btn-default" value="yes">
                             &nbsp; Ja &nbsp;</button>
                         <button type="button" class="btn btn-default selected" value="no">
                             &nbsp; Nei &nbsp;</button>
                     </div>
+                {% endif %}
+                    
                 </div>
             </div>
 
@@ -270,7 +286,24 @@
                             at ungdom velger å delta eller ikke.
                             Dette er viktig å tenke gjennom før man oppretter en fellesmønstring.
                         </p>
+                        {% if fellesPathKommuner %}
+                            <div class="alert alert-info" role="alert">
+                                Din kommune bruker felles kommuneside derfor blir det obligatorisk å arrangere sammen med andre kommuner!
+                                <br><br>Ta kontakt med support@ukm.no hvis du synes at det er feil!
+                            </div>
+                        {% endif %}
+                        
                         <ol class="list-group">
+                            {# Legg til kommuner som har felles kommuneside #}
+                            {% for kommune in fellesPathKommuner %}
+                                <li class="list-group-item">
+                                    <label class="text-muted">
+                                        <input class="form-control not-clikable-checkbox" type="checkbox" value="{{kommune.getId()}}" name="kommuner[]" data-name="{{kommune.getNavn()}}" checked/>
+                                        {{ kommune.getNavn() }}
+                                    </label>
+                                </li>
+                            {% endfor %}
+
                             {% for kommune in omrade.getFylke().getKommuner().getAll() %}
                                 <li class="list-group-item">
                                     <label class="{{ kommune.getId() == omrade.getKommune().getId() ? 'text-muted'}}">
