@@ -1,8 +1,16 @@
 {% set path = omrade.getType() == 'kommune' ? omrade.getKommune().getPath() : omrade.getFylke().getPath() %}
 <p>
     {% if omrade.getType() == 'kommune' %}
-        Fordi du har flere arrangement, finnes det også en kommuneside for {{omrade.getNavn()}} 
-        hvor du kan ha et eget forsidebilde, eller informasjon til deltakere som lurer på hvilket arrangement de skal velge.
+        {% if omrade.getKommune().getKommunerOnSamePath() %}
+            {{omrade.getNavn()}} bruker felles kommuneside som betyr at kommunesiden kan også redigeres fra 
+            {% for kommune in omrade.getKommune().getKommunerOnSamePath() %}
+                {{ kommune.getNavn() }}{% if not loop.last %},{% else %}.{% endif %}
+            {% endfor %}
+            Kommunesiden kan ha et eget forsidebilde, eller informasjon til deltakere som lurer på hvilket arrangement de skal velge.
+        {% else %}
+            Fordi du har flere arrangement, finnes det også en kommuneside for {{omrade.getNavn()}} 
+            hvor du kan ha et eget forsidebilde, eller informasjon til deltakere som lurer på hvilket arrangement de skal velge.
+        {% endif %}
     {% else %}
         I tillegg til at hvert av dine arrangement har en egen nettside, finnes det også en fylkesside for {{omrade.getNavn() }}.
         Denne siden kan ha et eget forsidebilde, og informasjon til deltakere som lurer på hvorfor det finnes flere fylkesfestivaler, 

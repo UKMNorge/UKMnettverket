@@ -17,6 +17,16 @@
 							{% endif %}
 						</p>
 
+						{% set kommunerOnSamePath = omrade.getKommune().getKommunerOnSamePath() %}
+						{% if kommunerOnSamePath|length > 0 %}
+							<h5>{{ omrade.getNavn() }} bruker felles nettside sammen med:
+							{% for kommune in kommunerOnSamePath %}
+								{{ kommune.getNavn() }}{% if not loop.last %},{% else %}.{% endif %}
+							{% endfor %}
+							</h5>
+						{% endif %}
+						
+
 						{% include "nettside/omrade.html.twig" %}
 
 						{% if is_super_admin and omrade.getType() == 'kommune' %}
