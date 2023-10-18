@@ -1,0 +1,29 @@
+<div class="">
+    <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/wp-admin/user/">Min side</a></li>
+    {% if omrade.getType() == 'fylke' %}
+        <li class="breadcrumb-item active" aria-current="page">{{ omrade.getNavn() }}</li>
+    {% elseif omrade.getType() == 'kommune' %}
+        {% set fylke = omrade.getKommune().getFylke() %}
+        {% set kommune = omrade.getKommune() %}
+
+        {% if flerekommuner %}
+            <li class="breadcrumb-item"><a href="?page=UKMnettverket_kommune">Dine kommuner</a></li>        
+        {% else %}
+            <li class="breadcrumb-item"><a href="?page=UKMnettverket_fylke&omrade={{ fylke.getId() }}&type=fylke">{{ fylke.getNavn() }}</a></li>        
+        {% endif %}
+        
+        <li class="breadcrumb-item active" aria-current="page">{{ kommune.getNavn() }}</li>
+    {% endif %}
+    </ol>
+    </nav>
+</div>
+
+<style>
+.breadcrumb {
+    margin-top: 20px;
+    margin-bottom: 0;
+    background: #fff;
+}
+</style>
