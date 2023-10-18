@@ -3,7 +3,9 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/wp-admin/user/">Min side</a></li>
     {% if omrade.getType() == 'fylke' %}
-        <li class="breadcrumb-item active" aria-current="page">{{ omrade.getNavn() }}</li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <span class="badge badge-info">{{ omrade.getNavn() }}</span>
+        </li>
     {% elseif omrade.getType() == 'kommune' %}
         {% set fylke = omrade.getKommune().getFylke() %}
         {% set kommune = omrade.getKommune() %}
@@ -14,7 +16,9 @@
             <li class="breadcrumb-item"><a href="?page=UKMnettverket_fylke&omrade={{ fylke.getId() }}&type=fylke">{{ fylke.getNavn() }}</a></li>        
         {% endif %}
         
-        <li class="breadcrumb-item active" aria-current="page">{{ kommune.getNavn() }}</li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <span class="badge badge-info">{{ kommune.getNavn() }}</span>
+        </li>
     {% endif %}
     </ol>
     </nav>
@@ -28,5 +32,8 @@
 }
 .breadcrumb > li {
     margin-bottom: 0;
+}
+.label-info, .badge-info {
+    background: #3a87ad;
 }
 </style>
