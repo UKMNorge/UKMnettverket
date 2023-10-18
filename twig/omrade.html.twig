@@ -1,6 +1,9 @@
 {% set URL = '?page='~ GET('page') ~'&omrade='~ GET('omrade') ~'&type='~ GET('type') %}
 <div class="container-fluid">
 	<div class="row">
+		<div class="col-xs-12">
+			{% include "breadcrumb.html.twig" %}
+		</div>
 		<div class="col-xs-12 col-md-8">
 			<h2>{{ omrade.getNavn()}}</h2>
 			{% include "wp_modul.flashbag.html.twig" %}
@@ -185,3 +188,36 @@
 		{% endif %}
 	</div>
 </div>
+
+
+{% if omrade.getType() == 'kommune' or omrade.getType() == 'fylke' %}
+<style>
+#adminmenu li {
+	/* visibility: hidden;
+	display: none; */
+}
+</style>
+<script>
+var items = jQuery('#adminmenu li').detach();
+
+var nettsidePath = "//{{UKM_HOSTNAME}}{{ omrade.getType() == 'kommune' ? omrade.getKommune().getPath() : omrade.getFylke().getPath() }}wp-admin/edit.php?page=UKMnettside"
+
+var el0 = jQuery(items[0]);
+
+jQuery(el0.find('.wp-menu-name')).html('Tilbake');
+jQuery(el0.find('.wp-submenu')).detach();
+jQuery(el0.find('.wp-menu-image')).removeClass('dashicons-dashboard').addClass('dashicons-arrow-left-alt');
+
+var el1 = el0.clone()
+jQuery(el1.find('.wp-menu-name')).html('Nettside');
+jQuery(el1.find('.wp-menu-image')).removeClass('dashicons-dashboard').addClass('dashicons-desktop');
+jQuery(el1.find('a')).attr('href', nettsidePath);
+
+
+
+
+jQuery('#adminmenu').append(el0);
+jQuery('#adminmenu').append(el1);
+
+</script>
+{% endif %}
