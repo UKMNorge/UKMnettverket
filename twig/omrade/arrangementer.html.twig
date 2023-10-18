@@ -1,11 +1,16 @@
 {% set arrangementer = show == 'kommende' ? omrade.getKommendeArrangementer() : omrade.getTidligereArrangementer() %}
 <ol class="list-group">
+{% set URLDeleteArrang = '?page='~ GET('page') ~'&omrade='~ omrade.getForeignId() ~'&type='~ omrade.getType() %}
 	{% for arrangement in arrangementer.getAll()|filter(arrangement => arrangement.getSesong() > 2019)|reverse %}
 		<li class="list-group-item">
 			<div class="float-right pull-right">
-				<a href="{{ arrangement.getLink() }}wp-admin/" target="_blank">
-					<span class="dashicons dashicons-external"></span>
+			{% if arrangement.erFerdig() == false %}
+				<a href="{{ URLDeleteArrang }}&action={{arrangement.erKunstgalleri() ? 'kunstgalleri' : 'arrangement' }}-slett&arr={{arrangement.getId() }}">
+					<span class="dashicons dashicons-trash"></span>
 				</a>
+			{% endif %}
+			
+                                                
 			</div>
 			<b>
 				<a href="{{ arrangement.getLink() }}wp-admin/" target="_blank">
