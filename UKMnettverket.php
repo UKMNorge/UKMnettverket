@@ -158,7 +158,7 @@ class UKMnettverket extends Modul
             global $menu;
             
             // Endre tittel på admin bar
-            add_action('wp_before_admin_bar_render', ['UKMnettverket', 'changeAdminBarInfo'], 10001);
+            add_action('wp_before_admin_bar_render', 'changeAdminBarInfo', 10005);
 
             foreach ($menu as $key => $item) {
                 if($item[0] != 'Min side' && $item[0] != 'Nettside' ) {
@@ -272,23 +272,6 @@ class UKMnettverket extends Modul
         echo '</script>';
         exit;
     }
-
-
-    public static function changeAdminBarInfo() {
-        global $wp_admin_bar;
-
-        if(isset($_GET['omrade']) && isset($_GET['type'])) {
-            $kommuneEllerFylke = $_GET['type'] == 'kommune' ? Omrade::getByKommune($_GET['omrade'])->getKommune() : Omrade::getByFylke($_GET['omrade'])->getFylke();
-            $args = array(
-                'id'    => 'wp-logo',
-                'title' => '<img src="//grafikk.ukm.no/profil/logoer/UKM_logo_sort_0100.png" id="UKMlogo" />' . $kommuneEllerFylke->getNavn() . ' - admin side',
-                'href'  => user_admin_url(),
-                'meta'  => array('class' => 'kommune-fylke')
-            );
-            $wp_admin_bar->add_node($args);
-        }        
-    }
-
 }
 
 UKMnettverket::init(__DIR__);
