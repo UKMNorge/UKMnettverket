@@ -11,7 +11,7 @@
         {% set kommune = omrade.getKommune() %}
 
         {% if flerekommuner %}
-            <li class="breadcrumb-item"><a href="?page=UKMnettverket_kommune">Dine kommuner</a></li>        
+            <li class="breadcrumb-item"><a href="?page=UKMnettverket_kommune">Mine kommuner</a></li>        
         {% else %}
             <li class="breadcrumb-item"><a href="?page=UKMnettverket_fylke&omrade={{ fylke.getId() }}&type=fylke">{{ fylke.getNavn() }}</a></li>        
         {% endif %}

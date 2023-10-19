@@ -111,7 +111,7 @@ class UKMnettverket extends Modul
             } elseif (static::getCurrentAdmin()->getAntallOmrader('kommune') == 1) {
                 $meny = static::getCurrentAdmin()->getOmrade('kommune')->getNavn();
             } else {
-                $meny = 'Dine kommuner';
+                $meny = 'Mine kommuner';
             }
 
             $scripts[] = add_menu_page(
