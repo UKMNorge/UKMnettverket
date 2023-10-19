@@ -88,7 +88,7 @@ class UKMnettverket extends Modul
         // Hvis vedkommende er admin for ett eller flere fylker
         if (static::erCurrentAdminFylkeAdmin()) {
             $meny = (static::getCurrentAdmin()->getAntallOmrader('fylke') == 1) ?
-                static::getCurrentAdmin()->getOmrade('fylke')->getNavn() : 'Dine fylker';
+                static::getCurrentAdmin()->getOmrade('fylke')->getNavn() : 'Mine fylker';
             $scripts[] = add_menu_page(
                 'GEO',
                 $meny,
@@ -106,7 +106,7 @@ class UKMnettverket extends Modul
                 if (static::getCurrentAdmin()->getOmrade('kommune')->getId() == 'kommune_' . $_GET['omrade']) {
                     $meny = static::getCurrentAdmin()->getOmrade('kommune')->getNavn();
                 } else {
-                    $meny = 'Dine kommuner';
+                    $meny = 'Mine kommuner';
                 }
             } elseif (static::getCurrentAdmin()->getAntallOmrader('kommune') == 1) {
                 $meny = static::getCurrentAdmin()->getOmrade('kommune')->getNavn();
