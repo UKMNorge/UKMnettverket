@@ -165,6 +165,7 @@ class UKMnettverket extends Modul
                     unset($menu[$key]);
                 }
                 elseif($item[0] == 'Nettside') {
+                    $menu[$key][0] = $_GET['type'] == 'kommune' ? 'Kommune nettside' : 'Fylke nettside';
                     $kommuneEllerFylke = $_GET['type'] == 'kommune' ? Omrade::getByKommune($_GET['omrade'])->getKommune() : Omrade::getByFylke($_GET['omrade'])->getFylke();
                     $menu[$key][2] = $kommuneEllerFylke->getPath() . 'wp-admin/edit.php?page=UKMnettside';
                     
