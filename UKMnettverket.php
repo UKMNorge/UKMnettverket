@@ -152,13 +152,16 @@ class UKMnettverket extends Modul
             25
         );
 
+        if(isset($_GET['page']) && ($_GET['page'] == 'UKMnettverket_kommune' || $_GET['page'] == 'UKMnettverket_fylke')) {
+            // Endre tittel på admin bar
+            add_action('wp_before_admin_bar_render', 'changeAdminBarInfo', 10005);
+        }
 
         // Fjerner alle meny items bortsett fra ... for kommmune og fylke
         if(isset($_GET['omrade']) && isset($_GET['type'])) {
             global $menu;
             
-            // Endre tittel på admin bar
-            add_action('wp_before_admin_bar_render', 'changeAdminBarInfo', 10005);
+            
 
             foreach ($menu as $key => $item) {
                 if($item[0] != 'Min side' && $item[0] != 'Nettside' ) {
