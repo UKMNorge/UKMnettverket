@@ -156,10 +156,11 @@ class UKMnettverket extends Modul
         // Fjerner alle meny items bortsett fra ... for kommmune og fylke
         if(isset($_GET['page']) && ($_GET['page'] == 'UKMnettverket_kommune' || $_GET['page'] == 'UKMnettverket_fylke')) {
             global $menu;
-            // Endre tittel på admin bar
-            add_action('wp_before_admin_bar_render', 'changeAdminBarInfo', 10005);
-            
+            global $kommuneEllerFylke;
             $kommuneEllerFylke = null;
+
+            // Endre tittel på admin bar
+            add_action('wp_before_admin_bar_render', ['UKMnettverket', '_changeAdminBarInfo'], 10005);
             
             // URL har ukmNettverket_[fylke eller kommune] og har single fylke eller kommune
             if($_GET['page'] == 'UKMnettverket_fylke' && static::getCurrentAdmin()->getAntallOmrader('fylke') == 1) {
@@ -181,6 +182,14 @@ class UKMnettverket extends Modul
                         $menu[$key][0] = $kommuneEllerFylke instanceof Kommune ? 'Kommune nettside' : 'Fylke nettside';
                         $menu[$key][2] = $kommuneEllerFylke->getPath() . 'wp-admin/edit.php?page=UKMnettside';
                     }
+                }
+            }
+        }
+        else {
+            global $menu;
+            foreach ($menu as $key => $item) {
+                if($item[0] == 'Min side' || $item[0] == 'Nettside' ) {
+                    unset($menu[$key]);
                 }
             }
         }
@@ -277,6 +286,12 @@ class UKMnettverket extends Modul
         echo 'window.location.href = "/wp-admin/user/";';
         echo '</script>';
         exit;
+    }
+
+    public static function _changeAdminBarInfo() {
+        global $kommuneEllerFylke; // Make the $kommuneEllerFylke object accessible within this function.
+        $navn = $kommuneEllerFylke ? $kommuneEllerFylke->getNavn() . ' - admin side' : null;
+        changeAdminBarInfo($navn);
     }
 }
 
