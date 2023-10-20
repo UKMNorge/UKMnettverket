@@ -249,7 +249,7 @@ class UKMnettverket extends Modul
         wp_enqueue_style('UKMwp_dash_css');
         wp_enqueue_script('WPbootstrap3_js');
         wp_enqueue_style('WPbootstrap3_css');
-        wp_enqueue_style('UKMvideoArrSysStyle', '//assets.' . UKM_HOSTNAME . '//css/arr-sys.css');
+    	wp_enqueue_style('UKMArrSysStyle');
 
 
         wp_enqueue_style(
