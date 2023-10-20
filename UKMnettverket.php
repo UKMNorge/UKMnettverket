@@ -8,6 +8,7 @@ Version: 1.0
 Author URI: http://mariusmandal.no
 */
 
+use UKMNorge\Geografi\Kommune;
 use UKMNorge\Nettverk\Administrator;
 use UKMNorge\Nettverk\Omrade;
 use UKMNorge\Wordpress\Modul;
@@ -151,35 +152,35 @@ class UKMnettverket extends Modul
             'dashicons-desktop', #//ico.ukm.no/system-16.png',
             25
         );
-
+        
+        // Fjerner alle meny items bortsett fra ... for kommmune og fylke
         if(isset($_GET['page']) && ($_GET['page'] == 'UKMnettverket_kommune' || $_GET['page'] == 'UKMnettverket_fylke')) {
+            global $menu;
             // Endre tittel på admin bar
             add_action('wp_before_admin_bar_render', 'changeAdminBarInfo', 10005);
-        }
-
-        // Fjerner alle meny items bortsett fra ... for kommmune og fylke
-        if(isset($_GET['omrade']) && isset($_GET['type'])) {
-            global $menu;
             
+            $kommuneEllerFylke = null;
             
-
-            foreach ($menu as $key => $item) {
-                if($item[0] != 'Min side' && $item[0] != 'Nettside' ) {
-                    unset($menu[$key]);
-                }
-                elseif($item[0] == 'Nettside') {
-                    $menu[$key][0] = $_GET['type'] == 'kommune' ? 'Kommune nettside' : 'Fylke nettside';
-                    $kommuneEllerFylke = $_GET['type'] == 'kommune' ? Omrade::getByKommune($_GET['omrade'])->getKommune() : Omrade::getByFylke($_GET['omrade'])->getFylke();
-                    $menu[$key][2] = $kommuneEllerFylke->getPath() . 'wp-admin/edit.php?page=UKMnettside';
-                    
-                }
+            // URL har ukmNettverket_[fylke eller kommune] og har single fylke eller kommune
+            if($_GET['page'] == 'UKMnettverket_fylke' && static::getCurrentAdmin()->getAntallOmrader('fylke') == 1) {
+                $kommuneEllerFylke = static::getCurrentAdmin()->getOmrade('fylke')->getFylke();
             }
-        }
-        else {
-            global $menu;
-            foreach ($menu as $key => $item) {
-                if($item[0] == 'Min side' || $item[0] == 'Nettside' ) {
-                    unset($menu[$key]);
+            elseif($_GET['page'] == 'UKMnettverket_kommune' && static::getCurrentAdmin()->getAntallOmrader('kommune') == 1) {
+                $kommuneEllerFylke = static::getCurrentAdmin()->getOmrade('kommune')->getKommune();
+            }
+            else if(isset($_GET['omrade']) && isset($_GET['type'])) {
+                $kommuneEllerFylke = $_GET['type'] == 'kommune' ? Omrade::getByKommune($_GET['omrade'])->getKommune() : Omrade::getByFylke($_GET['omrade'])->getFylke();
+            }
+
+            if($kommuneEllerFylke) {
+                foreach ($menu as $key => $item) {
+                    if($item[0] != 'Min side' && $item[0] != 'Nettside' ) {
+                        unset($menu[$key]);
+                    }
+                    elseif($item[0] == 'Nettside') {
+                        $menu[$key][0] = $kommuneEllerFylke instanceof Kommune ? 'Kommune nettside' : 'Fylke nettside';
+                        $menu[$key][2] = $kommuneEllerFylke->getPath() . 'wp-admin/edit.php?page=UKMnettside';
+                    }
                 }
             }
         }
