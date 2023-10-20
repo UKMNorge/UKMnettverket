@@ -4,15 +4,18 @@
 		<div class="col-xs-12">
 			{% include "breadcrumb.html.twig" %}
 		</div>
+		<div class="col-xs-12">
+			<h2 class="nom as-margin-top-space-4 as-margin-bottom-space-2">{{ omrade.getNavn()}}</h2>
+		</div>
+
 		<div class="col-xs-12 col-md-8">
-			<h2>{{ omrade.getNavn()}}</h2>
 			{% include "wp_modul.flashbag.html.twig" %}
 
 			{% if omrade.getType() == 'kommune' %}
 				<ul class="list-group">
 					<li class="nop as-card-1 as-padding-space-3 as-margin-bottom-space-2">
 						<p>Lokalside:
-							<a href="//{{UKM_HOSTNAME}}{{ omrade.getKommune().getPath() }}">{{UKM_HOSTNAME}}{{omrade.getKommune().getPath()}}</a>
+							<b>{{UKM_HOSTNAME}}{{omrade.getKommune().getPath()}}</b>
 							{% if is_super_admin and not blog_eksisterer %}
 								<code>⚠️ siden finnes ikke!</code>
 							{% elseif is_super_admin and blog_slettet %}
@@ -82,9 +85,9 @@
 				</li>
 			{% elseif omrade.getType() == 'fylke' %}
 				<ul class="list-group">
-					<li class="list-group-item">
+					<li class="nop as-card-1 as-padding-space-3 as-margin-bottom-space-2">
 						<p>Fylkessiden:
-							<a href="//{{UKM_HOSTNAME}}{{ omrade.getFylke().getPath() }}">{{UKM_HOSTNAME}}{{omrade.getFylke().getPath()}}</a>
+							<b>{{UKM_HOSTNAME}}{{omrade.getFylke().getPath()}}</b>
 							{% if is_super_admin and not blog_eksisterer %}
 								<code>⚠️ siden finnes ikke!</code>
 							{% elseif is_super_admin and blog_slettet %}
@@ -116,10 +119,9 @@
 			{% endif %}
 		</div>
 		{% if omrade.getType() == 'fylke' %}
-			<h2>&nbsp;</h2>
 			<div class="col-xs-12 col-md-4">
 				<ul class="list-group">
-					<li class="list-group-item">
+					<li class="nop as-card-1 as-padding-space-3 as-margin-bottom-space-2">
 						<p>
 							<b>Kontaktinformasjon til administratorer i
 								{{ omrade.getNavn() }}</b>
@@ -171,10 +173,10 @@
 
 		{% if omrade.getType() == 'fylke' %}
 			<div class="col-xs-12 col-md-4">
-				<h4>{{ omrade.getFylke().erOslo() ? 'Bydeler' : 'Kommuner' }}</h4>
+				<h4 class="nom as-margin-top-space-2 as-margin-bottom-space-2">{{ omrade.getFylke().erOslo() ? 'Bydeler' : 'Kommuner' }}</h4>
 				<ul class="list-group">
 					{% for kommune in omrade.getFylke().getKommuner().getAll() %}
-						<li class="list-group-item">
+						<li class="nop as-card-2 as-padding-space-2 as-margin-bottom-space-1 arrangement">
 							<div class="float-right pull-right">
 								<a href="?page=UKMnettverket_kommune&omrade={{ kommune.getId() }}&type=kommune">
 									<span class="dashicons dashicons-edit"></span>
@@ -185,7 +187,7 @@
 							</a>
 						</li>
 					{% endfor %}
-				</ol>
+				</ul>
 			</div>
 		{% endif %}
 	</div>
