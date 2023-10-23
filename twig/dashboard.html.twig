@@ -12,6 +12,9 @@
         font-size: 1.4em;
         line-height: 1.3em;
     }
+    #adminmenu li {
+        visibility: visible !important;
+    }
 </style>
 {% include "wp_modul.flashbag.html.twig" %}
 
@@ -19,9 +22,9 @@
     <h2>Velg område</h2>
     <div class="row">
         {% for omrade in omrader %}
-            <div class="col-xs-6 col-sm-3 col-lg-3">
-                <div class="card" style="text-align: center;">
-                    <a href="?page={{GET('page')}}&omrade={{omrade.getForeignId()}}&type={{omrade.getType()}}">
+            <div class="col-xs-6 col-sm-3 col-lg-3 as-margin-top-space-4">
+                <div class="nop as-card-2 as-padding-space-3 as-margin-bottom-space-2" style="text-align: center;">
+                    <a href="?page={{GET('page')}}&omrade={{omrade.getForeignId()}}&type={{omrade.getType()}}&flerekommuner={{omrade.getType()=='kommune'}}">
                         <div style="font-size: 3em; text-align: center;">
                             <span class="dashicons dashicons-location"></span>
                         </div>
@@ -44,7 +47,7 @@
                             Hvis du velger "<a href="?page=UKMnettverket_fylke">{{ (current_admin.getOmrader('fylke')|first).getNavn() }}</a>" i menyen til venstre, kan du velge ett av dine fylker, 
                             og deretter redigere administratorer og arrangement for dine kommuner.
                         {% else %}
-                            Hvis du velger "Dine fylker" i menyen til venstre, kan du velge ett av dine fylker, 
+                            Hvis du velger "Mine fylker" i menyen til venstre, kan du velge ett av dine fylker, 
                             og deretter redigere administratorer og arrangement for dine kommuner.
                         {% endif %}
                     {% else %}

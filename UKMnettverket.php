@@ -8,7 +8,9 @@ Version: 1.0
 Author URI: http://mariusmandal.no
 */
 
+use UKMNorge\Geografi\Kommune;
 use UKMNorge\Nettverk\Administrator;
+use UKMNorge\Nettverk\Omrade;
 use UKMNorge\Wordpress\Modul;
 
 require_once('UKM/Autoloader.php');
@@ -87,7 +89,7 @@ class UKMnettverket extends Modul
         // Hvis vedkommende er admin for ett eller flere fylker
         if (static::erCurrentAdminFylkeAdmin()) {
             $meny = (static::getCurrentAdmin()->getAntallOmrader('fylke') == 1) ?
-                static::getCurrentAdmin()->getOmrade('fylke')->getNavn() : 'Dine fylker';
+                static::getCurrentAdmin()->getOmrade('fylke')->getNavn() : 'Mine fylker';
             $scripts[] = add_menu_page(
                 'GEO',
                 $meny,
@@ -105,12 +107,12 @@ class UKMnettverket extends Modul
                 if (static::getCurrentAdmin()->getOmrade('kommune')->getId() == 'kommune_' . $_GET['omrade']) {
                     $meny = static::getCurrentAdmin()->getOmrade('kommune')->getNavn();
                 } else {
-                    $meny = 'Dine kommuner';
+                    $meny = 'Mine kommuner';
                 }
             } elseif (static::getCurrentAdmin()->getAntallOmrader('kommune') == 1) {
                 $meny = static::getCurrentAdmin()->getOmrade('kommune')->getNavn();
             } else {
-                $meny = 'Dine kommuner';
+                $meny = 'Mine kommuner';
             }
 
             $scripts[] = add_menu_page(
@@ -129,6 +131,67 @@ class UKMnettverket extends Modul
                 'admin_print_styles-' . $page,
                 ['UKMnettverket', 'scripts_and_styles']
             );
+        }
+
+        $scripts[] = add_menu_page(
+            'Min side',
+            'Min side',
+            'subscriber',
+            'UKMnettverket_tilbake',
+            ['UKMnettverket', 'tilbakeFunc'],
+            'dashicons-arrow-left-alt', #//ico.ukm.no/system-16.png',
+            25
+        );
+
+        $scripts[] = add_menu_page(
+            'nettside',
+            'Nettside',
+            'subscriber',
+            'UKMnettverket_nettside',
+            ['UKMnettverket', 'renderNettside'],
+            'dashicons-desktop', #//ico.ukm.no/system-16.png',
+            25
+        );
+        
+        // Fjerner alle meny items bortsett fra ... for kommmune og fylke
+        if(isset($_GET['page']) && ($_GET['page'] == 'UKMnettverket_kommune' || $_GET['page'] == 'UKMnettverket_fylke')) {
+            global $menu;
+            global $kommuneEllerFylke;
+            $kommuneEllerFylke = null;
+
+            // Endre tittel på admin bar
+            add_action('wp_before_admin_bar_render', ['UKMnettverket', '_changeAdminBarInfo'], 10005);
+            
+            // URL har ukmNettverket_[fylke eller kommune] og har single fylke eller kommune
+            if($_GET['page'] == 'UKMnettverket_fylke' && static::getCurrentAdmin()->getAntallOmrader('fylke') == 1) {
+                $kommuneEllerFylke = static::getCurrentAdmin()->getOmrade('fylke')->getFylke();
+            }
+            elseif($_GET['page'] == 'UKMnettverket_kommune' && static::getCurrentAdmin()->getAntallOmrader('kommune') == 1) {
+                $kommuneEllerFylke = static::getCurrentAdmin()->getOmrade('kommune')->getKommune();
+            }
+            else if(isset($_GET['omrade']) && isset($_GET['type'])) {
+                $kommuneEllerFylke = $_GET['type'] == 'kommune' ? Omrade::getByKommune($_GET['omrade'])->getKommune() : Omrade::getByFylke($_GET['omrade'])->getFylke();
+            }
+
+            if($kommuneEllerFylke) {
+                foreach ($menu as $key => $item) {
+                    if($item[0] != 'Min side' && $item[0] != 'Nettside' ) {
+                        unset($menu[$key]);
+                    }
+                    elseif($item[0] == 'Nettside') {
+                        $menu[$key][0] = $kommuneEllerFylke instanceof Kommune ? 'Kommune nettside' : 'Fylke nettside';
+                        $menu[$key][2] = $kommuneEllerFylke->getPath() . 'wp-admin/edit.php?page=UKMnettside';
+                    }
+                }
+            }
+        }
+        else {
+            global $menu;
+            foreach ($menu as $key => $item) {
+                if($item[0] == 'Min side' || $item[0] == 'Nettside' ) {
+                    unset($menu[$key]);
+                }
+            }
         }
     }
 
@@ -158,6 +221,15 @@ class UKMnettverket extends Modul
             ['UKMnettverket', 'renderKommune']
         );
 
+        $scripts[] = add_submenu_page(
+            'index.php',
+            'Tilbaker',
+            'Tilbaker',
+            'superadmin',
+            'UKMnettverket_tilbake',
+            ['UKMnettverket', 'renderAdmin']
+        );
+
         foreach ($scripts as $page) {
             add_action(
                 'admin_print_styles-' . $page,
@@ -177,6 +249,8 @@ class UKMnettverket extends Modul
         wp_enqueue_style('UKMwp_dash_css');
         wp_enqueue_script('WPbootstrap3_js');
         wp_enqueue_style('WPbootstrap3_css');
+    	wp_enqueue_style('UKMArrSysStyle', 9999);
+
 
         wp_enqueue_style(
             'UKMnettverket_arrangement_css',
@@ -205,6 +279,19 @@ class UKMnettverket extends Modul
     public static function renderKommune()
     {
         self::renderAdmin('kommune');
+    }
+
+    public static function tilbakeFunc() {
+        echo '<script>';
+        echo 'window.location.href = "/wp-admin/user/";';
+        echo '</script>';
+        exit;
+    }
+
+    public static function _changeAdminBarInfo() {
+        global $kommuneEllerFylke; // Make the $kommuneEllerFylke object accessible within this function.
+        $navn = $kommuneEllerFylke ? $kommuneEllerFylke->getNavn() . ' - admin side' : null;
+        changeAdminBarInfo($navn);
     }
 }
 

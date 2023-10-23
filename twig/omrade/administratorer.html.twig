@@ -1,9 +1,9 @@
-<h4>Administratorer</h4>
+<h4 class="nom as-margin-top-space-2 as-margin-bottom-space-2">Administratorer</h4>
 
-<ol class="list-group">
+<ul class="list-group">
 	{% for admin in omrade.getAdministratorer().getAll() %}
 		<li
-			class="box-admin">
+			class="nop as-card-2 as-padding-space-3 as-margin-bottom-space-2">
 			<!-- Slett bruker -->
 			<div class="float-right pull-right">
 				<a href="?page={{ GET('page') }}&removeAdmin={{ admin.getId() }}&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}">
@@ -76,17 +76,17 @@
 			
 		</li>
 	{% else %}
-		<li class="box-admin">
+		<li class="nop as-card-1 as-padding-space-3 as-margin-bottom-space-2">
 			Ingen administratorer er lagt til enda.
 		</li>
 	{% endfor %}
-	<ol class="box-admin">
+	<ol class="nop as-card-1 as-padding-space-3 as-margin-bottom-space-2">
 		<a href="?page={{ GET('page') }}&action=administrator-add&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}" style="text-decoration: none;">
 			<span class="dashicons dashicons-plus"></span>
             Legg til administrator
 		</a>
 	</ol>
-</ol>
+</ul>
 
 <p class="small text-muted">
     <b>

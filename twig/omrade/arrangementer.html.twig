@@ -1,8 +1,8 @@
 {% set arrangementer = show == 'kommende' ? omrade.getKommendeArrangementer() : omrade.getTidligereArrangementer() %}
-<ol class="list-group">
+<ul class="list-group {{ show == 'tidligere' ? 'old-arrangementer' : '' }}">
 {% set URLDeleteArrang = '?page='~ GET('page') ~'&omrade='~ omrade.getForeignId() ~'&type='~ omrade.getType() %}
 	{% for arrangement in arrangementer.getAll()|filter(arrangement => arrangement.getSesong() > 2019)|reverse %}
-		<li class="list-group-item">
+		<li class="nop as-card-2 as-padding-space-3 as-margin-bottom-space-2 arrangement">
 			<div class="float-right pull-right">
 			{% if arrangement.erFerdig() == false %}
 				<a href="{{ URLDeleteArrang }}&action={{arrangement.erKunstgalleri() ? 'kunstgalleri' : 'arrangement' }}-slett&arr={{arrangement.getId() }}">
@@ -12,12 +12,30 @@
 			
                                                 
 			</div>
-			<b>
-				<a href="{{ arrangement.getLink() }}wp-admin/" target="_blank">
-					{{ arrangement.getNavn() }}
-				</a>
-			</b>
-			<br/>
+			<div class="as-margin-bottom-space-2">
+
+				<div class="arrangement-labels as-margin-bottom-space-2">
+					{# er arrangement festival eller workshop label #}
+					{% if arrangement.erMonstring() %}
+						{% set monstringSvgPath = '<path d="M11 19.91 10 22h4l-1-2.09c4-.65 7-5.28 7-9.91a8 8 0 0 0-16 0c0 4.63 3.08 9.26 7 9.91zm1-15.66v1.5A4.26 4.26 0 0 0 7.75 10h-1.5A5.76 5.76 0 0 1 12 4.25z"></path>' %}
+					{% else %}
+						{% set monstringSvgPath = '<path d="M20 6h-3V4c0-1.103-.897-2-2-2H9c-1.103 0-2 .897-2 2v2H4c-1.103 0-2 .897-2 2v11c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V8c0-1.103-.897-2-2-2zM6 8h2v11H6V8zm12 11h-2V8h2v11zM15 4v2H9V4h6z"></path>' %}
+					{% endif %}
+					{% include "label-arrangement.html.twig" with { navn: arrangement.erMonstring() ? 'Arrangement' : 'Workshop', svgpath: monstringSvgPath} %}
+					
+					{# er fellesmønstring  #}
+					{% if arrangement.erFellesmonstring() %}
+						{% include "label-arrangement.html.twig" with { navn: 'Fellesmønstring', svgpath: '<path d="M20.1 14.56a2.07 2.07 0 0 0-.47-.18V9.62a1.64 1.64 0 0 0 .48-.18 1.78 1.78 0 0 0-1.78-3.09 1.62 1.62 0 0 0-.41.32l-4.11-2.38a1.7 1.7 0 0 0 .07-.51 1.78 1.78 0 0 0-3.56 0 1.7 1.7 0 0 0 .07.51L6.28 6.66a1.58 1.58 0 0 0-.41-.31 1.78 1.78 0 0 0-1.78 3.09 1.64 1.64 0 0 0 .48.18v4.76a2.07 2.07 0 0 0-.47.18 1.78 1.78 0 1 0 1.78 3.09 1.72 1.72 0 0 0 .4-.31l4.11 2.37a1.7 1.7 0 0 0-.07.51 1.78 1.78 0 0 0 3.56 0 1.69 1.69 0 0 0-.09-.56l4.09-2.36a1.7 1.7 0 0 0 .44.35 1.78 1.78 0 1 0 1.78-3.09zM6.72 15.69a1.72 1.72 0 0 0-.19-.47 1.53 1.53 0 0 0-.31-.4l5.38-9.33a1.82 1.82 0 0 0 1 0l5.4 9.33a1.53 1.53 0 0 0-.31.4 1.72 1.72 0 0 0-.19.47zM17.5 7.4a1.81 1.81 0 0 0 .17 1.38 1.75 1.75 0 0 0 1.12.84v4.76h-.07l-5.39-9.31.05-.07zM10.82 5a.12.12 0 0 0 0 .05L5.48 14.4h-.07V9.62a1.75 1.75 0 0 0 1.12-.84A1.81 1.81 0 0 0 6.7 7.4zm2.6 14a1.78 1.78 0 0 0-1.32-.58 1.75 1.75 0 0 0-1.28.54L6.7 16.6v-.06h10.78v.11z"></path>' } %}
+					{% endif %}
+				</div>
+			
+				<h5 class="nom"><b>
+					<a href="{{ arrangement.getLink() }}wp-admin/" target="_blank">
+						{{ arrangement.getNavn() }}
+					</a>
+				</b></h5>
+			</div>
+
 			<small>
 				<div style="margin-top: .4em;">
 					<span class="dashicons dashicons-calendar-alt"></span>
@@ -48,7 +66,7 @@
 				</div>
 				<div style="margin-top: .6em;">
 					{% if arrangement.erFellesmonstring() %}
-						<div class="mb-3">
+						<div class="as-margin-top-space-1 as-margin-bottom-space-1">
 							<span class="dashicons dashicons-location-alt"></span>
 							Felles for:
 							{% for kommune in arrangement.getKommuner().getAll() %}
@@ -90,8 +108,8 @@
 					{% endif %}
 				</div>
 			</small>
-			<div class="mt-3 mb-3">
-				{% if is_super_admin %}
+			{% if is_super_admin %}
+				<div class="mt-3 mb-3">
 					<div class="superadmin">
 						<a href="{{URL}}&fix=leggtil_administratorer&arr={{arrangement.getId()}}" class="btn btn-xs btn-ukm superadmin">Endre administratorer</a>
 
@@ -109,22 +127,27 @@
 						<small>PL_ID:
 							{{arrangement.getId()}}</small>
 					</div>
-				{% endif %}
-			</div>
+				</div>
+			{% endif %}
 		</li>
 	{% else %}
 		{% if show == 'kommende' %}
-			<li class="list-group-item">
+			<li class="nop as-card-1 as-padding-space-3 as-margin-bottom-space-2">
 				Ingen arrangement er lagt til enda.
 			</li>
 		{% endif %}
 	{% endfor %}
 	{% if show == 'kommende' %}
-		<li class="list-group-item">
+		<li class="nop as-card-1 as-padding-space-3 as-margin-bottom-space-2">
 			<a href="?page={{ GET('page') }}&action=arrangement-add&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}" style="text-decoration: none;">
 				<span class="dashicons dashicons-plus"></span>
 				Legg til arrangement
 			</a>
 		</li>
 	{% endif %}
-</ol>
+</ul>
+<style>
+.old-arrangementer .arrangement * {
+	color: var(--color-primary-grey-dark) !important;
+}
+</style>

@@ -55,6 +55,12 @@ if (isset($_GET['omrade']) && isset($_GET['type'])) {
     UKMnettverket::addViewData('omrader', $omrader);
 }
 
+if(isset($_GET['flerekommuner']) && $_GET['flerekommuner'] == true) {
+    UKMnettverket::addViewData('flerekommuner', true);
+} else {
+    UKMnettverket::addViewData('flerekommuner', false);
+}
+
 UKMnettverket::addViewData('current_admin', $current_admin);
 require_once('administrator-manage.controller.php');
 
