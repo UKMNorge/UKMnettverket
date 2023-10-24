@@ -23,7 +23,9 @@
 {% include "wp_modul.flashbag.html.twig" %}
 
 <div class="container-fluid">
-    <h2>Velg område</h2>
+    {% if omrade in omrader %}
+        <h2>Velg område</h2>
+    {% endif %}
     <div class="row">
         {% for omrade in omrader %}
             <div class="col-xs-6 col-sm-3 col-lg-3 as-margin-top-space-4">
@@ -39,10 +41,12 @@
                 </div>
             </div>
         {% else %}
-            <div class="col-xs-12">
-                <p class="lead">
-                    Fant ingen {{ GET('page') == 'UKMnettverket_kommune' ? 'kommuner/bydeler' : 'fylker' }} du er administrator for.
-                </p>
+            <div class="col-xs-12 as-margin-top-space-4">
+                <div class="alert alert-danger" role="alert">
+                    <h4 class="">
+                        Du er ikke administrator i {{ GET('page') == 'UKMnettverket_kommune' ? 'denne kommunen/bydelen' : 'dette fylket' }}, derfor får du ikke tilgang.
+                    </h4>
+                </div>
 
                 {% if GET('page') == 'UKMnettverket_kommune' %}
                     <p class="lead">
