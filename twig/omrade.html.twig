@@ -21,7 +21,7 @@
 							{% elseif is_super_admin and blog_slettet %}
 								<code>⚠️ siden er deaktivert!</code>
 							{% endif %}
-							<a href="//{{UKM_HOSTNAME}}{{ omrade.getKommune().getPath() }}" class="btn btn-ukm btn-xs">Vis nettsiden</a>
+							<a href="//{{UKM_HOSTNAME}}{{ omrade.getKommune().getPath() }}" target="_blank" class="btn btn-ukm btn-xs">Vis nettsiden</a>
 						</p>
 
 						{% set kommunerOnSamePath = omrade.getKommune().getKommunerOnSamePath() %}
@@ -93,7 +93,7 @@
 							{% elseif is_super_admin and blog_slettet %}
 								<code>⚠️ siden er deaktivert!</code>
 							{% endif %}
-							<a href="//{{UKM_HOSTNAME}}{{ omrade.getFylke().getPath() }}" class="btn btn-ukm btn-xs">Vis nettsiden</a>
+							<a href="//{{UKM_HOSTNAME}}{{ omrade.getFylke().getPath() }}" target="_blank" class="btn btn-ukm btn-xs">Vis nettsiden</a>
 						</p>
 						{% include "nettside/omrade.html.twig" %}
 						{% if is_super_admin %}
