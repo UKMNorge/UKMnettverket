@@ -13,7 +13,7 @@
         {% if flerekommuner %}
             <li class="breadcrumb-item"><a href="?page=UKMnettverket_kommune">Mine kommuner</a></li>        
         {% else %}
-            <li class="breadcrumb-item"><a href="?page=UKMnettverket_fylke&omrade={{ fylke.getId() }}&type=fylke">{{ fylke.getNavn() }}</a></li>        
+            <li class="breadcrumb-item"><a data-toggle="tooltip" data-placement="bottom" data-original-title="Fylke" href="?page=UKMnettverket_fylke&omrade={{ fylke.getId() }}&type=fylke">{{ fylke.getNavn() }}</a></li>        
         {% endif %}
         
         <li class="breadcrumb-item active" aria-current="page">
@@ -37,3 +37,8 @@
     background: #3a87ad;
 }
 </style>
+<script>
+jQuery(document).ready(function() {
+    jQuery("body").tooltip({ selector: '[data-toggle=tooltip]' });
+});
+</script>
