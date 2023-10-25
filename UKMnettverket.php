@@ -221,15 +221,6 @@ class UKMnettverket extends Modul
             ['UKMnettverket', 'renderKommune']
         );
 
-        $scripts[] = add_submenu_page(
-            'index.php',
-            'Tilbaker',
-            'Tilbaker',
-            'superadmin',
-            'UKMnettverket_tilbake',
-            ['UKMnettverket', 'renderAdmin']
-        );
-
         foreach ($scripts as $page) {
             add_action(
                 'admin_print_styles-' . $page,
