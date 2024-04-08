@@ -1,7 +1,7 @@
 {% set arrangementer = show == 'kommende' ? omrade.getKommendeArrangementer() : omrade.getTidligereArrangementer() %}
 <ul class="list-group {{ show == 'tidligere' ? 'old-arrangementer' : '' }}">
 {% set URLDeleteArrang = '?page='~ GET('page') ~'&omrade='~ omrade.getForeignId() ~'&type='~ omrade.getType() %}
-	{% for arrng in arrangementer.getAll()|filter(arrangement => arrangement.getSesong() > 2019)|sort((a, b) => a.getSesong() <=> b.getSesong())|reverse %}
+	{% for arrangement in arrangementer.getAll()|filter(arrangement => arrangement.getSesong() > 2019)|sort((a, b) => a.getSesong() <=> b.getSesong())|reverse %}
 		<li class="nop as-card-2 as-padding-space-3 as-margin-bottom-space-2 arrangement">
 			<div class="float-right pull-right">
 			{% if arrangement.erFerdig() == false %}
