@@ -19,6 +19,18 @@
         visibility: hidden;
         display: none;
     }
+    .omrade-dashboard {
+        text-transform: uppercase; 
+        font-size: 17px; 
+        font-weight: bold; 
+        word-break: break-word;
+    }
+    /* xs */
+    @media (max-width: 767px) {
+        .omrade-dashboard {
+            font-size: 14px;
+        }
+    }
 </style>
 {% include "wp_modul.flashbag.html.twig" %}
 
@@ -34,7 +46,7 @@
                         <div style="font-size: 3em; text-align: center;">
                             <span class="dashicons dashicons-location"></span>
                         </div>
-                        <b style="text-transform: uppercase; font-size: 2em; font-weight: bold;">
+                        <b class="omrade-dashboard">
                             {{ omrade.getNavn() }}
                         </b>
                         </a>
