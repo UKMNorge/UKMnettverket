@@ -1,9 +1,10 @@
 <?php
 
+// Side hvor OmradeKontaktpersonen kan opprettes
+
 use UKMNorge\OAuth2\ArrSys\HandleAPICallWithAuthorization;
 use UKMNorge\Nettverk\Omrade;
 use UKMNorge\Nettverk\OmradeKontaktperson;
-use UKMNorge\Nettverk\WriteOmrade;
 
 require_once('UKM/Autoloader.php');
 
@@ -20,17 +21,9 @@ $tilgangAttribute = $omradeId;
 
 $handleCall = new HandleAPICallWithAuthorization(['omradeId', 'omradeType'], [], ['GET'], false, false, $tilgang, $tilgangAttribute);
 
-// $omradeKontaktpersonId = $handleCall->getArgument('omradeKontaktpersonId');
-
 $omrade = Omrade::getByType($omradeType, $omradeId);
 
-$omradeKontaktperson = null;
-
-// if($omradeKontaktpersonId == null) {
-    $omradeKontaktperson = OmradeKontaktperson::createEmpty();
-// } else {
-//     $omradeKontaktperson = $omrade->getOmradeKontaktpersoner()->get($omradeKontaktpersonId);
-// }
+$omradeKontaktperson = OmradeKontaktperson::createEmpty();
 
 
 UKMnettverket::addViewData('omradekontaktperson', $omradeKontaktperson);
