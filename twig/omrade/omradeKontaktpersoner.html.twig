@@ -10,6 +10,11 @@
 					<span class="dashicons dashicons-trash"></span>
 				</a>
 			</div>
+             <div class="float-right pull-right" style="margin-right: .7rem;">
+                <a href="?page={{ GET('page') }}&action=omradekontaktperson-edit&mobil={{ omradeKontaktperson.getMobil() }}">
+                    <span class="dashicons dashicons-edit"></span>
+                </a>
+            </div>
 			<!-- Send mail -->
 			<div class="float-right pull-right" style="margin-right: 1rem;">
 				<a href="mailto:{{ omradeKontaktperson.getEpost() }}">
@@ -22,6 +27,7 @@
 				<p>{{ omradeKontaktperson.getMobil() }} <br>
 				{{ omradeKontaktperson.getEpost() }}</p>
 			</div>
+
 				
 
 				{# {% if bilde %}
@@ -59,7 +65,7 @@
 		</li>
 	{% endfor %}
 	<ol class="nop as-card-1 as-padding-space-3 as-margin-bottom-space-2">
-		<a href="?page={{ GET('page') }}&action=omradekontaktperson-add&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}" style="text-decoration: none;">
+		<a href="?page={{ GET('page') }}&action=omradekontaktperson-new&omradeId={{ omrade.getForeignId() }}&omradeType={{ omrade.getType() }}" style="text-decoration: none;">
 			<span class="dashicons dashicons-plus"></span>
             Legg til kontaktperson
 		</a>

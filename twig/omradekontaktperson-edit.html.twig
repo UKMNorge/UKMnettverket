@@ -1,0 +1,59 @@
+<div class="container as-container">
+    <div class="as-card-1 as-padding-space-3 as-margin-top-space-4">
+
+        {% if tilgang == false %}
+            <h4>Du har ikke tilgang til å endre denne kontaktpersonen</h4>
+            <br>
+            <p>Kontakt personen tilhører <b>{{ omrade.getNavn() }}</b> og du har ikke tilgang til å endre denne kontaktpersonen.</p>
+            <p>Kontakt {{ omrade.getNavn() }} eller <a href="mailto:support@ukm.no">support</a> hvis du ønsker vil redigere denne kontaktpersonen</p>
+        {% else %}
+            
+
+            <form method="POST" action="?page=UKMnettverket_kommune&action=omradekontaktperson-edit">
+
+                <input type="hidden" name="omradeId" value="{{ omrade.getForeignId() }}">
+                <input type="hidden" name="omradeType" value="{{ omrade.getType() }}">
+                <input type="hidden" id="okpId" name="okpId" value="{{ omradekontaktperson.getId() }}">
+                <input type="hidden" id="mobil" name="mobil" value="{{ omradekontaktperson.getMobil() }}">
+
+                <div class="form-group">
+                    <label for="mobildisabled">Mobil</label>
+                    <input disabled class="form-control on-change-input-okp" id="mobildisabled" type="tel" name="mobildisabled" maxlength="8" required value="{{ omradekontaktperson.getMobil() }}"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="first_nafornavnme">Fornavn</label>
+                    <input class="form-control on-change-input-okp" id="fornavn" type="text" name="fornavn" required value="{{ omradekontaktperson.getFornavn() }}" autofocus/>
+                </div>
+
+                <div class="form-group">
+                    <label for="etternavn">Etternavn</label>
+                    <input class="form-control on-change-input-okp" id="etternavn" type="text" name="etternavn" required value="{{ omradekontaktperson.getEtternavn() }}"/>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="epost">E-postadresse</label>
+                    <input class="form-control on-change-input-okp" id="epost" type="epost" name="epost" value="{{ omradekontaktperson.getEpost() }}"/>
+                </div>
+
+                <div class="form-group">
+                    <label for="epost">Beskrivelse</label>
+                    <textarea class="form-control" id="beskrivelse" type="beskrivelse" name="beskrivelse" value="{{ omradekontaktperson.getBeskrivelse() }}"></textarea>
+                </div>
+
+
+                <div class="form-group">
+                    <button class="btn btn-send-form btn-sm btn-success" type="submit">Lagre</button>    
+                </div>
+
+                {% if saved is defined and saved == true %}
+                    <div class="form-group">
+                        <h4>Endringer ble lagret!</h4>
+                    </div>
+                {% endif %}
+            </form>
+
+        {% endif %}
+    </div>
+</div>

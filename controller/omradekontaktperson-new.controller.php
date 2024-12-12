@@ -18,12 +18,20 @@ if(($omradeType != 'fylke' && $omradeType != 'kommune') || $omradeType == null) 
 $tilgang = $omradeType == 'fylke' ? 'fylke' : 'kommune';
 $tilgangAttribute = $omradeId;
 
-$handleCall = new HandleAPICallWithAuthorization(['omradeId', 'omradeType', 'omradeKontaktpersonId'], [], ['GET'], false, false, $tilgang, $tilgangAttribute);
+$handleCall = new HandleAPICallWithAuthorization(['omradeId', 'omradeType'], [], ['GET'], false, false, $tilgang, $tilgangAttribute);
 
-$omradeKontaktpersonId = $handleCall->getArgument('omradeKontaktpersonId');
+// $omradeKontaktpersonId = $handleCall->getArgument('omradeKontaktpersonId');
 
 $omrade = Omrade::getByType($omradeType, $omradeId);
 
+$omradeKontaktperson = null;
 
-UKMnettverket::addViewData('omradekontaktperson', $omrade->getOmradeKontaktpersoner()->get($omradeKontaktpersonId));
+// if($omradeKontaktpersonId == null) {
+    $omradeKontaktperson = OmradeKontaktperson::createEmpty();
+// } else {
+//     $omradeKontaktperson = $omrade->getOmradeKontaktpersoner()->get($omradeKontaktpersonId);
+// }
+
+
+UKMnettverket::addViewData('omradekontaktperson', $omradeKontaktperson);
 UKMnettverket::addViewData('omrade', $omrade);

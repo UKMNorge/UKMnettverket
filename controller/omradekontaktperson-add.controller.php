@@ -3,7 +3,7 @@
 use UKMNorge\OAuth2\ArrSys\HandleAPICallWithAuthorization;
 use UKMNorge\Nettverk\Omrade;
 use UKMNorge\Nettverk\OmradeKontaktperson;
-use UKMNorge\Nettverk\WriteOmrade;
+use UKMNorge\Nettverk\WriteOmradeKontaktperson;
 
 require_once('UKM/Autoloader.php');
 
@@ -18,8 +18,7 @@ if(($omradeType != 'fylke' && $omradeType != 'kommune') || $omradeType == null) 
 $tilgang = $omradeType == 'fylke' ? 'fylke' : 'kommune';
 $tilgangAttribute = $omradeId;
 
-$handleCall = new HandleAPICallWithAuthorization(['fornavn', 'etternavn', 'mobil', 'epost'], ['beskrivelse'], ['GET', 'POST'], false, false, $tilgang, $tilgangAttribute);
-
+$handleCall = new HandleAPICallWithAuthorization(['fornavn', 'etternavn', 'mobil', 'epost'], ['beskrivelse'], ['POST'], false, false, $tilgang, $tilgangAttribute);
 
 $fornavn = $handleCall->getArgument('fornavn');
 $etternavn = $handleCall->getArgument('etternavn');
@@ -27,10 +26,11 @@ $mobil = $handleCall->getArgument('mobil');
 $epost = $handleCall->getArgument('epost');
 $beskrivelse = $handleCall->getArgument('beskrivelse');
 
+
 try {
-    $omradeKontaktperson = new OmradeKontaktperson(['id' => -1, 'fornavn' => $fornavn, 'etternavn' => $etternavn, 'mobil' => $mobil, 'epost' => $epost, 'beskrivelse' => $beskrivelse]);
+    $omradeKontaktperson = new OmradeKontaktperson(['id' => -1, 'fornavn' => $fornavn, 'etternavn' => $etternavn, 'mobil' => $mobil, 'epost' => $epost, 'beskrivelse' => $beskrivelse, 'eier_omrade_id' => $omradeId, 'eier_omrade_type' => $omradeType]);
     $omrade = new Omrade($omradeType, $omradeId);
-    WriteOmrade::leggTilOmradeKontaktperson($omrade, $omradeKontaktperson);
+    WriteOmradeKontaktperson::leggTilOmradeKontaktperson($omrade, $omradeKontaktperson);
 } catch(Exception $e) {
     HandleAPICallWithAuthorization::sendError($e->getMessage(), 400);
 }

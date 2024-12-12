@@ -1,0 +1,160 @@
+<div class="container as-container">
+    <div class="as-card-1 as-padding-space-3">
+
+        <form method="POST" action="?page=UKMnettverket_kommune&action=omradekontaktperson-add">
+
+            <input type="hidden" name="omradeId" value="{{ omrade.getForeignId() }}">
+            <input type="hidden" name="omradeType" value="{{ omrade.getType() }}">
+            <input type="hidden" id="id" name="id" value="{{ omradekontaktperson.id }}">
+
+            <div class="form-group">
+                <label for="mobil">Mobil</label>
+                <input class="form-control on-change-input-okp" id="mobil" type="tel" name="mobil" maxlength="8" required value="{{ omradekontaktperson.getMobil() }}"/>
+                <p class="mt-0 small text-muted">
+                    Telefonnummer er påkrevd for å kunne registrere kontaktpersoner.
+                </p>
+            </div>
+            
+            <div>
+                <span class="eksisterer-bruker hide as-mini-label-style as-margin-right-space-1 as-padding-space-1">Kontaktpersonen eksisterer og kan legges til som kontakperson</span>
+            </div>
+            <br>
+
+            <div class="form-group">
+                <label for="first_nafornavnme">Fornavn</label>
+                <input class="form-control on-change-input-okp" id="fornavn" type="text" name="fornavn" required value="{{ omradekontaktperson.getFornavn() }}" autofocus/>
+            </div>
+
+            <div class="form-group">
+                <label for="etternavn">Etternavn</label>
+                <input class="form-control on-change-input-okp" id="etternavn" type="text" name="etternavn" required value="{{ omradekontaktperson.getEtternavn() }}"/>
+            </div>
+
+
+            <div class="form-group">
+                <label for="epost">E-postadresse</label>
+                <input class="form-control on-change-input-okp" id="epost" type="epost" name="epost" value="{{ omradekontaktperson.getEpost() }}"/>
+            </div>
+
+            <div class="form-group">
+                <label for="epost">Beskrivelse</label>
+                <textarea class="form-control" id="beskrivelse" type="beskrivelse" name="beskrivelse" value="{{ omradekontaktperson.getBeskrivelse() }}"></textarea>
+            </div>
+
+
+            <div class="form-group">
+                {% if omradekontaktperson.getId() == -1 %}
+                    <button class="btn btn-send-form btn-sm btn-success" type="submit">Legg til kontaktperson</button>
+                {% else %}
+                    <button class="btn btn-send-form btn-sm btn-success" type="submit">Lagre</button>    
+                {% endif %}
+                
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<script>
+    disableButtons();
+    disableFields();
+    
+    var $okpUser = null;
+
+    jQuery('#mobil').on('keyup', function() {
+        checkUserExist();
+    });
+
+    // Event
+    jQuery('.on-change-input-okp').on('keyup', function() {
+        checkPostStatus();
+    });
+
+
+    async function checkUserExist() {
+        if(jQuery('#mobil').val().length != 8) {
+            disableButtons();
+            return;
+        }
+        $okpUser = await okpUser();
+    }
+
+    function disableFields() {
+        jQuery('#fornavn').val('').prop('disabled', true);
+        jQuery('#etternavn').val('').prop('disabled', true);
+        jQuery('#epost').val('').prop('disabled', true);
+        jQuery('#beskrivelse').val('').prop('disabled', true);
+    }
+
+
+    function checkPostStatus() {
+        let fornavn = jQuery('#fornavn').val();
+        let etternavn = jQuery('#etternavn').val();
+        let mobil = jQuery('#mobil').val();
+        let epost = jQuery('#epost').val();
+
+        if(mobil.length != 8) {
+            disableButtons();
+            disableFields();
+            return;
+        }
+
+        if(fornavn.length > 0 && etternavn.length > 0 && mobil.length == 8 && epost.length > 0) {
+            enableButtons();
+        } else {
+            disableButtons();
+        }
+    }
+    
+    async function okpUser() {
+        let mobil = jQuery('#mobil').val();
+
+        let response = jQuery.post(
+                ajaxurl, {
+                    action: 'UKMnettverket_ajax',
+                    controller: 'checkOmradeKontaktperson',
+                    mobil: mobil
+                }
+            );
+
+        let data = await response;
+
+        if(data.userFound == false) {
+            jQuery('#fornavn').val('').prop('disabled', false);
+            jQuery('#etternavn').val('').prop('disabled', false);
+            jQuery('#epost').val('').prop('disabled', false);
+            jQuery('#beskrivelse').val('').prop('disabled', false);
+
+            jQuery('.eksisterer-bruker').addClass('hide');
+        }
+        // User is found by mobil
+        else {
+            jQuery('#fornavn').val(data.okp.fornavn).prop('disabled', true);
+            jQuery('#etternavn').val(data.okp.etternavn).prop('disabled', true);
+            jQuery('#epost').val(data.okp.epost).prop('disabled', true);
+            jQuery('#beskrivelse').val(data.okp.beskrivelse).prop('disabled', true);
+
+            jQuery('.eksisterer-bruker').removeClass('hide');
+
+            enableButtons();
+        }
+
+
+        return data.okp;
+    }
+
+    function disableButtons() {
+        jQuery('.btn-send-form').prop('disabled', true);
+    }
+
+    function enableButtons() {
+        jQuery('.btn-send-form').prop('disabled', false);
+    }
+</script>
+
+<style>
+.eksisterer-bruker {
+    background: var(--as-color-primary-success-lightest);
+    color: var(--as-color-primary-success-darker);
+}
+</style>
