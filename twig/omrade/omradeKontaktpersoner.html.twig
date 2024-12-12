@@ -15,49 +15,12 @@
                     <span class="dashicons dashicons-edit"></span>
                 </a>
             </div>
-			<!-- Send mail -->
-			<div class="float-right pull-right" style="margin-right: 1rem;">
-				<a href="mailto:{{ omradeKontaktperson.getEpost() }}">
-					<span class="dashicons dashicons-email-alt" style="margin-left:.5 rem"></span>
-				</a>
-			</div>
 			
 			<div class="administrator_liste_punkt">
 				<b>{{ omradeKontaktperson.getNavn() }}</b>
 				<p>{{ omradeKontaktperson.getMobil() }} <br>
 				{{ omradeKontaktperson.getEpost() }}</p>
 			</div>
-
-				
-
-				{# {% if bilde %}
-					<div class="profilbilde">
-						<div class="bilde">
-							<img class="bruker-img" src="{{ bilde }}" />
-							<div class="slett-bilde">
-								<button class="button-slett-bilde" admin-id="{{ admin.getUser().getId() }}">
-									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: #fff;transform: ;msFilter:;"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm4.207 12.793-1.414 1.414L12 13.414l-2.793 2.793-1.414-1.414L10.586 12 7.793 9.207l1.414-1.414L12 10.586l2.793-2.793 1.414 1.414L13.414 12l2.793 2.793z"></path></svg>
-								</button>
-							</div>
-						</div>
-					</div>
-				{% else %}
-					<div class="last-opp-bilde">
-						<a class="button-profilbilde btn btn-light collapsed" data-toggle="collapse" href="#collapseDiv{{ admin.getId() }}" role="button" aria-expanded="false" aria-controls="collapseDiv{{ admin.getId() }}">
-							+ Profilbilde
-						</a>
-						<div>
-							<div class="collapse" id="collapseDiv{{ admin.getId() }}">
-								<div class="last-opp card card-body">
-									Last opp profilbilde: <input class="admin-profile-picture" admin-id="{{ admin.getUser().getId() }}" type="file" name="profile_picture" />
-								</div>
-								<div class="last-opp-vent hide card card-body">
-									<span>Vi gjør bildet klart, vennligst vent!</span>
-								</div>
-							</div>
-						</div>
-					</div>
-				{% endif %} #}
 		</li>
 	{% else %}
 		<li class="nop as-card-1 as-padding-space-3 as-margin-bottom-space-2">
