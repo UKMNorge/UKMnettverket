@@ -1,5 +1,7 @@
 <?php
 
+// Opprett OmradeKontaktperson og legg til i området
+
 use UKMNorge\OAuth2\ArrSys\HandleAPICallWithAuthorization;
 use UKMNorge\Nettverk\Omrade;
 use UKMNorge\Nettverk\OmradeKontaktperson;
@@ -24,8 +26,12 @@ $fornavn = $handleCall->getArgument('fornavn');
 $etternavn = $handleCall->getArgument('etternavn');
 $mobil = $handleCall->getArgument('mobil');
 $epost = $handleCall->getArgument('epost');
-$beskrivelse = $handleCall->getArgument('beskrivelse');
+$beskrivelse = $handleCall->getOptionalArgument('beskrivelse') ?? '';
 
+// Check mobil
+if(!preg_match('/^\d{8}$/', $mobil)) {
+    HandleAPICallWithAuthorization::sendError('Mobilnummeret må være 8 siffer og kun tall', 400);
+}
 
 try {
     $omradeKontaktperson = new OmradeKontaktperson(['id' => -1, 'fornavn' => $fornavn, 'etternavn' => $etternavn, 'mobil' => $mobil, 'epost' => $epost, 'beskrivelse' => $beskrivelse, 'eier_omrade_id' => $omradeId, 'eier_omrade_type' => $omradeType]);

@@ -28,8 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fornavn = $handleCall->getArgument('fornavn');
     $etternavn = $handleCall->getArgument('etternavn');
     $epost = $handleCall->getArgument('epost');
-    $beskrivelse = $handleCall->getArgument('beskrivelse');
+    $beskrivelse = $handleCall->getOptionalArgument('beskrivelse') ?? '';
     $mobil = $handleCall->getArgument('mobil');
+
+    // Check mobil
+    if(!preg_match('/^\d{8}$/', $mobil)) {
+        HandleAPICallWithAuthorization::sendError('Mobilnummeret må være 8 siffer og kun tall', 400);
+    }
 
     try {
         $okp = OmradeKontaktpersoner::getByMobil($mobil);
