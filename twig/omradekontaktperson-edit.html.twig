@@ -34,7 +34,7 @@
 
                 <div class="form-group">
                     <label for="epost">E-postadresse</label>
-                    <input class="form-control on-change-input-okp" id="epost" type="email" name="epost" value="{{ omradekontaktperson.getEpost() }}"/>
+                    <input class="form-control on-change-input-okp" id="epost" type="epost" name="epost" value="{{ omradekontaktperson.getEpost() }}"/>
                 </div>
 
                 <div class="form-group">
@@ -45,6 +45,7 @@
 
                 <div class="form-group">
                     <button class="btn btn-send-form btn-sm btn-success" type="submit">Lagre</button>    
+                    <a href="?page=UKMnettverket_kommune&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}" class="btn btn-send-form btn-sm btn-info" type="submit">Tilbake</a>    
                 </div>
 
                 {% if saved is defined and saved == true %}

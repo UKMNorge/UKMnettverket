@@ -6,6 +6,7 @@
             <input type="hidden" name="omradeId" value="{{ omrade.getForeignId() }}">
             <input type="hidden" name="omradeType" value="{{ omrade.getType() }}">
             <input type="hidden" id="id" name="id" value="{{ omradekontaktperson.id }}">
+            <input type="hidden" id="foundMobil" name="foundMobil" value="null">
 
             <div class="form-group">
                 <label for="mobil">Mobil</label>
@@ -126,6 +127,8 @@
             jQuery('#beskrivelse').val('').prop('disabled', false);
 
             jQuery('.eksisterer-bruker').addClass('hide');
+            jQuery('#foundMobil').val('null');
+
         }
         // User is found by mobil
         else {
@@ -135,6 +138,8 @@
             jQuery('#beskrivelse').val(data.okp.beskrivelse).prop('disabled', true);
 
             jQuery('.eksisterer-bruker').removeClass('hide');
+
+            jQuery('#foundMobil').val(mobil);
 
             enableButtons();
         }
