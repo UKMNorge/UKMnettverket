@@ -55,6 +55,6 @@ function connectOkpToOmrade(OmradeKontaktperson $okp, Omrade $omrade) {
         HandleAPICallWithAuthorization::sendError($e->getMessage(), 400);
     }
 
-    echo '<script>window.location.href = "?page=UKMnettverket_kommune&omrade='. $omrade->getForeignId() .'&type='. $omrade->getType() .'";</script>';
+    echo '<script>window.location.href = "?page=UKMnettverket_'. $omrade->getType() .'&omrade='. $omrade->getForeignId() .'&type='. $omrade->getType() .'";</script>';
     exit();
 }

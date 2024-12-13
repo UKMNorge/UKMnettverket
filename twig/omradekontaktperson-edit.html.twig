@@ -47,12 +47,6 @@
                     <button class="btn btn-send-form btn-sm btn-success" type="submit">Lagre</button>    
                     <a href="?page=UKMnettverket_kommune&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}" class="btn btn-send-form btn-sm btn-info" type="submit">Tilbake</a>    
                 </div>
-
-                {% if saved is defined and saved == true %}
-                    <div class="form-group">
-                        <h4>Endringer ble lagret!</h4>
-                    </div>
-                {% endif %}
             </form>
 
         {% endif %}

@@ -48,16 +48,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 
-    UKMnettverket::addViewData('saved', true);
-    showUser($okp);
+    echo '<script>window.location.href = "?page=UKMnettverket_'. $omradeType .'&omrade='. $omradeId .'&type='. $omradeType .'";</script>';
+    exit();
 }
 else {
-    $okp = OmradeKontaktpersoner::getByMobil($_GET['mobil']);
+    $mobil = HandleAPICallWithAuthorization::getArgumentBeforeInit('mobil', 'GET');
+    $okp = OmradeKontaktpersoner::getByMobil($mobil);
 
     $omrade = new Omrade($okp->getEierOmradeType(), $okp->getEierOmradeId());
     if(!AccessControlArrSys::hasOmradeAccess($omrade)) {
         UKMnettverket::addViewData('tilgang', false);
-    } 
+    }
     else {
         showUser($okp);
     }
