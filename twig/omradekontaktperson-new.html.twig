@@ -1,7 +1,7 @@
 <div class="container as-container">
     <div class="as-card-1 as-padding-space-3">
 
-        <form method="POST" action="?page=UKMnettverket_kommune&action=omradekontaktperson-add">
+        <form method="POST" action="?page=UKMnettverket_kommune&action=omradekontaktperson-add" enctype="multipart/form-data">
 
             <input type="hidden" name="omradeId" value="{{ omrade.getForeignId() }}">
             <input type="hidden" name="omradeType" value="{{ omrade.getType() }}">
@@ -42,6 +42,15 @@
                 <textarea class="form-control" id="beskrivelse" type="beskrivelse" name="beskrivelse" value="{{ omradekontaktperson.getBeskrivelse() }}"></textarea>
             </div>
 
+            {# Profilbilde #}
+            <label for="epost">Profilbilde</label>
+            <div id="lastOppBildeSection" class="last-opp-bilde {{ omradekontaktperson.hasProfileImage() ? 'hide' : '' }} as-margin-bottom-space-2" >
+                <img class="okp-img" src="" />
+                <div class="last-opp card card-body ">
+                    Last opp profilbilde: <input id="profileImageInput" class="admin-profile-picture" accept="image/*" type="file" name="profile_picture" />
+                </div>
+            </div>
+
 
             <div class="form-group">
                 {% if omradekontaktperson.getId() == -1 %}
@@ -69,6 +78,20 @@
     // Event
     jQuery('.on-change-input-okp').on('keyup', function() {
         checkPostStatus();
+    });
+
+    jQuery('#profileImageInput').on('change', function(e) {
+        const file = event.target.files[0];
+
+        if(file) {
+            jQuery('.last-opp').addClass('hide');
+            jQuery('.last-opp-vent').removeClass('hide');
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                jQuery('.okp-img').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(file);
+        }
     });
 
 
@@ -161,5 +184,9 @@
 .eksisterer-bruker {
     background: var(--as-color-primary-success-lightest);
     color: var(--as-color-primary-success-darker);
+}
+.okp-img {
+    max-width: 250px;
+    max-height: 250px;
 }
 </style>

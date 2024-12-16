@@ -44,6 +44,9 @@ else {
     }
 
     $okp = new OmradeKontaktperson(['id' => -1, 'fornavn' => $fornavn, 'etternavn' => $etternavn, 'mobil' => $mobil, 'epost' => $epost, 'beskrivelse' => $beskrivelse, 'eier_omrade_id' => $omradeId, 'eier_omrade_type' => $omradeType]);
+    // Upload profile image
+    WriteOmradeKontaktperson::uploadProfileImage($_FILES['profile_picture'], $okp, false);
+
     connectOkpToOmrade($okp, $omrade);
 }
 
