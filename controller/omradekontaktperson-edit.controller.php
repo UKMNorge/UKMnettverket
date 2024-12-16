@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tilgang = $omradeType == 'fylke' ? 'fylke' : 'kommune';
     $tilgangAttribute = $omradeId;
 
-    $handleCall = new HandleAPICallWithAuthorization(['okpId', 'fornavn', 'mobil', 'etternavn', 'epost'], ['beskrivelse', 'deletedProfileImage'], ['GET', 'POST'], false, false, $tilgang, $tilgangAttribute);
+    $handleCall = new HandleAPICallWithAuthorization(['okpId', 'fornavn', 'mobil', 'etternavn', 'epost'], ['beskrivelse', 'deletedProfileImage'], ['POST'], false, false, $tilgang, $tilgangAttribute);
 
     $id = $handleCall->getArgument('okpId');
     $fornavn = $handleCall->getArgument('fornavn');
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $okp->setEtternavn($etternavn);
         $okp->setEpost($epost);
         $okp->setBeskrivelse($beskrivelse);
-        uploadProfileImage($okp, $deletedProfileImage);
+        WriteOmradeKontaktperson::uploadProfileImage($_FILES['profile_picture'], $okp, $deletedProfileImage);
         WriteOmradeKontaktperson::editOmradekontaktperson($okp);
     } catch(Exception $e) {
         HandleAPICallWithAuthorization::sendError($e->getMessage(), 400);
@@ -72,57 +72,4 @@ function showUser(OmradeKontaktperson $okp) {
     UKMnettverket::addViewData('omradekontaktperson', $okp);
     UKMnettside::addViewData('omrade', $omrade);
 
-}
-
-    
-
-// Returns the URL of the uploaded image
-function uploadProfileImage(OmradeKontaktperson $okp, bool $deletedProfileImage) : void {    
-
-    // Profilbildet er fjernet (ingen profilbilde)
-    if($deletedProfileImage && $_FILES['profile_picture']['size'] == 0) {
-        $okp->setProfileImageUrl(null);
-        return;
-    }
-
-    $file_name = $_FILES['profile_picture']['name'];
-    $file_temp = $_FILES['profile_picture']['tmp_name'];
-    
-    // Check if the file is an image
-    $check = getimagesize($file_temp);
-    if($check === false) {
-        throw new Exception('Filen er ikke et bilde', 400);
-    }
-
-    $upload_dir = wp_upload_dir();
-    $image_data = file_get_contents( $file_temp );
-    $filename = basename( $file_name );
-    $filetype = wp_check_filetype($file_name);
-    $filename = time().'.'.$filetype['ext'];
-
-    if ( wp_mkdir_p( $upload_dir['path'] ) ) {
-        $file = $upload_dir['path'] . '/' . $filename;
-    }
-    else {
-        $file = $upload_dir['basedir'] . '/' . $filename;
-    }
-
-    file_put_contents( $file, $image_data );
-    $wp_filetype = wp_check_filetype( $filename, null );
-    $attachment = array(
-        'post_mime_type' => $wp_filetype['type'],
-        'post_title' => sanitize_file_name( $filename ),
-        'post_content' => '',
-        'post_status' => 'inherit'
-    );
-
-    $attach_id = wp_insert_attachment( $attachment, $file );
-    require_once( ABSPATH . 'wp-admin/includes/image.php' );
-    $attach_data = wp_generate_attachment_metadata( $attach_id, $file );
-    wp_update_attachment_metadata( $attach_id, $attach_data );
-
-    $url = wp_get_attachment_url($attach_id);
-
-    // Lagrer bilde på kontaktperson
-    $okp->setProfileImageUrl($url);
 }
