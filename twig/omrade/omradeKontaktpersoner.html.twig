@@ -21,6 +21,16 @@
 				<p>{{ omradeKontaktperson.getMobil() }} <br>
 				{{ omradeKontaktperson.getEpost() }}</p>
 			</div>
+
+            {% if omradeKontaktperson.hasProfileImage() %}
+                <div class="profilbilde">
+                    <div class="bilde">
+                        <img class="bruker-img" src="{{ omradeKontaktperson.getProfileImageUrl() }}" />
+                    </div>
+                </div>
+            {% endif %}
+            
+
 		</li>
 	{% else %}
 		<li class="nop as-card-1 as-padding-space-3 as-margin-bottom-space-2">

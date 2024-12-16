@@ -9,12 +9,13 @@
         {% else %}
             
 
-            <form method="POST" action="?page=UKMnettverket_kommune&action=omradekontaktperson-edit">
+            <form method="POST" action="?page=UKMnettverket_kommune&action=omradekontaktperson-edit" enctype="multipart/form-data">
 
                 <input type="hidden" name="omradeId" value="{{ omrade.getForeignId() }}">
                 <input type="hidden" name="omradeType" value="{{ omrade.getType() }}">
                 <input type="hidden" id="okpId" name="okpId" value="{{ omradekontaktperson.getId() }}">
                 <input type="hidden" id="mobil" name="mobil" value="{{ omradekontaktperson.getMobil() }}">
+                <input type="hidden" id="deletedProfileImage" name="deletedProfileImage" value="false">
 
                 <div class="form-group">
                     <label for="mobildisabled">Mobil</label>
@@ -42,7 +43,28 @@
                     <textarea class="form-control" id="beskrivelse" type="beskrivelse" name="beskrivelse" value="">{{ omradekontaktperson.getBeskrivelse() }}</textarea>
                 </div>
 
-
+                {% if omradekontaktperson.hasProfileImage() %}
+                    <div class="profilbilde form-group">
+                        <label for="epost">Profilbilde</label>
+                        <br>
+                        <div class="profile_picture">
+                            <img class="okp-img" src="{{ omradekontaktperson.getProfileImageUrl() }}" />
+                            <div class="slett-bilde as-margin-top-space-1">
+                                <button id="deleteProfileImageOkp" class="btn btn-send-form btn-sm btn-danger">Slett profilbilde</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                    <div id="lastOppBildeSection" class="last-opp-bilde {{ omradekontaktperson.hasProfileImage() ? 'hide' : '' }} ">
+                        <img class="okp-img" src="" />
+                        <div class="last-opp card card-body">
+                            Last opp profilbilde: <input id="profileImageInput" class="admin-profile-picture" accept="image/*" type="file" name="profile_picture" />
+                        </div>
+                        <div class="last-opp-vent hide card card-body">
+                            <span>Trykk lagre for å laste opp profilbildet!</span>
+                        </div>
+                    </div>
+                <br>
                 <div class="form-group">
                     <button class="btn btn-send-form btn-sm btn-success" type="submit">Lagre</button>    
                     <a href="?page=UKMnettverket_kommune&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}" class="btn btn-send-form btn-sm btn-info" type="submit">Tilbake</a>    
@@ -52,3 +74,36 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+jQuery('#deleteProfileImageOkp').on('click', function(e) {
+    e.preventDefault();
+    jQuery('#deletedProfileImage').val('true');
+    jQuery(e.currentTarget).parent().parent().detach();
+    jQuery('#lastOppBildeSection').removeClass('hide');
+});
+
+jQuery('#profileImageInput').on('change', function(e) {
+    const file = event.target.files[0];
+
+    if(file) {
+        jQuery('.last-opp').addClass('hide');
+        jQuery('.last-opp-vent').removeClass('hide');
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            jQuery('.okp-img').attr('src', e.target.result);
+        }
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+
+<style>
+.okp-img {
+    max-width: 250px;
+    max-height: 250px;
+}
+.last-opp.card {
+    margin-top: 0;
+}
+</style>
