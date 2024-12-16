@@ -87,6 +87,12 @@ function uploadProfileImage(OmradeKontaktperson $okp, bool $deletedProfileImage)
 
     $file_name = $_FILES['profile_picture']['name'];
     $file_temp = $_FILES['profile_picture']['tmp_name'];
+    
+    // Check if the file is an image
+    $check = getimagesize($file_temp);
+    if($check === false) {
+        throw new Exception('Filen er ikke et bilde', 400);
+    }
 
     $upload_dir = wp_upload_dir();
     $image_data = file_get_contents( $file_temp );
@@ -117,6 +123,6 @@ function uploadProfileImage(OmradeKontaktperson $okp, bool $deletedProfileImage)
 
     $url = wp_get_attachment_url($attach_id);
 
-    // Lagrer bild på User
+    // Lagrer bilde på kontaktperson
     $okp->setProfileImageUrl($url);
 }
