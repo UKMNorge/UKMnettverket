@@ -42,14 +42,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $okp->setEtternavn($etternavn);
         $okp->setEpost($epost);
         $okp->setBeskrivelse($beskrivelse);
+        
         WriteOmradeKontaktperson::uploadProfileImage($_FILES['profile_picture'], $okp, $deletedProfileImage);
         WriteOmradeKontaktperson::editOmradekontaktperson($okp);
     } catch(Exception $e) {
         HandleAPICallWithAuthorization::sendError($e->getMessage(), 400);
     }
 
+    
 
-    echo '<script>window.location.href = "?page=UKMnettverket_'. $omradeType .'&omrade='. $omradeId .'&type='. $omradeType .'";</script>';
+    echo '<script>window.location.href = "?page=UKMnettverket_'. ($omradeType == 'fylke' ? 'fylker' : $omradeType) . '&omrade=' . $omradeId .'&type='. $omradeType .'";</script>';
     exit();
 }
 else {
