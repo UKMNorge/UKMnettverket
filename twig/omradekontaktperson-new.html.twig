@@ -1,5 +1,5 @@
 <div class="container as-container">
-    <div class="as-card-1 as-padding-space-3">
+    <div class="as-card-1 as-padding-space-3 as-margin-top-space-4">
 
         <form method="POST" action="?page=UKMnettverket_kommune&action=omradekontaktperson-add" enctype="multipart/form-data">
 
@@ -45,8 +45,8 @@
             {# Profilbilde #}
             <label for="epost">Profilbilde</label>
             <div id="lastOppBildeSection" class="last-opp-bilde {{ omradekontaktperson.hasProfileImage() ? 'hide' : '' }} as-margin-bottom-space-2" >
-                <img class="okp-img" src="" />
-                <div class="last-opp card card-body ">
+                <img id="profilBilde" class="okp-img" src="" />
+                <div id="lastoppBilde" class="last-opp card card-body ">
                     Last opp profilbilde: <input id="profileImageInput" class="admin-profile-picture" accept="image/*" type="file" name="profile_picture" />
                 </div>
             </div>
@@ -70,8 +70,13 @@
     disableFields();
     
     var $okpUser = null;
+    jQuery('#mobil').on('load', function () {
+        alert('load');
+        console.log('load');
+        checkUserExist();
+    });
 
-    jQuery('#mobil').on('keyup', function() {
+    jQuery('#mobil').on('keyup change', function() {
         checkUserExist();
     });
 
@@ -108,6 +113,8 @@
         jQuery('#etternavn').val('').prop('disabled', true);
         jQuery('#epost').val('').prop('disabled', true);
         jQuery('#beskrivelse').val('').prop('disabled', true);
+        jQuery('#profileImageInput').val('').prop('disabled', true);
+
     }
 
 
@@ -148,6 +155,10 @@
             jQuery('#etternavn').val('').prop('disabled', false);
             jQuery('#epost').val('').prop('disabled', false);
             jQuery('#beskrivelse').val('').prop('disabled', false);
+            jQuery('#profileImageInput').val('').prop('disabled', false);
+
+            jQuery('#profilBilde').attr('src', '');
+            jQuery('#lastoppBilde').removeClass('hide');
 
             jQuery('.eksisterer-bruker').addClass('hide');
             jQuery('#foundMobil').val('null');
@@ -159,8 +170,13 @@
             jQuery('#etternavn').val(data.okp.etternavn).prop('disabled', true);
             jQuery('#epost').val(data.okp.epost).prop('disabled', true);
             jQuery('#beskrivelse').val(data.okp.beskrivelse).prop('disabled', true);
+            jQuery('#profileImageInput').val('').prop('disabled', true);
+
+            jQuery('#profilBilde').attr('src', data.okp.profile_image_url);
+            jQuery('#lastoppBilde').addClass('hide');
 
             jQuery('.eksisterer-bruker').removeClass('hide');
+            
 
             jQuery('#foundMobil').val(mobil);
 

@@ -6,7 +6,9 @@
 			class="nop as-card-2 as-padding-space-3 as-margin-bottom-space-2">
 			<!-- Slett bruker -->
 			<div class="float-right pull-right">
-				<a href="?page={{ GET('page') }}&removeOmradekontaktperson={{ omradeKontaktperson.getId() }}&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}">
+				{# <a href="{{ URLDeleteArrang }}&action={{arrangement.erKunstgalleri() ? 'kunstgalleri' : 'arrangement' }}-slett&arr={{arrangement.getId() }}"> #}
+
+				<a href="?page={{ GET('page') }}&action=omradekontaktperson-remove-connection&mobil={{ omradeKontaktperson.getMobil() }}&omradeId={{ omrade.getForeignId() }}&omradeType={{ omrade.getType() }}">
 					<span class="dashicons dashicons-trash"></span>
 				</a>
 			</div>
