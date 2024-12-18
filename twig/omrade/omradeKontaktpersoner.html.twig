@@ -27,7 +27,9 @@
             {% if omradeKontaktperson.hasProfileImage() %}
                 <div class="profilbilde">
                     <div class="bilde">
-                        <img class="bruker-img" src="{{ omradeKontaktperson.getProfileImageUrl() }}" />
+                        <a href="{{ omradeKontaktperson.getProfileImageUrl() }}" target="_blank">
+                            <img class="bruker-img" src="{{ omradeKontaktperson.getProfileImageUrl() }}" />
+                        </a>
                     </div>
                 </div>
             {% endif %}
