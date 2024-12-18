@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         HandleAPICallWithAuthorization::sendError("Støtter område type 'fylke' eller 'kommune'", 400);
     }
 
-    $tilgang = $omradeType == 'fylke' ? 'fylke' : 'kommune';
+    $tilgang = 'kommune_eller_fylke'; // Har tilgang til kommunen eller fylket
     $tilgangAttribute = $omradeId;
 
     $handleCall = new HandleAPICallWithAuthorization(['okpId', 'fornavn', 'mobil', 'etternavn', 'epost'], ['beskrivelse', 'deletedProfileImage'], ['POST'], false, false, $tilgang, $tilgangAttribute);
@@ -60,6 +60,7 @@ else {
 
     $omrade = new Omrade($okp->getEierOmradeType(), $okp->getEierOmradeId());
     if(!AccessControlArrSys::hasOmradeAccess($omrade)) {
+        UKMnettverket::addViewData('omrade', $omrade);
         UKMnettverket::addViewData('tilgang', false);
     }
     else {

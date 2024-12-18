@@ -16,7 +16,7 @@ if(($omradeType != 'fylke' && $omradeType != 'kommune') || $omradeType == null) 
     HandleAPICallWithAuthorization::sendError("Støtter område type 'fylke' eller 'kommune'", 400);
 }
 
-$tilgang = $omradeType == 'fylke' ? 'fylke' : 'kommune';
+$tilgang = 'kommune_eller_fylke'; // Har tilgang til kommunen eller fylket
 $tilgangAttribute = $omradeId;
 
 $handleCall = new HandleAPICallWithAuthorization(['omradeId', 'omradeType'], [], ['GET'], false, false, $tilgang, $tilgangAttribute);
