@@ -67,7 +67,10 @@
                 <br>
                 <div class="form-group">
                     <button class="btn btn-send-form btn-sm btn-success" type="submit">Lagre</button>    
-                    <a href="?page=UKMnettverket_kommune&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}" class="btn btn-send-form btn-sm btn-info" type="submit">Tilbake</a>    
+                    <a href="{{ tilbakeUrl }}" class="btn btn-send-form btn-sm btn-info">Tilbake</a>    
+                </div>
+                <div id="lagreInfoMsg">
+
                 </div>
             </form>
 
