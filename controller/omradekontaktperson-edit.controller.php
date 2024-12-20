@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         HandleAPICallWithAuthorization::sendError("Støtter område type 'fylke' eller 'kommune'", 400);
     }
 
-    $tilgang = 'kommune_eller_fylke'; // Har tilgang til kommunen eller fylket
+    $tilgang = $omradeType == 'kommune' ? 'kommune_eller_fylke' : 'fylke';
     $tilgangAttribute = $omradeId;
 
     $handleCall = new HandleAPICallWithAuthorization(['okpId', 'fornavn', 'mobil', 'etternavn', 'epost'], ['beskrivelse', 'deletedProfileImage'], ['POST'], false, false, $tilgang, $tilgangAttribute);
@@ -49,23 +49,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         HandleAPICallWithAuthorization::sendError($e->getMessage(), 400);
     }
 
-    
-
-    echo '<script>window.location.href = "?page=UKMnettverket_'. ($omradeType == 'fylke' ? 'fylker' : $omradeType) . '&omrade=' . $omradeId .'&type='. $omradeType .'";</script>';
+    echo '<script>
+        window.history.back();
+    </script>';
     exit();
 }
 else {
     $mobil = HandleAPICallWithAuthorization::getArgumentBeforeInit('mobil', 'GET');
     $okp = OmradeKontaktpersoner::getByMobil($mobil);
 
+
+    UKMnettverket::addViewData('tilbakeUrl', getTilbakeLenke());
     $omrade = new Omrade($okp->getEierOmradeType(), $okp->getEierOmradeId());
     if(!AccessControlArrSys::hasOmradeAccess($omrade)) {
         UKMnettverket::addViewData('omrade', $omrade);
-        UKMnettverket::addViewData('tilgang', false);
-    }
+        UKMnettverket::addViewData('tilgang', false);    }
     else {
         showUser($okp);
     }
+}
+
+function getTilbakeLenke() {
+    $userOmradeId = HandleAPICallWithAuthorization::getArgumentBeforeInit('omradeId', 'GET');
+    $userOmradeType = HandleAPICallWithAuthorization::getArgumentBeforeInit('omradeType', 'GET');
+    return '?page=UKMnettverket_'. ($userOmradeType == 'fylke' ? 'fylker' : $userOmradeType) . '&omrade=' . $userOmradeId .'&type='. $userOmradeType;
 }
 
 function showUser(OmradeKontaktperson $okp) {
