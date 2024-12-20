@@ -19,7 +19,7 @@ if(($omradeType != 'fylke' && $omradeType != 'kommune') || $omradeType == null) 
 }
 $omrade = new Omrade($omradeType, $omradeId);
 
-$tilgang = 'kommune_eller_fylke';
+$tilgang = $omradeType == 'kommune' ? 'kommune_eller_fylke' : 'fylke';
 $tilgangAttribute = $omradeId;
 
 // For å legge til en kontaktperson i området, trenger ikke tilgang til området siden alle kan bruke same kontaktpersoner
