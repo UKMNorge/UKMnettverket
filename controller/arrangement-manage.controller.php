@@ -14,6 +14,9 @@ use UKMNorge\Innslag\Write as WriteInnslag;
 use UKMNorge\Arrangement\Program\Write as WriteProgram;
 
 use UKMNorge\Meta\Write as MetaWrite;
+use UKMNorge\Nettverk\OmradeKontaktperson;
+use UKMNorge\Nettverk\OmradeKontaktpersoner;
+use UKMNorge\Nettverk\WriteOmradeKontaktperson;
 
 require_once('UKM/Autoloader.php');
 
@@ -372,19 +375,43 @@ elseif (isset($_POST['path'])) {
         }
     }
 
+    $arrangementOmrade = new Omrade('monstring', $arrangement->getId());
+
     // Legg til admins som kontakter og administratorer for bloggen
     foreach ($original_omrade->getAdministratorer()->getAll() as $admin) {
         Blog::leggTilBruker($blog_id, $admin->getId(), 'editor');
 
-        $kontakt = WriteKontakt::create(
-            $admin->getUser()->getFirstName(),
-            $admin->getUser()->getLastName(),
-            $admin->getUser()->getPhone()
-        );
-        $kontakt->setEpost($admin->getUser()->getEmail());
-        WriteKontakt::save($kontakt);
+        // $kontakt = WriteKontakt::create(
+        //     $admin->getUser()->getFirstName(),
+        //     $admin->getUser()->getLastName(),
+        //     $admin->getUser()->getPhone()
+        // );
+        // $kontakt->setEpost($admin->getUser()->getEmail());
+        // WriteKontakt::save($kontakt);
 
-        $arrangement->getKontaktpersoner()->leggTil($kontakt);
+        // $arrangement->getKontaktpersoner()->leggTil($kontakt);
+
+        $okp = new OmradeKontaktperson([
+            'id' => -1, 
+            'fornavn' => $admin->getUser()->getFirstName(), 
+            'etternavn' => $admin->getUser()->getLastName(), 
+            'mobil' => $admin->getUser()->getPhone(), 
+            'epost' => $admin->getUser()->getEmail(), 
+            'beskrivelse' => '', 
+            'eier_omrade_id' => $omrade->getForeignId(), 
+            'eier_omrade_type' => $omrade->getType()
+        ]);
+
+        $okp = WriteOmradeKontaktperson::leggTilOmradeKontaktperson($arrangementOmrade, $okp);
+        $arrangement->getKontaktpersoner()->leggTil($okp);
+
+    }
+
+    // Legg til kontaktpersoner som områdets kontaktpersoner
+    $omrade_kontaktpersoner = new OmradeKontaktpersoner($omrade->getForeignId(), $omrade->getType());
+    foreach ($omrade_kontaktpersoner->getAll() as $okp) {
+        $okp = WriteOmradeKontaktperson::leggTilOmradeKontaktperson($arrangementOmrade, $okp);
+        $arrangement->getKontaktpersoner()->leggTil($okp);
     }
 
     if( $omrade->getType() == 'kommune' ) {
