@@ -21,24 +21,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tilgang = $omradeType == 'kommune' ? 'kommune_eller_fylke' : 'fylke';
     $tilgangAttribute = $omradeId;
 
-    $handleCall = new HandleAPICallWithAuthorization(['okpId', 'fornavn', 'etternavn'], ['mobil', 'epost', 'beskrivelse', 'deletedProfileImage'], ['POST'], false, false, $tilgang, $tilgangAttribute);
+    $handleCall = new HandleAPICallWithAuthorization(['okpId', 'fornavn', 'etternavn'], ['epost', 'beskrivelse', 'deletedProfileImage'], ['POST'], false, false, $tilgang, $tilgangAttribute);
 
     $id = $handleCall->getArgument('okpId');
     $fornavn = $handleCall->getArgument('fornavn');
     $etternavn = $handleCall->getArgument('etternavn');
-
-    $mobil = $handleCall->getOptionalArgument('mobil');
     $epost = $handleCall->getOptionalArgument('epost');
-
-    if(empty($mobil) && empty($epost)) {
-        HandleAPICallWithAuthorization::sendError('Mobil eller epost må fylles ut', 400);
-    }
 
     $beskrivelse = $handleCall->getOptionalArgument('beskrivelse') ?? '';
     $deletedProfileImage = $handleCall->getOptionalArgument('deletedProfileImage') == 'true' ? true : false;
 
     try {
-        $okp = OmradeKontaktpersoner::getByMobil($mobil);
+        $okp = OmradeKontaktpersoner::getById($id);
         $okp->setFornavn($fornavn);
         $okp->setEtternavn($etternavn);
         $okp->setEpost($epost);
@@ -56,8 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 else {
-    $mobil = HandleAPICallWithAuthorization::getArgumentBeforeInit('mobil', 'GET');
-    $okp = OmradeKontaktpersoner::getByMobil($mobil);
+    $okpId = HandleAPICallWithAuthorization::getArgumentBeforeInit('okpId', 'GET');
+    $okp = OmradeKontaktpersoner::getById($okpId);
 
 
     UKMnettverket::addViewData('tilbakeUrl', getTilbakeLenke());
