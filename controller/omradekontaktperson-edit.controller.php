@@ -21,20 +21,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tilgang = $omradeType == 'kommune' ? 'kommune_eller_fylke' : 'fylke';
     $tilgangAttribute = $omradeId;
 
-    $handleCall = new HandleAPICallWithAuthorization(['okpId', 'fornavn', 'mobil', 'etternavn', 'epost'], ['beskrivelse', 'deletedProfileImage'], ['POST'], false, false, $tilgang, $tilgangAttribute);
+    $handleCall = new HandleAPICallWithAuthorization(['okpId', 'fornavn', 'mobil', 'etternavn'], ['epost', 'beskrivelse', 'deletedProfileImage'], ['POST'], false, false, $tilgang, $tilgangAttribute);
 
     $id = $handleCall->getArgument('okpId');
     $fornavn = $handleCall->getArgument('fornavn');
     $etternavn = $handleCall->getArgument('etternavn');
-    $epost = $handleCall->getArgument('epost');
     $mobil = $handleCall->getArgument('mobil');
+    $epost = $handleCall->getOptionalArgument('epost');
     $beskrivelse = $handleCall->getOptionalArgument('beskrivelse') ?? '';
     $deletedProfileImage = $handleCall->getOptionalArgument('deletedProfileImage') == 'true' ? true : false;
-    
-    // Check mobil
-    if(!preg_match('/^\d{8}$/', $mobil)) {
-        HandleAPICallWithAuthorization::sendError('Mobilnummeret må være 8 siffer og kun tall', 400);
-    }
 
     try {
         $okp = OmradeKontaktpersoner::getByMobil($mobil);
