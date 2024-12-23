@@ -63,7 +63,8 @@ else {
     $omrade = new Omrade($okp->getEierOmradeType(), $okp->getEierOmradeId());
     if(!AccessControlArrSys::hasOmradeAccess($omrade)) {
         UKMnettverket::addViewData('omrade', $omrade);
-        UKMnettverket::addViewData('tilgang', false);    }
+        UKMnettverket::addViewData('tilgang', false);    
+    }
     else {
         showUser($okp);
     }

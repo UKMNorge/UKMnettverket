@@ -2,10 +2,10 @@
     <div class="as-card-1 as-padding-space-3 as-margin-top-space-4">
 
         {% if tilgang == false %}
-            <h4>Du har ikke tilgang til å endre denne kontaktpersonen</h4>
+            <h4>Du har ikke tilgang!</h4>
             <br>
-            <p>Kontakt personen tilhører <b>{{ omrade.getNavn() }}</b> og du har ikke tilgang til å endre denne kontaktpersonen.</p>
-            <p>Kontakt {{ omrade.getNavn() }} eller <a href="mailto:support@ukm.no">support</a> hvis du ønsker vil redigere denne kontaktpersonen</p>
+            <p>Denne kontaktpersonen tilhører <b>{{ omrade.getNavn() }}</b>, og du har ikke tilgang til å redigere informasjonen.</p>
+            <p>Vennligst ta kontakt med {{ omrade.getNavn() }} eller <a href="mailto:support@ukm.no">support</a> dersom du ønsker endringer.</p>
         {% else %}
             
 
