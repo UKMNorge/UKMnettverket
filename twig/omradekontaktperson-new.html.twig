@@ -1,12 +1,12 @@
 <div class="container as-container">
     <div class="as-card-1 as-padding-space-3 as-margin-top-space-4">
-
         <form method="POST" action="?page=UKMnettverket_kommune&action=omradekontaktperson-add" enctype="multipart/form-data">
 
             <input type="hidden" name="omradeId" value="{{ omrade.getForeignId() }}">
             <input type="hidden" name="omradeType" value="{{ omrade.getType() }}">
             <input type="hidden" id="id" name="id" value="{{ omradekontaktperson.id }}">
             <input type="hidden" id="foundMobil" name="foundMobil" value="null">
+            <input type="hidden" name="redirectPage" value="{{ redirectPage }}">
 
             <div class="form-group">
                 <label for="mobil">Mobil</label>

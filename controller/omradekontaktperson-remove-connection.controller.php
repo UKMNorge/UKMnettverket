@@ -24,6 +24,6 @@ try {
     $handleCall->sendErrorToClient($e->getMessage(), 400);
 }
 
-// echo '<script>window.location.href = "?page=UKMnettverket_'. $omradeType .'&omrade='. $omradeId .'&type='. $omradeType .'";</script>';
-echo '<script>history.back();</script>';
+echo '<script>window.location.href = "?page=UKMnettverket_'. $omradeType . ($omradeType == 'fylke' ? 'er' : '') . '&omrade='. $omradeId .'&type='. $omradeType .'";</script>';
+// echo '<script>history.back();</script>';
 exit();

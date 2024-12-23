@@ -13,6 +13,8 @@ require_once('UKM/Autoloader.php');
 
 $omradeId = HandleAPICallWithAuthorization::getArgumentBeforeInit('omradeId', 'POST');
 $omradeType = HandleAPICallWithAuthorization::getArgumentBeforeInit('omradeType', 'POST');
+$redirectPage = HandleAPICallWithAuthorization::getArgumentBeforeInit('redirectPage', 'POST');
+
 if(($omradeType != 'fylke' && $omradeType != 'kommune') || $omradeType == null) {
     // Send error if the area type is not 'fylke' or 'kommune'
     HandleAPICallWithAuthorization::sendError("Støtter område type 'fylke' eller 'kommune'", 400);
@@ -26,17 +28,19 @@ $tilgangAttribute = $omradeId;
 $foundMobil = HandleAPICallWithAuthorization::getArgumentBeforeInit('foundMobil', 'POST');
 if($foundMobil != 'null') {
     $okp = OmradeKontaktpersoner::getByMobil($foundMobil);
-    connectOkpToOmrade($okp, $omrade);
+    connectOkpToOmrade($okp, $omrade, $redirectPage);
 }
 // Brukeren finnes ikke, opprett og legg til i området
 else {   
-    $handleCall = new HandleAPICallWithAuthorization(['fornavn', 'etternavn', 'mobil', 'epost', 'foundMobil'], ['beskrivelse'], ['POST'], false, false, $tilgang, $tilgangAttribute);
+    $handleCall = new HandleAPICallWithAuthorization(['fornavn', 'etternavn', 'mobil', 'epost', 'foundMobil', 'redirectPage'], ['beskrivelse'], ['POST'], false, false, $tilgang, $tilgangAttribute);
 
     $fornavn = $handleCall->getArgument('fornavn');
     $etternavn = $handleCall->getArgument('etternavn');
     $mobil = $handleCall->getArgument('mobil');
     $epost = $handleCall->getArgument('epost');
     $beskrivelse = $handleCall->getOptionalArgument('beskrivelse') ?? '';
+
+    $redirectPage = $handleCall->getArgument('redirectPage');
 
     // Check mobil
     if(!preg_match('/^\d{8}$/', $mobil)) {
@@ -47,11 +51,11 @@ else {
     // Upload profile image
     WriteOmradeKontaktperson::uploadProfileImage($_FILES['profile_picture'], $okp, false);
 
-    connectOkpToOmrade($okp, $omrade);
+    connectOkpToOmrade($okp, $omrade, $redirectPage);
 }
 
 
-function connectOkpToOmrade(OmradeKontaktperson $okp, Omrade $omrade) {
+function connectOkpToOmrade(OmradeKontaktperson $okp, Omrade $omrade, $redirectPage) {
     try {
         WriteOmradeKontaktperson::leggTilOmradeKontaktperson($omrade, $okp);
     } catch(Exception $e) {
@@ -59,7 +63,7 @@ function connectOkpToOmrade(OmradeKontaktperson $okp, Omrade $omrade) {
     }
 
     // echo '<script>window.location.href = "?page=UKMnettverket_'. $omrade->getType() .'&omrade='. $omrade->getForeignId() .'&type='. $omrade->getType() .'";</script>';
-    echo '<script>window.location.href = "?page=UKMnettverket_'. ($omrade->getType() == 'fylke' ? 'fylker' : $omrade->getType()) . '&omrade=' . $omrade->getForeignId() .'&type='. $omrade->getType() .'";</script>';
+    echo '<script>window.location.href = "?page=' . $redirectPage . '&omrade=' . $omrade->getForeignId() .'&type='. $omrade->getType() .'";</script>';
 
     exit();
 }

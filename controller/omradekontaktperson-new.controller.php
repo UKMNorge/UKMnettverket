@@ -8,6 +8,7 @@ use UKMNorge\Nettverk\OmradeKontaktperson;
 
 require_once('UKM/Autoloader.php');
 
+$redirectPage = HandleAPICallWithAuthorization::getArgumentBeforeInit('page', 'GET');
 $omradeId = HandleAPICallWithAuthorization::getArgumentBeforeInit('omradeId', 'GET');
 $omradeType = HandleAPICallWithAuthorization::getArgumentBeforeInit('omradeType', 'GET');
 
@@ -28,3 +29,4 @@ $omradeKontaktperson = OmradeKontaktperson::createEmpty();
 
 UKMnettverket::addViewData('omradekontaktperson', $omradeKontaktperson);
 UKMnettverket::addViewData('omrade', $omrade);
+UKMnettverket::addViewData('redirectPage', $redirectPage);
