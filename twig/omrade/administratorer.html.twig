@@ -4,6 +4,16 @@
 	{% for admin in omrade.getAdministratorer().getAll() %}
 		<li
 			class="nop as-card-2 as-padding-space-3 as-margin-bottom-space-2">
+			<!-- kontaktperson label -->
+		{% if admin.erKontaktperson(omrade) %}
+			<div class="label-admin-kontaktpers as-mini-label-style as-margin-right-space-1 as-margin-bottom-space-2 tooltip-btn" data-toggle="tooltip" data-placement="bottom" title='{{ admin.getUser().getNavn() }} er administrator og kontaktperson, og vil være SYNLIG på nettsiden.'>
+					<span class="icon">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 4 24 24" style="fill: rgb(160, 174, 192);">
+							<path d="M21 2H6a2 2 0 0 0-2 2v3H2v2h2v2H2v2h2v2H2v2h2v3a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zm-8 2.999c1.648 0 3 1.351 3 3A3.012 3.012 0 0 1 13 11c-1.647 0-3-1.353-3-3.001 0-1.649 1.353-3 3-3zM19 18H7v-.75c0-2.219 2.705-4.5 6-4.5s6 2.281 6 4.5V18z"></path>
+						</svg>
+				<span>Kontaktperson</span>
+			</div>
+		{% endif %}		
 			<!-- Slett bruker -->
 			<div class="float-right pull-right">
 				<a href="?page={{ GET('page') }}&removeAdmin={{ admin.getId() }}&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}">
@@ -19,8 +29,14 @@
 			<!-- Vis på kontaktside -->
 			<div class="float-right pull-right" style="margin-right: 1rem;">
                 {% set action = admin.erKontaktperson(omrade) ? 'hideAdmin' : 'showAdmin' %}
-				<a href="?page={{GET('page')}}&{{action}}={{admin.getId()}}&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}">
-					<span class="dashicons dashicons-{{action == 'hideAdmin' ? 'visibility' : 'hidden' }}" style="margin-left:.5 rem"></span>
+				<a href="?page={{GET('page')}}&{{action}}={{admin.getId()}}&omrade={{ omrade.getForeignId() }}&type={{ omrade.getType() }}" class="tooltip-btn" data-toggle="tooltip" data-placement="bottom" title='{{ admin.erKontaktperson(omrade) ? 'Fjern' : 'Legg til' }} som kontaktperson'>
+					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 -2 24 24" style="fill: #0073aa;">
+						<path d="M21 2H6a2 2 0 0 0-2 2v3H2v2h2v2H2v2h2v2H2v2h2v3a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zm-8 2.999c1.648 0 3 1.351 3 3A3.012 3.012 0 0 1 13 11c-1.647 0-3-1.353-3-3.001 0-1.649 1.353-3 3-3zM19 18H7v-.75c0-2.219 2.705-4.5 6-4.5s6 2.281 6 4.5V18z"></path>
+					{% if admin.erKontaktperson(omrade) %}
+						<line x1="2" y1="23" x2="24" y2="4" stroke="rgba(255,255,255, 1)" stroke-width="3" />
+						<line x1="-4" y1="26" x2="27" y2="-1" stroke="#005c88" stroke-width="2.5" />
+					{% endif %}
+					</svg>
 				</a>
 			</div>
 			
@@ -46,7 +62,9 @@
 				{% if bilde %}
 					<div class="profilbilde">
 						<div class="bilde">
-							<img class="bruker-img" src="{{ bilde }}" />
+	                        <a href="{{ bilde }}" target="_blank">
+								<img class="bruker-img" src="{{ bilde }}" />
+							</a>
 							<div class="slett-bilde">
 								<button class="button-slett-bilde" admin-id="{{ admin.getUser().getId() }}">
 									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" style="fill: #fff;transform: ;msFilter:;"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm4.207 12.793-1.414 1.414L12 13.414l-2.793 2.793-1.414-1.414L10.586 12 7.793 9.207l1.414-1.414L12 10.586l2.793-2.793 1.414 1.414L13.414 12l2.793 2.793z"></path></svg>
@@ -87,16 +105,6 @@
 		</a>
 	</ol>
 </ul>
-
-<p class="small text-muted">
-    <b>
-    <span class="dashicons dashicons-visibility"></span> / 
-    <span class="dashicons dashicons-hidden"></span>
-    :
-    </b>
-    Angi om administratoren skal vises på {{ omrade.getNavn() }} <a href="{{ omrade.getLink() }}kontaktpersoner/">sin kontaktside</a>.
-</p>
-
 
 <style>
 .bruker-img {
@@ -150,5 +158,12 @@
     width: 25px;
     border: none;
     background: transparent;
+}
+.label-admin-kontaktpers {
+	display: inline-block;
+    height: 23px;
+}
+.label-admin-kontaktpers .icon svg {
+	height: 20px !important;
 }
 </style>

@@ -1,11 +1,40 @@
+
 <h1>{{ arrangement.getNavn() }} er opprettet!</h1>
 
-    <p class="lead">Mye er på plass, men du må innom arrangementsystemet å sette opp resten. Vi anbefaler at du gjør dette allerede nå.</p>
+<p class="lead">Mye er på plass, men du må innom arrangementsystemet å sette opp resten. Vi anbefaler at du gjør dette allerede nå.</p>
 
-<p>
-    <a href="/{{ blog_path }}/wp-admin/" class="btn btn-primary">Gå til arrangementsystemet</a>
-</p>
+<h4>Er kontaktpersonene riktig?</h4>
+{% if arrangement.getKontaktpersoner().getAntall() > 0 %}
+<form method="post" action="?page={{GET('page')}}&action=arrangement-slett-kontaktpersoner&type={{GET('type')}}&omrade={{GET('omrade')}}">
+    <input type="hidden" name="pl_id" value="{{ arrangement.getId() }}">
+    <input type="hidden" name="redirect_til_arrangement" value="/{{ blog_path }}/wp-admin/">
+    <input type="hidden" name="page" value="{{GET('page')}}">
 
-<p>
+    <div class="nop col-xs-12 col-sm-6">
+        <ul>
+            {% for kp in arrangement.getKontaktpersoner().getAll() %}
+                <li class="list-group-item">
+                    <div class="checkbox">
+                        <label>
+                            <input name="remove_kontaktpersoner[{{ kp.getId() }}]" checked type="checkbox" value="1">
+                            {{ kp.getNavn() }} ({{ kp.hasValidMobil() ? kp.getMobil() : kp.getEpost() }})
+                        </label>
+                    </div>
+                </li>
+            {% endfor %}    
+        </ul>
+    </div>
+    <div class="nop col-xs-12">
+        <p>
+            <button class="btn btn-primary" type="submit">Lagre og gå videre</button>
+        </p>
+    </div>
+</form>
+{% else %}
+<div class="col-xs-12">
+    <a href="/{{ blog_path }}/wp-admin/" class="btn btn-primary">Gå til arrangementet</a>
+</div>
+{% endif %}
+<div class="col-xs-12">
     <a href="?page={{GET('page')}}&type={{GET('type')}}&omrade={{GET('omrade')}}">tilbake til {{ omrade.getNavn() }}</a>
-</p>
+</div>
