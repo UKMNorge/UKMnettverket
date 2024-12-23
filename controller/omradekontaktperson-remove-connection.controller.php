@@ -5,10 +5,11 @@ use UKMNorge\Nettverk\WriteOmradeKontaktperson;
 use UKMNorge\Nettverk\Omrade;
 
 
-$handleCall = new HandleAPICall(['mobil', 'omradeType', 'omradeId'], [], ['POST', 'GET'], false);
+$handleCall = new HandleAPICall(['mobil', 'omradeType', 'omradeId', 'page'], [], ['POST', 'GET'], false);
 
 $omradeType = $handleCall->getArgument('omradeType');
 $omradeId = $handleCall->getArgument('omradeId');
+$page = $handleCall->getArgument('page');
 
 $omrade = new Omrade($omradeType, $omradeId);
 $mobil = $handleCall->getArgument('mobil');
@@ -24,6 +25,6 @@ try {
     $handleCall->sendErrorToClient($e->getMessage(), 400);
 }
 
-echo '<script>window.location.href = "?page=UKMnettverket_'. $omradeType . ($omradeType == 'fylke' ? 'er' : '') . '&omrade='. $omradeId .'&type='. $omradeType .'";</script>';
+echo '<script>window.location.href = "?page=' . $page . '&omrade='. $omradeId .'&type='. $omradeType .'";</script>';
 // echo '<script>history.back();</script>';
 exit();
