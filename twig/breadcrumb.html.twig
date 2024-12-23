@@ -1,3 +1,5 @@
+{% set isSuperAdmin = is_super_admin is defined and is_super_admin == true ? true : false %}
+
 <div class="">
     <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -13,7 +15,7 @@
         {% if flerekommuner %}
             <li class="breadcrumb-item"><a href="?page=UKMnettverket_kommune">Mine kommuner</a></li>        
         {% else %}
-            <li class="breadcrumb-item"><a data-toggle="tooltip" data-placement="bottom" data-original-title="Fylke" href="?page=UKMnettverket_fylke&omrade={{ fylke.getId() }}&type=fylke">{{ fylke.getNavn() }}</a></li>        
+            <li class="breadcrumb-item"><a data-toggle="tooltip" data-placement="bottom" data-original-title="Fylke" href="?page=UKMnettverket_fylke{{ isSuperAdmin ? 'r' : '' }}&omrade={{ fylke.getId() }}&type=fylke">{{ fylke.getNavn() }}</a></li>        
         {% endif %}
         
         <li class="breadcrumb-item active" aria-current="page">
