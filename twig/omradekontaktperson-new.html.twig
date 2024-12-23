@@ -38,12 +38,12 @@
             </div>
 
             <div class="form-group">
-                <label for="epost">Beskrivelse</label>
+                <label for="beskrivelse">Beskrivelse</label>
                 <textarea class="form-control" id="beskrivelse" type="beskrivelse" name="beskrivelse" value="{{ omradekontaktperson.getBeskrivelse() }}"></textarea>
             </div>
 
             {# Profilbilde #}
-            <label for="epost">Profilbilde</label>
+            <label for="profilbilde">Profilbilde</label>
             <div id="lastOppBildeSection" class="last-opp-bilde {{ omradekontaktperson.hasProfileImage() ? 'hide' : '' }} as-margin-bottom-space-2" >
                 <img id="profilBilde" class="okp-img" src="" />
                 <div id="lastoppBilde" class="last-opp card card-body ">
