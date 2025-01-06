@@ -15,13 +15,18 @@ $omradeId = HandleAPICallWithAuthorization::getArgumentBeforeInit('omradeId', 'P
 $omradeType = HandleAPICallWithAuthorization::getArgumentBeforeInit('omradeType', 'POST');
 $redirectPage = HandleAPICallWithAuthorization::getArgumentBeforeInit('redirectPage', 'POST');
 
-if(($omradeType != 'fylke' && $omradeType != 'kommune') || $omradeType == null) {
+if(($omradeType != 'fylke' && $omradeType != 'kommune' && $omradeType != 'monstring') || $omradeType == null) {
     // Send error if the area type is not 'fylke' or 'kommune'
-    HandleAPICallWithAuthorization::sendError("Støtter område type 'fylke' eller 'kommune'", 400);
+    HandleAPICallWithAuthorization::sendError("Støtter område type 'fylke', 'monstring' eller 'kommune'", 400);
 }
 $omrade = new Omrade($omradeType, $omradeId);
 
-$tilgang = $omradeType == 'kommune' ? 'kommune_eller_fylke' : 'fylke';
+if($omradeType == 'monstring') {
+    $tilgang = 'arrangement_i_kommune_fylke';
+}
+else {
+    $tilgang = $omradeType == 'kommune' ? 'kommune_eller_fylke' : 'fylke';
+}
 $tilgangAttribute = $omradeId;
 
 // For å legge til en kontaktperson i området, trenger ikke tilgang til området siden alle kan bruke same kontaktpersoner

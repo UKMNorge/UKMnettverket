@@ -12,12 +12,17 @@ $redirectPage = HandleAPICallWithAuthorization::getArgumentBeforeInit('page', 'G
 $omradeId = HandleAPICallWithAuthorization::getArgumentBeforeInit('omradeId', 'GET');
 $omradeType = HandleAPICallWithAuthorization::getArgumentBeforeInit('omradeType', 'GET');
 
-if(($omradeType != 'fylke' && $omradeType != 'kommune') || $omradeType == null) {
+if(($omradeType != 'fylke' && $omradeType != 'kommune' && $omradeType != 'monstring') || $omradeType == null) {
     // Send error if the area type is not 'fylke' or 'kommune'
-    HandleAPICallWithAuthorization::sendError("Støtter område type 'fylke' eller 'kommune'", 400);
+    HandleAPICallWithAuthorization::sendError("Støtter område type 'fylke', 'monstring' eller 'kommune'", 400);
 }
 
-$tilgang = $omradeType == 'kommune' ? 'kommune_eller_fylke' : 'fylke';
+if($omradeType == 'monstring') {
+    $tilgang = 'arrangement_i_kommune_fylke';
+}
+else {
+    $tilgang = $omradeType == 'kommune' ? 'kommune_eller_fylke' : 'fylke';
+}
 $tilgangAttribute = $omradeId;
 
 $handleCall = new HandleAPICallWithAuthorization(['omradeId', 'omradeType'], [], ['GET'], false, false, $tilgang, $tilgangAttribute);
