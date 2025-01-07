@@ -2,13 +2,12 @@
     <div class="as-card-1 as-padding-space-3 as-margin-top-space-4">
 
         {% if tilgang == false %}
-            <h4>Du har ikke tilgang!</h4>
+            <h3 class="as-text-center">Du har ikke tilgang!</h3>
             <br>
-            <p>Denne kontaktpersonen tilhører <b>{{ omrade.getNavn() }}</b>, og du har ikke tilgang til å redigere informasjonen.</p>
-            <p>Vennligst ta kontakt med {{ omrade.getNavn() }} eller <a href="mailto:support@ukm.no">support</a> dersom du ønsker endringer.</p>
+            <span class="mdi mdi-cancel"></span>
+            <p class="as-text-center">Kontaktpersonen er tilknyttet <b>{{ omrade.getNavn() }}</b>, og du har ikke tilgang til å redigere informasjonen.
+            <p class="as-text-center">For å gjøre endringer, vennligst kontakt Buskerud eller <a href="mailto:support@ukm.no">support</a></p>
         {% else %}
-            
-
             <form method="POST" action="?page=UKMnettverket_kommune&action=omradekontaktperson-edit" enctype="multipart/form-data">
 
                 <input type="hidden" name="omradeId" value="{{ omrade.getForeignId() }}">
