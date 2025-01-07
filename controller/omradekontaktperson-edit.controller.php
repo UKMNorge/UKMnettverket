@@ -60,6 +60,7 @@ else {
 
 
     UKMnettverket::addViewData('tilbakeUrl', getTilbakeLenke());
+
     $omrade = new Omrade($okp->getEierOmradeType(), $okp->getEierOmradeId());
     if(!AccessControlArrSys::hasOmradeAccess($omrade)) {
         UKMnettverket::addViewData('omrade', $omrade);
@@ -73,7 +74,7 @@ else {
 function getTilbakeLenke() {
     $userOmradeId = HandleAPICallWithAuthorization::getArgumentBeforeInit('omradeId', 'GET');
     $userOmradeType = HandleAPICallWithAuthorization::getArgumentBeforeInit('omradeType', 'GET');
-    return '?page=UKMnettverket_'. ($userOmradeType == 'fylke' ? 'fylker' : $userOmradeType) . '&omrade=' . $userOmradeId .'&type='. $userOmradeType;
+    return '?page='. $_GET['page'] .'&omrade=' . $userOmradeId .'&type='. $userOmradeType;
 }
 
 function showUser(OmradeKontaktperson $okp) {
