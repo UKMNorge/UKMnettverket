@@ -352,7 +352,7 @@ $arrangementer = [];
 foreach( ['getKommendeArrangementer', 'getTidligereArrangementer'] as $groups ) {
     // Forbered info om alle arrangementer i området
     foreach ($omrade->$groups()->getAll() as $arrangement) {
-        if( $arrangement->getSesong() < 2020 ) {
+        if( $arrangement->getSesong() < (int) date('Y') -1 ) {
             continue;
         }
 
