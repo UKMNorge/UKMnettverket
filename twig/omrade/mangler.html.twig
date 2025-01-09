@@ -5,16 +5,9 @@
         {{ mangler|length }} sjangre i {{ season }}{{ loop.index == pakrevd_mangler|filter( mangler => mangler|length > 0 )|length - 1 ? ' og ' : (not loop.last ? ', ')}}
     {% endfor %}
 </p>
-<p>
-	I UKM skal det være mulig å melde seg på utstilling, film og alle scenekategorier (dans, litteratur, musikk, teater og annet).
-     Du avgjør om
-	{{ omrade.getNavn() }}
-	skal ha flere arrangement som til sammen dekker alt, eller kun ett som tilbyr alle kategorier. 
-	Det er mulig å åpne for samme kategori i flere arrangementer.
-</p>
 
 <p>
-    <b>Akkurat nå mangler du:</b>
+    <b>Det mangles:</b>
     {% for season, typer in pakrevd_mangler|filter( typer => typer|length > 0 ) %}
         <br />
         <b>I {{season}}:</b>
