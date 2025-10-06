@@ -22,6 +22,7 @@ if (is_user_admin()) {
         $omrader[$omrade->getId()] = $omrade;
     }
     $omrader['fylke_92'] = Fylker::getById(92)->getNettverkOmrade(); // norgescupen
+    $omrader['fylke_9999'] = Fylker::getById(9999)->getNettverkOmrade(); // UKM Norge som fylke
 }
 
 if (isset($_GET['omrade']) && isset($_GET['type'])) {
