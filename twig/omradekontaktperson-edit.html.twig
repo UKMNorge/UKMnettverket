@@ -77,13 +77,8 @@
                 </div>
 
                 
-                {# Kontaktpersonen har bilde men ikke via OmradeKontaktperson, da blir det WP bilde #}
-                {% if omradekontaktperson.hasProfileImage() and omradekontaktperson.hasProfileImageIOmradeKontaktperson() == false  %}
-                <div class="profilbilde form-group">
-                    <img class="okp-img" src="{{ omradekontaktperson.getWPAdminImageUrl() }}" />
-                    <p class="text-muted info-text-wp-bilde">Gå til kommune- eller fylkessiden for å bytte bilde.</p>
-                </div>
-                {% elseif omradekontaktperson.hasProfileImage() %}
+                
+                {% if omradekontaktperson.hasProfileImage() %}
                     <div class="profilbilde form-group">
                         <label for="profilbilde">Profilbilde</label>
                         <br>
@@ -95,7 +90,7 @@
                         </div>
                     </div>
                 {% endif %}
-                    <div id="lastOppBildeSection" class="last-opp-bilde {{ omradekontaktperson.hasProfileImage() ? 'hide' : '' }} ">
+                    <div id="lastOppBildeSection" class="last-opp-bilde {{ omradekontaktperson.hasProfileImage() ? '' : '' }} ">
                         <img class="okp-img" src="" />
                         <div class="last-opp card card-body">
                             Last opp profilbilde: <input id="profileImageInput" class="kontaktperson-profile-picture" accept="image/*" type="file" name="profile_picture" />
