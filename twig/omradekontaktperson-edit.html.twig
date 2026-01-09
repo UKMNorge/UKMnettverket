@@ -94,6 +94,7 @@
                             </div>
                         </div>
                     </div>
+                {% endif %}
                     <div id="lastOppBildeSection" class="last-opp-bilde {{ omradekontaktperson.hasProfileImage() ? 'hide' : '' }} ">
                         <img class="okp-img" src="" />
                         <div class="last-opp card card-body">
@@ -103,7 +104,6 @@
                             <span>Trykk lagre for å laste opp profilbildet!</span>
                         </div>
                     </div>
-                {% endif %}
                 <br>
                 <div class="form-group">
                     <button class="btn btn-send-form btn-sm btn-success" type="submit">Lagre</button>    
