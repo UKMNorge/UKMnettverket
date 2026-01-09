@@ -83,7 +83,7 @@
                         <label for="profilbilde">Profilbilde</label>
                         <br>
                         <div class="profile_picture">
-                            <img class="okp-img" src="{{ omradekontaktperson.getProfileImageUrl() }}" />
+                            <img class="okp-img uploaded-bilde" src="{{ omradekontaktperson.getProfileImageUrl() }}" />
                             <div class="slett-bilde as-margin-top-space-1">
                                 <button id="deleteProfileImageOkp" class="btn btn-send-form btn-sm btn-danger">Slett profilbilde</button>
                             </div>
@@ -91,7 +91,7 @@
                     </div>
                 {% endif %}
                     <div id="lastOppBildeSection" class="last-opp-bilde {{ omradekontaktperson.hasProfileImage() ? '' : '' }} ">
-                        <img class="okp-img" src="" />
+                        <img class="okp-img upload-prev" src="" />
                         <div class="last-opp card card-body">
                             Last opp profilbilde: <input id="profileImageInput" class="kontaktperson-profile-picture" accept="image/*" type="file" name="profile_picture" />
                         </div>
@@ -159,7 +159,8 @@ jQuery('#profileImageInput').on('change', function(e) {
         jQuery('.last-opp-vent').removeClass('hide');
         const reader = new FileReader();
         reader.onload = function(e) {
-            jQuery('.okp-img').attr('src', e.target.result);
+            jQuery('.okp-img.upload-prev').attr('src', e.target.result);
+            jQuery('.okp-img.uploaded-bilde').detach();
         }
         reader.readAsDataURL(file);
     }
