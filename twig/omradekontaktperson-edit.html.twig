@@ -76,7 +76,14 @@
                     <textarea class="form-control" id="beskrivelse" type="beskrivelse" name="beskrivelse" value="">{{ omradekontaktperson.getBeskrivelse() }}</textarea>
                 </div>
 
-                {% if omradekontaktperson.hasProfileImage() %}
+                
+                {# Kontaktpersonen har bilde men via WP User #}
+                {% if omradekontaktperson.hasProfileImage() and omradekontaktperson.hasProfileImageIOmradeKontaktperson() == false  %}
+                <div class="profilbilde form-group">
+                    <img class="okp-img" src="{{ omradekontaktperson.getWPAdminImageUrl() }}" />
+                    <p class="text-muted info-text-wp-bilde">Bildet er hentet fra profilbrukeren som er tilknyttet dette telefonnummeret.<br>Gå til kommune- eller fylkessiden for å bytte bilde.</p>
+                </div>
+                {% elseif omradekontaktperson.hasProfileImage() %}
                     <div class="profilbilde form-group">
                         <label for="profilbilde">Profilbilde</label>
                         <br>
@@ -179,5 +186,9 @@ jQuery('#profileImageInput').on('change', function(e) {
 .vue-componment-notification-message.primary-type {
     background: var(--as-color-primary-primary-lightest);
     border: 2px solid var(--as-color-primary-primary-light);
+}
+.info-text-wp-bilde {
+    margin-top: 5px !important; 
+    margin-bottom: 0 !important;
 }
 </style>
