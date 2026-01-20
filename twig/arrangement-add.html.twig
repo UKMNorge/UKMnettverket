@@ -191,48 +191,50 @@
             </div>
         </div>
 
-        <h4>
-            Hvordan skal påmeldingen skje?
-            <small class="text-muted">(velg ved å trykke på en av boksene nedenfor)</small>
-        </h4>
-        <div class="row">
-            <div class="col-xs-6 col-sm-4 col-lg-3">
-                <div class="optionCard card" data-group="pamelding" data-value="videresending">
-                    <div class="dashicons dashicons-networking"></div>
-                    <div class="header">Videresending</div>
-                    <p>
-                        Velger du denne er du avhengig av at andre
-                        arrangementer sender deltakere til deg, 
-                        da det ikke finnes påmeldingsskjema noe sted.
-                    </p>
+        {% if omrade.getType() == 'fylke' %}        
+            <h4>
+                Hvordan skal påmeldingen skje?
+                <small class="text-muted">(velg ved å trykke på en av boksene nedenfor)</small>
+            </h4>
+            <div class="row">
+                <div class="col-xs-6 col-sm-4 col-lg-3">
+                    <div class="optionCard card" data-group="pamelding" data-value="videresending">
+                        <div class="dashicons dashicons-networking"></div>
+                        <div class="header">Videresending</div>
+                        <p>
+                            Velger du denne er du avhengig av at andre
+                            arrangementer sender deltakere til deg, 
+                            da det ikke finnes påmeldingsskjema noe sted.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-xs-6 col-sm-4 col-lg-3">
+                    <div class="optionCard card selected" data-group="pamelding" data-value="apen">
+                        <div class="dashicons dashicons-unlock"></div>
+                        <div class="header">Åpen påmelding</div>
+                        <p>
+                            Åpner påmeldingen for hvem som helst gjennom vanlig påmeldingsskjema.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-xs-6 col-sm-4 col-lg-3">
+                    {#
+                    <div class="optionCard card" data-group="pamelding" data-value="lukket">
+                        <div class="dashicons dashicons-lock"></div>
+                        <div class="header">Påmelding med krav</div>
+                        <p>
+                            <span class="label label-info">Kommer snart</span>
+
+                            Her kan du sette noen krav deltakere må oppfylle før de kan melde seg på,
+                            for eksempel at de må være påmeldt fylkesfestivalen din.
+                        </p>
+                    </div>
+                    #}
                 </div>
             </div>
-
-            <div class="col-xs-6 col-sm-4 col-lg-3">
-                <div class="optionCard card" data-group="pamelding" data-value="apen">
-                    <div class="dashicons dashicons-unlock"></div>
-                    <div class="header">Åpen påmelding</div>
-                    <p>
-                        Åpner påmeldingen for hvem som helst gjennom vanlig påmeldingsskjema.
-                    </p>
-                </div>
-            </div>
-
-            <div class="col-xs-6 col-sm-4 col-lg-3">
-                {#
-                <div class="optionCard card" data-group="pamelding" data-value="lukket">
-                    <div class="dashicons dashicons-lock"></div>
-                    <div class="header">Påmelding med krav</div>
-                    <p>
-                        <span class="label label-info">Kommer snart</span>
-
-                        Her kan du sette noen krav deltakere må oppfylle før de kan melde seg på,
-                        for eksempel at de må være påmeldt fylkesfestivalen din.
-                    </p>
-                </div>
-                #}
-            </div>
-        </div>
+        {% endif %}
 
         {% if omrade.getType() == 'kommune' %}
             <h4>Arrangerer du sammen med andre
@@ -302,7 +304,7 @@
             </div>
         {% endif %}
 
-        <div id="omArrangementet" style="display:none;">
+        <div id="omArrangementet">
             <div id="velgSynlig" style="display:none;">
                 <h4>Skal arrangementet vises på UKM.no?</h4>
                 <div class="row" style="margin-top: 2em;">
