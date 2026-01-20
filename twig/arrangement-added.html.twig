@@ -8,7 +8,7 @@
 <h4>Er kontaktpersonene riktig?</h4>
 <form method="post" action="?page={{GET('page')}}&action=arrangement-slett-kontaktpersoner&type={{GET('type')}}&omrade={{GET('omrade')}}">
     <input type="hidden" name="pl_id" value="{{ arrangement.getId() }}">
-    <input type="hidden" name="redirect_til_arrangement" value="/{{ blog_path }}/wp-admin/">
+    <input type="hidden" name="redirect_til_arrangement" value="{{ blog_path }}/wp-admin/">
     <input type="hidden" name="page" value="{{GET('page')}}">
 
     <div class="nop col-xs-12 nop col-sm-6">
