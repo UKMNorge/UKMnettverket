@@ -191,7 +191,8 @@
             </div>
         </div>
 
-        {% if omrade.getType() == 'fylke' %}        
+        {# {% if omrade.getType() != 'fylke' %} #}
+        <div class="{{ omrade.getType() != 'fylke' ? "it-is-kommune" : '' }}">
             <h4>
                 Hvordan skal påmeldingen skje?
                 <small class="text-muted">(velg ved å trykke på en av boksene nedenfor)</small>
@@ -234,7 +235,8 @@
                     #}
                 </div>
             </div>
-        {% endif %}
+        </div>
+        {# {% endif %} #}
 
         {% if omrade.getType() == 'kommune' %}
             <h4>Arrangerer du sammen med andre
@@ -367,7 +369,7 @@
                     <input type="hidden" name="path_geo" id="path_geo" />
                     <div class="input-group input-group">
                         <span class="input-group-addon" id="viewPathLabel">
-                            UKM.no/
+                            UKM.no/arrangement/
                         </span>
                         <input type="text" class="form-control" name="path_event" id="path_event" value="{{ path_forslag }}" readonly>
                     </div>
@@ -397,3 +399,10 @@
         </div>
     </form>
 </div>
+
+<style>
+.it-is-kommune {
+    visibility: hidden;
+    position: absolute;
+}
+</style>

@@ -29,7 +29,7 @@ UKMresources.arrangement = function($) {
         },
         isPathAvailable: function(path_geo, path_event) {
             return WebsitePathSearch.do({
-                path_geo: path_geo.replace('UKM.no/',''),
+                path_geo: path_geo.replace('UKM.no/arrangement',''),
                 path_event: path_event,
                 omrade_type: $('#omrade_type').val(),
                 omrade_id: $('#omrade_id').val()
@@ -85,7 +85,7 @@ UKMresources.arrangement = function($) {
                 url += self.getPathFromCheckbox(checkbox_selector).toLowerCase() + '-';
             }
 
-            return 'UKM.no/' + self.sanitizePath(url);
+            return 'UKM.no/arrangement/' + self.sanitizePath(url);
         },
 
         getUrlFromName: function(name) {
