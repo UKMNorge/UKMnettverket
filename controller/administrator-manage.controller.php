@@ -39,6 +39,28 @@ if (isset($_GET['removeAdmin'])) {
             'success',
             $admin->getUser()->getNavn() . ' er fjernet som administrator for ' . $omrade->getNavn()
         );
+
+        try {
+            $subscriber = Subscriber::createFromDetails(
+                $admin->getUser()->getEmail(),
+                $admin->getUser()->getFirstName(),
+                $admin->getUser()->getLastName()
+            );
+
+            if (UKM_HOSTNAME == 'ukm.dev') {
+                throw new Exception(
+                    'Unsubscriber ikke admins i UKM.dev'
+                );
+            }
+
+            Arrangor::unSubscribe($subscriber);
+        } catch (Exception $e) {
+            UKMnettverket::getFlash()->add(
+                'info',
+                'Administratoren ble fjernet, men vi fikk ikke meldt vedkommende av nyhetsbrevet automatisk. ' .
+                    'Systemet sa: ' . $e->getMessage()
+            );
+        }
     }
 
     // Fjern også admin for alle eksisterende arrangementer
