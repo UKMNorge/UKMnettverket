@@ -47,13 +47,18 @@ if (isset($_GET['removeAdmin'])) {
                 $admin->getUser()->getLastName()
             );
 
+            $administrator = new Administrator($admin->getUser()->getId());
+            $harFlereOmrader = sizeof($administrator->getOmrader()) > 0;
+
             if (UKM_HOSTNAME == 'ukm.dev') {
                 throw new Exception(
                     'Unsubscriber ikke admins i UKM.dev'
                 );
             }
 
-            Arrangor::unSubscribe($subscriber);
+            if (!$harFlereOmrader) {
+                Arrangor::unSubscribe($subscriber);
+            }
         } catch (Exception $e) {
             UKMnettverket::getFlash()->add(
                 'info',
