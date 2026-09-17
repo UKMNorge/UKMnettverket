@@ -6,7 +6,7 @@ use UKMNorge\Nettverk\Omrade;
 use UKMNorge\OAuth2\ArrSys\AccessControlArrSys;
 
 
-$handleCall = new HandleAPICall(['okpId', 'mobil', 'omradeType', 'omradeId', 'page'], ['mobil'], ['POST', 'GET'], false);
+$handleCall = new HandleAPICall(['okpId', 'omradeType', 'omradeId', 'page'], ['mobil'], ['POST', 'GET'], false);
 
 $omradeType = $handleCall->getArgument('omradeType');
 $omradeId = $handleCall->getArgument('omradeId');
@@ -18,11 +18,6 @@ $mobil = $handleCall->getArgument('mobil');
 
 if(!AccessControlArrSys::hasOmradeAccess($omrade)) {
     $handleCall->sendErrorToClient('Du har ikke tilgang til å slette kontaktpersonen fra området', 403);
-}
-
-// Check mobil
-if(!preg_match('/^\d{8}$/', $mobil)) {
-    $handleCall->sendErrorToClient('Mobilnummeret må være 8 siffer og kun tall', 400);
 }
 
 try {

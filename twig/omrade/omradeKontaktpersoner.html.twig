@@ -7,7 +7,7 @@
 			<!-- Slett bruker -->
 			<div class="float-right pull-right">
 				{# <a href="{{ URLDeleteArrang }}&action={{arrangement.erKunstgalleri() ? 'kunstgalleri' : 'arrangement' }}-slett&arr={{arrangement.getId() }}"> #}
-				<a href="?page={{ GET('page') }}&action=omradekontaktperson-remove-connection&okpId={{ omradeKontaktperson.getId() }}&mobil={{ omradeKontaktperson.getMobil() }}&omradeId={{ omrade.getForeignId() }}&omradeType={{ omrade.getType() }}">
+				<a href="?page={{ GET('page') }}&action=omradekontaktperson-remove-connection&okpId={{ omradeKontaktperson.getId() }}&omradeId={{ omrade.getForeignId() }}&omradeType={{ omrade.getType() }}">
 					<span class="dashicons dashicons-trash"></span>
 				</a>
 			</div>
